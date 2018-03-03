@@ -10,8 +10,42 @@ import (
 
 type Tzx struct {
 	file   *os.File
-	Head   Header
-	Blocks []Block
+	header Header
+	blocks []Block
+}
+
+func (t *Tzx) Process() {
+	if err := t.readHeader(); err != nil {
+		fmt.Print(err)
+		return
+	}
+	fmt.Printf("TZX revision %d.%d\n", t.header.MajorVersion, t.header.MinorVersion)
+}
+
+func (t *Tzx) readHeader() error {
+	t.header = Header{}
+	data := t.readNextBytes(10)
+
+	buffer := bytes.NewBuffer(data)
+	err := binary.Read(buffer, binary.LittleEndian, &t.header)
+	if err != nil {
+		return fmt.Errorf("binary.Read failed: %v", err)
+	}
+
+	if string(t.header.Signature[:]) != "ZXTape!" {
+		return fmt.Errorf("TZX file is not in correct format")
+	}
+
+	return nil
+}
+
+func (t Tzx) readNextBytes(number int) []byte {
+	b := make([]byte, number)
+	_, err := t.file.Read(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return b
 }
 
 func (t *Tzx) Open(filename string) error {
@@ -25,30 +59,4 @@ func (t *Tzx) Open(filename string) error {
 
 func (t *Tzx) Close() error {
 	return t.file.Close()
-}
-
-func (t *Tzx) Run() {
-	t.Head = Header{}
-	data := t.readNextBytes(10)
-
-	buffer := bytes.NewBuffer(data)
-	err := binary.Read(buffer, binary.LittleEndian, &t.Head)
-	if err != nil {
-		log.Fatal("binary.Read failed", err)
-	}
-
-	if string(t.Head.Signature[:]) != "ZXTape!" {
-		log.Fatal("given TZX file is not in correct format")
-	}
-
-	fmt.Printf("TZX v%d.%d\n", t.Head.MajorVersion, t.Head.MinorVersion)
-}
-
-func (t Tzx) readNextBytes(number int) []byte {
-	b := make([]byte, number)
-	_, err := t.file.Read(b)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return b
 }

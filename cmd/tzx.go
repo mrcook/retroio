@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/mrcook/spectrumator/tape"
 	"github.com/spf13/cobra"
@@ -16,11 +16,12 @@ var tzxCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		tzx := tape.Tzx{}
 		if err := tzx.Open(args[0]); err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
+			return
 		}
 		defer tzx.Close()
 
-		tzx.Run()
+		tzx.Process()
 	},
 }
 
