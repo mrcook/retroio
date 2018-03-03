@@ -6,14 +6,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-)
 
-type TzxHeader struct {
-	Signature    [7]byte
-	_            uint8 // End of file marker
-	MajorVersion uint8
-	MinorVersion uint8
-}
+	"github.com/mrcook/spectrumator/tzx"
+)
 
 func main() {
 	filename := "tape-file.tzx"
@@ -26,7 +21,7 @@ func main() {
 
 	fmt.Printf("%s opened successfully!\n", filename)
 
-	header := TzxHeader{}
+	header := tzx.Header{}
 	data := readNextBytes(file, 10)
 
 	buffer := bytes.NewBuffer(data)

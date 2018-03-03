@@ -1,13 +1,15 @@
 # Spectrumator
 
-A collection of utily programs for working with the ZX Spectrum tapes (TZX),
-machine/assembly code, memory, screen, and data formats.
+A collection of utility programs for working with the ZX Spectrum machine/assembly
+code, memory, screen, tapes (TZX), etc.
 
 
 
 ## TZX Metadata Extractor
 
-Source: https://www.worldofspectrum.org/TZXformat.html
+* TZX revision: 1.20 (2006-12-19)
+* Source: https://www.worldofspectrum.org/TZXformat.html
+
 
 ### Introduction
 
