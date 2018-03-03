@@ -1,5 +1,5 @@
 // Package contains definitions for all the TZX data blocks
-package tzx
+package tape
 
 type Block interface{}
 
