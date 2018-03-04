@@ -1,7 +1,0 @@
-[prune]
-  go-tests = true
-  unused-packages = true
-
-[[constraint]]
-  name = "github.com/spf13/cobra"
-  revision = "ccaecb155a2177302cb56cae929251a256d0f646"
