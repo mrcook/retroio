@@ -61,8 +61,6 @@ func (t *Tzx) readBlocks() error {
 }
 
 func (t *Tzx) processBlockData(id byte) {
-	var block Block
-
 	switch id {
 	case 16:
 		ssd := &StandardSpeedData{}
@@ -168,14 +166,15 @@ func (t *Tzx) processBlockData(id byte) {
 		// probably ID's 16,17,34,35,40 (HEX) / 22,23,52,64 (DECIMAL)
 		log.Fatalf("ID %d is deprecated/not supported", id)
 	}
-
-	t.blocks = append(t.blocks, block)
 }
 
 func (t *Tzx) DisplayTapeMetadata() {
 	fmt.Printf("TZX Revision: %d.%d\n", t.header.MajorVersion, t.header.MinorVersion)
 	fmt.Println()
 	fmt.Println(t.archive.Metadata())
+	for _, block := range t.blocks {
+		fmt.Println(block.Metadata())
+	}
 }
 
 func (t *Tzx) Open(filename string) error {
