@@ -1,10 +1,7 @@
 package tape
 
 import (
-	"bytes"
-	"encoding/binary"
 	"fmt"
-	"log"
 )
 
 // PureTone
@@ -17,13 +14,8 @@ type PureTone struct {
 }
 
 func (t *PureTone) Process(file *File) {
-	data := file.ReadBytes(4)
-
-	buffer := bytes.NewBuffer(data)
-	err := binary.Read(buffer, binary.LittleEndian, &t)
-	if err != nil {
-		log.Fatal("binary.Read failed: ", err)
-	}
+	t.Length = file.ReadShort()
+	t.PulseCount = file.ReadShort()
 }
 
 func (t PureTone) Id() int {

@@ -57,7 +57,6 @@ func (t *Tzx) readBlocks() error {
 		}
 
 		t.processBlockData(blockID)
-		break // because processBlockData() is not implemented yet
 	}
 	return nil
 }
