@@ -94,7 +94,10 @@ func (t *Tzx) processBlockData(id byte) {
 		cr := &CswRecording{}
 		cr.Process(t.file)
 		t.blocks = append(t.blocks, cr)
-	case 25: // GeneralizedData()
+	case 25:
+		gd := &GeneralizedData{}
+		gd.Process(t.file)
+		t.blocks = append(t.blocks, gd)
 	case 32: // PauseTheTapeCommand()
 	case 33: // GroupStart()
 	case 34: // GroupEnd()
