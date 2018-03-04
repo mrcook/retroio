@@ -74,7 +74,10 @@ func (t *Tzx) processBlockData(id byte) {
 		tsd := &TurboSpeedData{}
 		tsd.Process(t.file)
 		t.blocks = append(t.blocks, tsd)
-	case 18: // PureTone()
+	case 18:
+		pt := &PureTone{}
+		pt.Process(t.file)
+		t.blocks = append(t.blocks, pt)
 	case 19: // SequenceOfPulses()
 	case 20: // PureData()
 	case 21: // DirectRecording()
