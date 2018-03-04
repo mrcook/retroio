@@ -82,7 +82,10 @@ func (t *Tzx) processBlockData(id byte) {
 		sop := &SequenceOfPulses{}
 		sop.Process(t.file)
 		t.blocks = append(t.blocks, sop)
-	case 20: // PureData()
+	case 20:
+		pd := &PureData{}
+		pd.Process(t.file)
+		t.blocks = append(t.blocks, pd)
 	case 21: // DirectRecording()
 	case 24: // CswRecording()
 	case 25: // GeneralizedData()
