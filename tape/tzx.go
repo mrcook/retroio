@@ -146,7 +146,10 @@ func (t *Tzx) processBlockData(id byte) {
 		td := &TextDescription{}
 		td.Process(t.file)
 		t.blocks = append(t.blocks, td)
-	case 49: // Message()
+	case 49:
+		m := &Message{}
+		m.Process(t.file)
+		t.blocks = append(t.blocks, m)
 	case 50: // ArchiveInfo()
 	case 51: // HardwareType()
 	case 53: // CustomInfo()
