@@ -162,7 +162,10 @@ func (t *Tzx) processBlockData(id byte) {
 		ci := &CustomInfo{}
 		ci.Process(t.file)
 		t.blocks = append(t.blocks, ci)
-	case 90: // GlueBlock()
+	case 90:
+		gb := &GlueBlock{}
+		gb.Process(t.file)
+		t.blocks = append(t.blocks, gb)
 	default:
 		// probably ID's 16,17,34,35,40 (HEX) / 22,23,52,64 (DECIMAL)
 		log.Fatalf("ID %d is deprecated/not supported", id)
