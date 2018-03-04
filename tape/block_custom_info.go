@@ -13,31 +13,30 @@ type CustomInfo struct {
 	Info           []uint8  // BYTE[L]   Custom info
 }
 
-func (m *CustomInfo) Process(file *File) {
+func (c *CustomInfo) Process(file *File) {
 	for i, b := range file.ReadBytes(10) {
-		m.Identification[i] = b
+		c.Identification[i] = b
 	}
 
-	m.Length = file.ReadLong()
+	c.Length = file.ReadLong()
 
-	for _, b := range file.ReadBytes(int(m.Length)) {
-		m.Info = append(m.Info, b)
+	for _, b := range file.ReadBytes(int(c.Length)) {
+		c.Info = append(c.Info, b)
 	}
 }
 
-func (m CustomInfo) Id() int {
+func (c CustomInfo) Id() int {
 	return 53
 }
 
-func (m CustomInfo) Name() string {
+func (c CustomInfo) Name() string {
 	return "Custom Info"
 }
 
 // Metadata returns a human readable string of the block data
-func (m CustomInfo) Metadata() string {
-	str := ""
-	str += fmt.Sprintf("Identification: %s\n", m.Identification)
-	str += fmt.Sprintf("Length:         %d\n", m.Length)
-	str += fmt.Sprintf("Info:           %s\n", m.Info)
+func (c CustomInfo) Metadata() string {
+	str := fmt.Sprintf("> %s\n", c.Name())
+	str += fmt.Sprintf(" - Type: %s\n", c.Identification)
+	str += fmt.Sprintf(" - Info: %s\n", c.Info)
 	return str
 }

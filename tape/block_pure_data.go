@@ -37,12 +37,5 @@ func (p PureData) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (p PureData) Metadata() string {
-	str := ""
-	str += fmt.Sprintf("OneBitPulse:  %d\n", p.OneBitPulse)
-	str += fmt.Sprintf("ZeroBitPulse: %d\n", p.ZeroBitPulse)
-	str += fmt.Sprintf("UsedBits:     %d\n", p.UsedBits)
-	str += fmt.Sprintf("Pause:        %d\n", p.Pause)
-	str += fmt.Sprintf("Length:       %d\n", p.Length)
-
-	return str
+	return fmt.Sprintf("> %-19s : %d bytes, pause for %d ms.", p.Name(), p.Length, p.Pause)
 }

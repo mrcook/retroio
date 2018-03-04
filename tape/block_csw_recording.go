@@ -37,12 +37,11 @@ func (c CswRecording) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (c CswRecording) Metadata() string {
-	str := ""
-	str += fmt.Sprintf("Length:           %d\n", c.Length)
-	str += fmt.Sprintf("Pause:            %d\n", c.Pause)
-	str += fmt.Sprintf("SampleRate:       %d\n", c.SampleRate)
-	str += fmt.Sprintf("CompressionType:  %d\n", c.CompressionType)
-	str += fmt.Sprintf("StoredPulseCount: %d\n", c.StoredPulseCount)
+	str := fmt.Sprintf("> %s\n", c.Name())
+	str += fmt.Sprintf(" - Pause (ms.): %d\n", c.Pause)
+	str += fmt.Sprintf(" - Sample Rate: %d\n", c.SampleRate)
+	str += fmt.Sprintf(" - Compression: %d\n", c.CompressionType)
+	str += fmt.Sprintf(" - Pulse Count: %d\n", c.StoredPulseCount)
 
 	return str
 }

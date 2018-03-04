@@ -47,15 +47,13 @@ func (t TurboSpeedData) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (t TurboSpeedData) Metadata() string {
-	str := ""
-	str += fmt.Sprintf("PilotPulse:      %d\n", t.PilotPulse)
-	str += fmt.Sprintf("SyncFirstPulse:  %d\n", t.SyncFirstPulse)
-	str += fmt.Sprintf("SyncSecondPulse: %d\n", t.SyncSecondPulse)
-	str += fmt.Sprintf("ZeroBitPulse:    %d\n", t.ZeroBitPulse)
-	str += fmt.Sprintf("PilotTone:       %d\n", t.PilotTone)
-	str += fmt.Sprintf("UsedBits:        %d\n", t.UsedBits)
-	str += fmt.Sprintf("Pause:           %d\n", t.Pause)
-	str += fmt.Sprintf("Length:          %d\n", t.Length)
-
+	str := fmt.Sprintf("> %s\n", t.Name())
+	str += fmt.Sprintf(" - PilotPulse:      %d\n", t.PilotPulse)
+	str += fmt.Sprintf(" - SyncFirstPulse:  %d\n", t.SyncFirstPulse)
+	str += fmt.Sprintf(" - SyncSecondPulse: %d\n", t.SyncSecondPulse)
+	str += fmt.Sprintf(" - ZeroBitPulse:    %d\n", t.ZeroBitPulse)
+	str += fmt.Sprintf(" - PilotTone:       %d\n", t.PilotTone)
+	str += fmt.Sprintf(" - UsedBits:        %d\n", t.UsedBits)
+	str += fmt.Sprintf(" - Pause:           %d\n", t.Pause)
 	return str
 }

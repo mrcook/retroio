@@ -26,5 +26,5 @@ func (s StopTapeWhen48kMode) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (s StopTapeWhen48kMode) Metadata() string {
-	return fmt.Sprintf("Length: %d\n", s.Length)
+	return fmt.Sprintf("> %s\n", s.Name())
 }

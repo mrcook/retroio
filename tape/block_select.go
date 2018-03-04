@@ -46,14 +46,9 @@ func (s Select) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (s Select) Metadata() string {
-	str := ""
-	str += fmt.Sprintf("Length: %d\n", s.Length)
-	str += fmt.Sprintf("Count:  %d\n", s.Count)
-
-	str += fmt.Sprint("Selections:\n")
+	str := fmt.Sprintf("> %s\n", s.Name())
 	for _, b := range s.Selections {
 		str += fmt.Sprintf("- Offset:      %d\n", b.RelativeOffset)
-		str += fmt.Sprintf("  Length:      %d\n", b.Length)
 		str += fmt.Sprintf("  Description: %s\n", b.Description)
 	}
 	return str

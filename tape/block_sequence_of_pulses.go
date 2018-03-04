@@ -29,11 +29,5 @@ func (s SequenceOfPulses) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (s SequenceOfPulses) Metadata() string {
-	str := fmt.Sprintf("Count: %d\n", s.Count)
-	str += fmt.Sprint("Lengths:\n")
-	for _, l := range s.Lengths {
-		str += fmt.Sprintf("  - %d\n", l)
-	}
-
-	return str
+	return fmt.Sprintf("> %-19s : %d pulses", s.Name(), s.Count)
 }

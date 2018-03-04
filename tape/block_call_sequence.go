@@ -34,9 +34,9 @@ func (c CallSequence) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (c CallSequence) Metadata() string {
-	str := fmt.Sprintf("Count: %d\n", c.Count)
+	str := fmt.Sprintf("> %s\n", c.Name())
 	for _, b := range c.Blocks {
-		str += fmt.Sprintf("  - %d\n", b)
+		str += fmt.Sprintf(" - %d\n", b)
 	}
 	return str
 }
@@ -60,5 +60,5 @@ func (r ReturnFromSequence) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (r ReturnFromSequence) Metadata() string {
-	return ""
+	return r.Name()
 }

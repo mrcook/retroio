@@ -13,20 +13,20 @@ type PureTone struct {
 	PulseCount uint16 // WORD Number of pulses
 }
 
-func (t *PureTone) Process(file *File) {
-	t.Length = file.ReadShort()
-	t.PulseCount = file.ReadShort()
+func (p *PureTone) Process(file *File) {
+	p.Length = file.ReadShort()
+	p.PulseCount = file.ReadShort()
 }
 
-func (t PureTone) Id() int {
+func (p PureTone) Id() int {
 	return 18
 }
 
-func (t PureTone) Name() string {
+func (p PureTone) Name() string {
 	return "Pure Tone"
 }
 
 // Metadata returns a human readable string of the block data
-func (t PureTone) Metadata() string {
-	return fmt.Sprintf("Length:     %d\nPulseCount: %d\n", t.Length, t.PulseCount)
+func (p PureTone) Metadata() string {
+	return fmt.Sprintf("> %-19s : %d T-States, %d pulses", p.Name(), p.Length, p.PulseCount)
 }

@@ -26,5 +26,7 @@ func (s SetSignalLevel) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (s SetSignalLevel) Metadata() string {
-	return fmt.Sprintf("Length: %d\n", s.Length)
+	str := fmt.Sprintf("> %s\n", s.Name())
+	str += fmt.Sprintf(" - Signal level: %d\n", s.SignalLevel)
+	return str
 }

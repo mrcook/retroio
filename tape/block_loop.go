@@ -25,7 +25,7 @@ func (l LoopStart) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (l LoopStart) Metadata() string {
-	return fmt.Sprintf("Count: %d\n", l.RepetitionCount)
+	return fmt.Sprintf("> %-19s : %d times", l.Name(), l.RepetitionCount)
 }
 
 // LoopEnd
@@ -47,5 +47,5 @@ func (l LoopEnd) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (l LoopEnd) Metadata() string {
-	return ""
+	return fmt.Sprintf("> %s", l.Name())
 }

@@ -41,11 +41,9 @@ func (d DirectRecording) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (d DirectRecording) Metadata() string {
-	str := ""
-	str += fmt.Sprintf("TStatesPerSample: %d\n", d.TStatesPerSample)
-	str += fmt.Sprintf("UsedBits:         %d\n", d.UsedBits)
-	str += fmt.Sprintf("Pause:            %d\n", d.Pause)
-	str += fmt.Sprintf("Length:           %d\n", d.Length)
-
+	str := fmt.Sprintf("> %s\n", d.Name())
+	str += fmt.Sprintf(" - T-States per Sample: %d\n", d.TStatesPerSample)
+	str += fmt.Sprintf(" - Used Bits:           %d\n", d.UsedBits)
+	str += fmt.Sprintf(" - Pause (ms.):         %d\n", d.Pause)
 	return str
 }

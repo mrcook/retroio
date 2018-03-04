@@ -1,6 +1,9 @@
 package tape
 
-import "log"
+import (
+	"fmt"
+	"log"
+)
 
 // GeneralizedData
 // ID: 19h (25d)
@@ -67,5 +70,5 @@ func (g GeneralizedData) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (g GeneralizedData) Metadata() string {
-	return ""
+	return fmt.Sprintf("> %s\n", g.Name())
 }

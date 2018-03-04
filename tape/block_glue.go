@@ -30,5 +30,5 @@ func (g GlueBlock) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (g GlueBlock) Metadata() string {
-	return fmt.Sprintf("Value: %s\n", g.Value)
+	return fmt.Sprintf("> %s\n", g.Name())
 }

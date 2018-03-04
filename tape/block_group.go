@@ -32,7 +32,7 @@ func (g GroupStart) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (g GroupStart) Metadata() string {
-	return fmt.Sprintf("Length: %d\nName:   %s", g.Length, g.GroupName)
+	return fmt.Sprintf("> %-19s : %s", g.Name(), g.GroupName)
 }
 
 // GroupEnd
@@ -52,5 +52,5 @@ func (g GroupEnd) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (g GroupEnd) Metadata() string {
-	return ""
+	return fmt.Sprintf("> %s", g.Name())
 }

@@ -36,9 +36,8 @@ func (m Message) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (m Message) Metadata() string {
-	str := ""
-	str += fmt.Sprintf("Display Time: %d\n", m.DisplayTime)
-	str += fmt.Sprintf("Length:       %d\n", m.Length)
-	str += fmt.Sprintf("Description:  %s\n", m.Message)
+	str := fmt.Sprintf("> %s\n", m.Name())
+	str += fmt.Sprintf(" - Display for %d seconds\n", m.DisplayTime)
+	str += fmt.Sprintf(" - Message: %s\n", m.Message)
 	return str
 }
