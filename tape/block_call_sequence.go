@@ -40,3 +40,25 @@ func (c CallSequence) Metadata() string {
 	}
 	return str
 }
+
+// ReturnFromSequence
+// ID: 27h (39d)
+// This block indicates the end of the Called Sequence. The next block played will be the block after
+// the last CALL block (or the next Call, if the Call block had multiple calls).
+// This block has no body.
+type ReturnFromSequence struct{}
+
+func (r ReturnFromSequence) Process(file *File) {}
+
+func (r ReturnFromSequence) Id() int {
+	return 39
+}
+
+func (r ReturnFromSequence) Name() string {
+	return "Return from Sequence"
+}
+
+// Metadata returns a human readable string of the block data
+func (r ReturnFromSequence) Metadata() string {
+	return ""
+}

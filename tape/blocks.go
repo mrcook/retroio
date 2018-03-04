@@ -35,13 +35,6 @@ type Block interface {
 // ID 35 (53): CustomInfo
 // ID 5A (90): GlueBlock
 
-// ReturnFromSequence
-// ID: 27h (39d)
-// This block indicates the end of the Called Sequence. The next block played will be the block after
-// the last CALL block (or the next Call, if the Call block had multiple calls).
-// This block has no body.
-type ReturnFromSequence struct{}
-
 // Select
 // ID: 28h (40d)
 // This block is useful when the tape consists of two or more separately-loadable parts. With this
