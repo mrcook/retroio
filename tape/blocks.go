@@ -35,27 +35,6 @@ type Block interface {
 // ID 35 (53): CustomInfo
 // ID 5A (90): GlueBlock
 
-// SetSignalLevel
-// ID: 2Bh (43d)
-// This block sets the current signal level to the specified value (high or low). It should be used
-// whenever it is necessary to avoid any ambiguities, e.g. with custom loaders which are level-sensitive.
-type SetSignalLevel struct {
-	Length      uint32 // DWORD Block length (without these four bytes)
-	SignalLevel uint8  // BYTE  Signal level (0=low, 1=high)
-}
-
-// TextDescription
-// ID: 30h (48d)
-// This is meant to identify parts of the tape, so you know where level 1 starts, where to rewind
-// to when the game ends, etc. This description is not guaranteed to be shown while the tape is
-// playing, but can be read while browsing the tape or changing the tape pointer.
-// The description can be up to 255 characters long but please keep it down to about 30 so the
-// programs can show it in one line (where this is appropriate).
-type TextDescription struct {
-	Length      uint8  // N BYTE  Length of the text description
-	Description []byte // CHAR[N] Text description in ASCII format
-}
-
 // Message
 // ID: 31h (49d)
 // This will enable the emulators to display a message for a given time. This should not stop the
