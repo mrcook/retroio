@@ -35,17 +35,6 @@ type Block interface {
 // ID 35 (53): CustomInfo
 // ID 5A (90): GlueBlock
 
-// CustomInfo
-// ID: 35h (53d)
-// This block can be used to save any information you want. For example, it might contain some
-// information written by a utility, extra settings required by a particular emulator, or even
-// poke data.
-type CustomInfo struct {
-	Identification []byte  // CHAR[10]  Identification string (in ASCII)
-	Length         uint32  // L DWORD   Length of the custom info
-	Info           []uint8 // BYTE[L]   Custom info
-}
-
 // GlueBlock
 // ID: 5Ah (90d)
 // This block is generated when you merge two ZX Tape files together. It is here so that you can
