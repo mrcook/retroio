@@ -102,9 +102,14 @@ func (t *Tzx) processBlockData(id byte) {
 		pt := &PauseTapeCommand{}
 		pt.Process(t.file)
 		t.blocks = append(t.blocks, pt)
-	case 33: // GroupStart()
-	case 34: // GroupEnd()
-		return // block has no body
+	case 33:
+		gs := &GroupStart{}
+		gs.Process(t.file)
+		t.blocks = append(t.blocks, gs)
+	case 34:
+		ge := &GroupEnd{}
+		ge.Process(t.file)
+		t.blocks = append(t.blocks, ge)
 	case 35: // JumpTo()
 	case 36: // LoopStart()
 	case 37: // LoopEnd()

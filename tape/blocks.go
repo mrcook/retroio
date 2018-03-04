@@ -35,23 +35,6 @@ type Block interface {
 // ID 35 (53): CustomInfo
 // ID 5A (90): GlueBlock
 
-// GroupStart
-// ID: 21h (33d)
-// This block marks the start of a group of blocks which are to be treated as one single
-// (composite) block. This is very handy for tapes that use lots of subblocks like Bleepload
-// (which may well have over 160 custom loading blocks). You can also give the group a name
-// (example 'Bleepload Block 1').
-// For each group start block, there must be a group end block. Nesting of groups is not allowed.
-type GroupStart struct {
-	Length uint8  // L BYTE  Length of the group name string
-	Name   []byte // CHAR[L] Group name in ASCII format (please keep it under 30 characters long)
-}
-
-// GroupEnd
-// ID: 22h (34d)
-// This indicates the end of a group. This block has no body.
-type GroupEnd struct{}
-
 // JumpTo
 // ID: 23h (35d)
 // This block will enable you to jump from one block to another within the file. The value is a
