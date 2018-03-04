@@ -86,7 +86,10 @@ func (t *Tzx) processBlockData(id byte) {
 		pd := &PureData{}
 		pd.Process(t.file)
 		t.blocks = append(t.blocks, pd)
-	case 21: // DirectRecording()
+	case 21:
+		dr := &DirectRecording{}
+		dr.Process(t.file)
+		t.blocks = append(t.blocks, dr)
 	case 24: // CswRecording()
 	case 25: // GeneralizedData()
 	case 32: // PauseTheTapeCommand()
