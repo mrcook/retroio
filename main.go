@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/mrcook/spectrumator/tape"
+	"github.com/mrcook/tzxbrowser/tape"
 )
 
 const version = "0.0.1"
