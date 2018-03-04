@@ -114,9 +114,14 @@ func (t *Tzx) processBlockData(id byte) {
 		jt := &JumpTo{}
 		jt.Process(t.file)
 		t.blocks = append(t.blocks, jt)
-	case 36: // LoopStart()
-	case 37: // LoopEnd()
-		return // block has no body
+	case 36:
+		ls := &LoopStart{}
+		ls.Process(t.file)
+		t.blocks = append(t.blocks, ls)
+	case 37:
+		ls := &LoopEnd{}
+		ls.Process(t.file)
+		t.blocks = append(t.blocks, ls)
 	case 38: // CallSequence()
 	case 39: // ReturnFromSequence()
 		return // block has no body

@@ -35,22 +35,6 @@ type Block interface {
 // ID 35 (53): CustomInfo
 // ID 5A (90): GlueBlock
 
-// LoopStart
-// ID: 24h (36d)
-// If you have a sequence of identical blocks, or of identical groups of blocks, you can use
-// this block to tell how many times they should be repeated. This block is the same as the
-// FOR statement in BASIC.
-type LoopStart struct {
-	RepetitionCount uint16 // WORD  Number of repetitions (greater than 1)
-}
-
-// LoopEnd
-// ID: 25h (37d)
-// This is the same as BASIC's NEXT statement. It means that the utility should jump back to the
-// start of the loop if it hasn't been run for the specified number of times.
-// This block has no body.
-type LoopEnd struct{}
-
 // CallSequence
 // ID: 26h (38d)
 // This block is an analogue of the CALL Subroutine statement. It basically executes a sequence of
