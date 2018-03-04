@@ -35,15 +35,6 @@ type Block interface {
 // ID 35 (53): CustomInfo
 // ID 5A (90): GlueBlock
 
-// PauseTheTapeCommand
-// ID: 20h (32d)
-// This will make a silence (low amplitude level (0)) for a given time in milliseconds. If the
-// value is 0 then the emulator or utility should (in effect) STOP THE TAPE, i.e. should not
-// continue loading until the user or emulator requests it.
-type PauseTapeCommand struct {
-	Pause uint16 // WORD  Pause duration (ms.)
-}
-
 // GroupStart
 // ID: 21h (33d)
 // This block marks the start of a group of blocks which are to be treated as one single
