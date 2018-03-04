@@ -122,7 +122,10 @@ func (t *Tzx) processBlockData(id byte) {
 		ls := &LoopEnd{}
 		ls.Process(t.file)
 		t.blocks = append(t.blocks, ls)
-	case 38: // CallSequence()
+	case 38:
+		cs := &CallSequence{}
+		cs.Process(t.file)
+		t.blocks = append(t.blocks, cs)
 	case 39: // ReturnFromSequence()
 		return // block has no body
 	case 40: // Select()
