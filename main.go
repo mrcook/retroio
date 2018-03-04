@@ -49,4 +49,5 @@ func main() {
 	defer tzx.Close()
 
 	tzx.Process()
+	tzx.DisplayTapeMetadata()
 }

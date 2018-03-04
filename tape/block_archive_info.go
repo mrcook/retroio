@@ -20,32 +20,23 @@ type ArchiveInfo struct {
 }
 
 type Text struct {
-	TypeID uint8 // BYTE  Text identification byte:
-	//                       00 - Full title
-	//                       01 - Software house/publisher
-	//                       02 - Author(s)
-	//                       03 - Year of publication
-	//                       04 - Language
-	//                       05 - Game/utility type
-	//                       06 - Price
-	//                       07 - Protection scheme/loader
-	//                       08 - Origin
-	//                       FF - Comment(s)
+	TypeID     uint8  // BYTE  Text identification byte
 	Length     uint8  // L BYTE  Length of text string
 	Characters []byte // CHAR[L] Text string in ASCII format
 }
 
-var categories = map[uint8]string{
-	0:   "Title",
-	1:   "Publisher",
-	2:   "Authors",
-	3:   "Year",
-	4:   "Language",
-	5:   "Category",
-	6:   "Price",
-	7:   "Loader",
-	8:   "Origin",
-	255: "Comment",
+// Headings for the Text ID's.
+var headings = map[uint8]string{
+	0:   "Title",     // 00 - Full title
+	1:   "Publisher", // 01 - Software house/publisher
+	2:   "Authors",   // 02 - Author(s)
+	3:   "Year",      // 03 - Year of publication
+	4:   "Language",  // 04 - Language
+	5:   "Category",  // 05 - Game/utility type
+	6:   "Price",     // 06 - Price
+	7:   "Loader",    // 07 - Protection scheme/loader
+	8:   "Origin",    // 08 - Origin
+	255: "Comment",   // FF - Comment(s)
 }
 
 func (a *ArchiveInfo) Process(file *File) {
@@ -75,7 +66,7 @@ func (a ArchiveInfo) Name() string {
 func (a ArchiveInfo) Metadata() string {
 	str := ""
 	for _, b := range a.Strings {
-		str += fmt.Sprintf("- %-9s: %s\n", categories[b.TypeID], b.Characters)
+		str += fmt.Sprintf("  %-10s: %s\n", headings[b.TypeID], b.Characters)
 	}
 
 	return str

@@ -9,9 +9,10 @@ import (
 )
 
 type Tzx struct {
-	file   *File
-	header Header
-	blocks []Block
+	file    *File
+	header  Header
+	archive ArchiveInfo
+	blocks  []Block
 }
 
 func (t *Tzx) Process() {
@@ -19,8 +20,6 @@ func (t *Tzx) Process() {
 		fmt.Print(err)
 		return
 	}
-
-	fmt.Printf("TZX revision %d.%d\n", t.header.MajorVersion, t.header.MinorVersion)
 
 	if err := t.readBlocks(); err != nil {
 		fmt.Print(err)
@@ -150,9 +149,9 @@ func (t *Tzx) processBlockData(id byte) {
 		m.Process(t.file)
 		t.blocks = append(t.blocks, m)
 	case 50:
-		ai := &ArchiveInfo{}
+		ai := ArchiveInfo{}
 		ai.Process(t.file)
-		t.blocks = append(t.blocks, ai)
+		t.archive = ai
 	case 51:
 		ht := &HardwareType{}
 		ht.Process(t.file)
@@ -171,6 +170,12 @@ func (t *Tzx) processBlockData(id byte) {
 	}
 
 	t.blocks = append(t.blocks, block)
+}
+
+func (t *Tzx) DisplayTapeMetadata() {
+	fmt.Printf("TZX Revision: %d.%d\n", t.header.MajorVersion, t.header.MinorVersion)
+	fmt.Println()
+	fmt.Println(t.archive.Metadata())
 }
 
 func (t *Tzx) Open(filename string) error {
