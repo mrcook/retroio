@@ -30,7 +30,7 @@ func (t *Tzx) Process() {
 
 func (t *Tzx) readHeader() error {
 	t.header = Header{}
-	data := t.file.ReadBlockData(10)
+	data := t.file.ReadBytes(10)
 
 	buffer := bytes.NewBuffer(data)
 	err := binary.Read(buffer, binary.LittleEndian, &t.header)
@@ -48,7 +48,7 @@ func (t *Tzx) readHeader() error {
 // readBlocks processes all the TZX data blocks
 func (t *Tzx) readBlocks() error {
 	for {
-		blockID, err := t.file.ReadNextByte()
+		blockID, err := t.file.ReadByte()
 		if err != nil {
 			if err != io.EOF {
 				return err
@@ -66,8 +66,10 @@ func (t *Tzx) processBlockData(id byte) {
 	var block Block
 
 	switch id {
-	case 16: // StandardSpeedData
-		fmt.Println("ID 16: StandardSpeedData")
+	case 16:
+		ssd := &StandardSpeedData{}
+		ssd.Process(t.file)
+		t.blocks = append(t.blocks, ssd)
 	case 17: // TurboSpeedData()
 	case 18: // PureTone()
 	case 19: // SequenceOfPulses()
