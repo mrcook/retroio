@@ -41,6 +41,13 @@ func (f *File) ReadShort() uint16 {
 	return binary.LittleEndian.Uint16(b[:])
 }
 
+// ReadSignedShort reads a `signed` WORD from the TZX.
+// The two bytes are processed as a _Little Endian_ value and returned as a int16.
+func (f *File) ReadSignedShort() int16 {
+	b := f.ReadBytes(2)
+	return int16(binary.LittleEndian.Uint16(b[:]))
+}
+
 // ReadLong reads a DWORD from the TZX.
 // The four bytes are processed as a _Little Endian_ value and returned as a uint32.
 func (f *File) ReadLong() uint32 {

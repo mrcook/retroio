@@ -110,7 +110,10 @@ func (t *Tzx) processBlockData(id byte) {
 		ge := &GroupEnd{}
 		ge.Process(t.file)
 		t.blocks = append(t.blocks, ge)
-	case 35: // JumpTo()
+	case 35:
+		jt := &JumpTo{}
+		jt.Process(t.file)
+		t.blocks = append(t.blocks, jt)
 	case 36: // LoopStart()
 	case 37: // LoopEnd()
 		return // block has no body
