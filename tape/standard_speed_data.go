@@ -17,10 +17,20 @@ type StandardSpeedData struct {
 func (s *StandardSpeedData) Process(file *File) {
 	s.Pause = file.ReadShort()
 	s.Length = file.ReadShort()
-	s.Data = file.ReadBytes(int(s.Length))
+
+	// Yep, we're discarding the data for the moment
+	file.ReadBytes(int(s.Length))
 }
 
-// ToString returns a human readable string of the block data
-func (s *StandardSpeedData) ToString() string {
+func (s *StandardSpeedData) Id() int {
+	return 16
+}
+
+func (s *StandardSpeedData) Name() string {
+	return "Standard Speed Data"
+}
+
+// Metadata returns a human readable string of the block data
+func (s *StandardSpeedData) Metadata() string {
 	return fmt.Sprintf("Pause:  %d\nLength: %d", s.Pause, s.Length)
 }

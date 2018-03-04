@@ -2,7 +2,9 @@
 package tape
 
 type Block interface {
-	ToString() string
+	Id() int
+	Name() string
+	Metadata() string
 }
 
 // Block ID table, as `HEX (DECIMAL)` values
