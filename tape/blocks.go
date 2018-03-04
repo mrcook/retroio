@@ -35,16 +35,6 @@ type Block interface {
 // ID 35 (53): CustomInfo
 // ID 5A (90): GlueBlock
 
-// StopTheTapeIfIn48kMode
-// ID: 2Ah (42d)
-// When this block is encountered, the tape will stop ONLY if the machine is an 48K Spectrum.
-// This block is to be used for multi-loading games that load one level at a time in 48K mode,
-// but load the entire tape at once if in 128K mode.
-// This block has no body of its own, but follows the extension rule.
-type StopTheTapeIfIn48kMode struct {
-	Length uint32 // DWORD Length of the block without these four bytes (0)
-}
-
 // SetSignalLevel
 // ID: 2Bh (43d)
 // This block sets the current signal level to the specified value (high or low). It should be used
