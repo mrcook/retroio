@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"io"
 	"log"
-	"os"
 )
 
 type Tzx struct {
-	file   *os.File
+	file   *File
 	header Header
 	blocks []Block
 }
@@ -19,12 +19,18 @@ func (t *Tzx) Process() {
 		fmt.Print(err)
 		return
 	}
+
 	fmt.Printf("TZX revision %d.%d\n", t.header.MajorVersion, t.header.MinorVersion)
+
+	if err := t.readBlocks(); err != nil {
+		fmt.Print(err)
+		return
+	}
 }
 
 func (t *Tzx) readHeader() error {
 	t.header = Header{}
-	data := t.readNextBytes(10)
+	data := t.file.ReadBlockData(10)
 
 	buffer := bytes.NewBuffer(data)
 	err := binary.Read(buffer, binary.LittleEndian, &t.header)
@@ -39,22 +45,67 @@ func (t *Tzx) readHeader() error {
 	return nil
 }
 
-func (t Tzx) readNextBytes(number int) []byte {
-	b := make([]byte, number)
-	_, err := t.file.Read(b)
-	if err != nil {
-		log.Fatal(err)
+// readBlocks processes all the TZX data blocks
+func (t *Tzx) readBlocks() error {
+	for {
+		blockID, err := t.file.ReadNextByte()
+		if err != nil {
+			if err != io.EOF {
+				return err
+			}
+			break
+		}
+
+		t.processBlockData(blockID)
+		break // because processBlockData() is not implemented yet
 	}
-	return b
+	return nil
+}
+
+func (t *Tzx) processBlockData(id byte) {
+	var block Block
+
+	switch id {
+	case 16: // StandardSpeedData
+		fmt.Println("ID 16: StandardSpeedData")
+	case 17: // TurboSpeedData()
+	case 18: // PureTone()
+	case 19: // SequenceOfPulses()
+	case 20: // PureData()
+	case 21: // DirectRecording()
+	case 24: // CswRecording()
+	case 25: // GeneralizedData()
+	case 32: // PauseTheTapeCommand()
+	case 33: // GroupStart()
+	case 34: // GroupEnd()
+		return // block has no body
+	case 35: // JumpTo()
+	case 36: // LoopStart()
+	case 37: // LoopEnd()
+		return // block has no body
+	case 38: // CallSequence()
+	case 39: // ReturnFromSequence()
+		return // block has no body
+	case 40: // Select()
+	case 42: // StopTheTapeIfIn48kMode()
+	case 43: // SetSignalLevel()
+	case 48: // TextDescription()
+	case 49: // Message()
+	case 50: // ArchiveInfo()
+	case 51: // HardwareType()
+	case 53: // CustomInfo()
+	case 90: // GlueBlock()
+	default:
+		// probably ID's 16,17,34,35,40 (HEX) / 22,23,52,64 (DECIMAL)
+		log.Fatalf("ID %d is deprecated/not supported", id)
+	}
+
+	t.blocks = append(t.blocks, block)
 }
 
 func (t *Tzx) Open(filename string) error {
-	var err error
-	t.file, err = os.Open(filename)
-	if err != nil {
-		return err
-	}
-	return nil
+	t.file = &File{}
+	return t.file.Open(filename)
 }
 
 func (t *Tzx) Close() error {
