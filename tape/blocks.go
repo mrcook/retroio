@@ -35,33 +35,6 @@ type Block interface {
 // ID 35 (53): CustomInfo
 // ID 5A (90): GlueBlock
 
-// HardwareType
-// ID: 33h (51d)
-// This blocks contains information about the hardware that the programs on this tape use.
-// Please include only machines and hardware for which you are 100% sure that it either runs
-// (or doesn't run) on or with, or you know it uses (or doesn't use) the hardware or special
-// features of that machine.
-type HardwareType struct {
-	TypeCount uint8          // N BYTE     Number of machines and hardware types for which info is supplied
-	Machines  []HardwareInfo // HWINFO[N]  List of machines and hardware
-}
-
-// HardwareInfo
-// A list of hardware types and ID and sub-types can be found in the TZX specification
-// (https://www.worldofspectrum.org/TZXformat.html)
-type HardwareInfo struct {
-	Type        uint8 // BYTE  Hardware type
-	Id          uint8 // BYTE  Hardware ID
-	Information uint8 // BYTE  Hardware information:
-	//                           00 - The tape RUNS on this machine or with this hardware,
-	//                                but may or may not use the hardware or special features of the machine.
-	//                           01 - The tape USES the hardware or special features of the machine,
-	//                                such as extra memory or a sound chip.
-	//                           02 - The tape RUNS but it DOESN'T use the hardware
-	//                                or special features of the machine.
-	//                           03 - The tape DOESN'T RUN on this machine or with this hardware.
-}
-
 // CustomInfo
 // ID: 35h (53d)
 // This block can be used to save any information you want. For example, it might contain some

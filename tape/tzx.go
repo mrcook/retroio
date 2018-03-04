@@ -154,7 +154,10 @@ func (t *Tzx) processBlockData(id byte) {
 		ai := &ArchiveInfo{}
 		ai.Process(t.file)
 		t.blocks = append(t.blocks, ai)
-	case 51: // HardwareType()
+	case 51:
+		ht := &HardwareType{}
+		ht.Process(t.file)
+		t.blocks = append(t.blocks, ht)
 	case 53: // CustomInfo()
 	case 90: // GlueBlock()
 	default:
