@@ -35,6 +35,19 @@ type Text struct {
 	Characters []byte // CHAR[L] Text string in ASCII format
 }
 
+var categories = map[uint8]string{
+	0:   "Title",
+	1:   "Publisher",
+	2:   "Authors",
+	3:   "Year",
+	4:   "Language",
+	5:   "Category",
+	6:   "Price",
+	7:   "Loader",
+	8:   "Origin",
+	255: "Comment",
+}
+
 func (a *ArchiveInfo) Process(file *File) {
 	a.Length = file.ReadShort()
 	a.StringCount, _ = file.ReadByte()
@@ -46,6 +59,7 @@ func (a *ArchiveInfo) Process(file *File) {
 		for _, c := range file.ReadBytes(int(t.Length)) {
 			t.Characters = append(t.Characters, c)
 		}
+		a.Strings = append(a.Strings, t)
 	}
 }
 
@@ -60,14 +74,8 @@ func (a ArchiveInfo) Name() string {
 // Metadata returns a human readable string of the block data
 func (a ArchiveInfo) Metadata() string {
 	str := ""
-	str += fmt.Sprintf("Length:       %d\n", a.Length)
-	str += fmt.Sprintf("String Count: %d\n", a.StringCount)
-
-	str += fmt.Sprintf("Texts:\n")
 	for _, b := range a.Strings {
-		str += fmt.Sprintf("- TypeID: %d\n", b.TypeID)
-		str += fmt.Sprintf("  Length: %d\n", b.Length)
-		str += fmt.Sprintf("  String: %s\n", b.Characters)
+		str += fmt.Sprintf("- %-9s: %s\n", categories[b.TypeID], b.Characters)
 	}
 
 	return str
