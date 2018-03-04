@@ -35,15 +35,6 @@ type Block interface {
 // ID 35 (53): CustomInfo
 // ID 5A (90): GlueBlock
 
-// SequenceOfPulses
-// ID: 13h (19d)
-// This will produce N pulses, each having its own timing. Up to 255 pulses can be stored in this
-// block; this is useful for non-standard sync tones used by some protection schemes.
-type SequenceOfPulses struct {
-	Count   uint8    // N BYTE  Number of pulses
-	Lengths []uint16 // WORD[N] Pulses' lengths
-}
-
 // PureData
 // ID: 14h (20d)
 // This is the same as in the turbo loading data block, except that it has no pilot or sync pulses.
