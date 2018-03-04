@@ -70,7 +70,10 @@ func (t *Tzx) processBlockData(id byte) {
 		ssd := &StandardSpeedData{}
 		ssd.Process(t.file)
 		t.blocks = append(t.blocks, ssd)
-	case 17: // TurboSpeedData()
+	case 17:
+		tsd := &TurboSpeedData{}
+		tsd.Process(t.file)
+		t.blocks = append(t.blocks, tsd)
 	case 18: // PureTone()
 	case 19: // SequenceOfPulses()
 	case 20: // PureData()

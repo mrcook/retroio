@@ -60,3 +60,8 @@ func (f File) ReadBytes(number int) []byte {
 	}
 	return b
 }
+
+// BytesToLong converts a slice of bytes to a DWORD value
+func (f *File) BytesToLong(b []byte) uint32 {
+	return binary.LittleEndian.Uint32(b[:])
+}

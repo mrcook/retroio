@@ -35,25 +35,6 @@ type Block interface {
 // ID 35 (53): CustomInfo
 // ID 5A (90): GlueBlock
 
-// TurboSpeedData
-// ID: 11h (17d)
-// This block is very similar to the normal TAP block but with some additional info on the timings
-// and other important differences. The same tape encoding is used as for the standard speed data
-// block. If a block should use some non-standard sync or pilot tones (i.e. all sorts of protection
-// schemes) then use the next three blocks to describe it.
-type TurboSpeedData struct {
-	PilotPulse      uint16   // WORD      Length of PILOT pulse {2168}
-	SyncFirstPulse  uint16   // WORD      Length of SYNC first pulse {667}
-	SyncSecondPulse uint16   // WORD      Length of SYNC second pulse {735}
-	ZeroBitPulse    uint16   // WORD      Length of ZERO bit pulse {855}
-	OneBitPulse     uint16   // WORD      Length of ONE bit pulse {1710}
-	PilotTone       uint16   // WORD      Length of PILOT tone (number of pulses) {8063 header (flag<128), 3223 data (flag>=128)}
-	UsedBits        uint8    // BYTE      Used bits in the last byte (other bits should be 0) {8} (e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)
-	Pause           uint16   // WORD      Pause after this block (ms.) {1000}
-	Length          [3]uint8 // N BYTE[3] Length of data that follow
-	Data            []uint8  // BYTE[N]   Data as in .TAP files
-}
-
 // PureTone
 // ID: 12h (18d)
 // This will produce a tone which is basically the same as the pilot tone in the ID 10, ID 11
@@ -76,12 +57,13 @@ type SequenceOfPulses struct {
 // ID: 14h (20d)
 // This is the same as in the turbo loading data block, except that it has no pilot or sync pulses.
 type PureData struct {
-	ZeroBitPulse uint16   // WORD      Length of ZERO bit pulse
-	OneBitPulse  uint16   // WORD      Length of ONE bit pulse
-	UsedBits     uint16   // BYTE      Used bits in last byte (other bits should be 0) (e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)
-	Pause        uint16   // WORD      Pause after this block (ms.)
-	Length       [3]uint8 // N BYTE[3] Length of data that follow
-	Data         []uint8  // BYTE[N]   Data as in .TAP files
+	ZeroBitPulse    uint16  // WORD      Length of ZERO bit pulse
+	OneBitPulse     uint16  // WORD      Length of ONE bit pulse
+	UsedBits        uint16  // BYTE      Used bits in last byte (other bits should be 0) (e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)
+	Pause           uint16  // WORD      Pause after this block (ms.)
+	Length          uint16  // N BYTE[3] Length of data that follow
+	LengthSpareByte uint8   // NOTE: `length` above uses only 2-bytes for value but specification says 3-bytes, so this is for the spare.
+	Data            []uint8 // BYTE[N]   Data as in .TAP files
 }
 
 // DirectRecording
@@ -94,23 +76,25 @@ type PureData struct {
 // if you can, don't use other sampling frequencies.
 // Please use this block only if you cannot use any other block.
 type DirectRecording struct {
-	TStatesPerSample uint16   // WORD      Number of T-states per sample (bit of data)
-	Pause            uint16   // WORD      Pause after this block in milliseconds (ms.)
-	UsedBits         uint8    // BYTE      Used bits (samples) in last byte of data (1-8) (e.g. if this is 2, only first two samples of the last byte will be played)
-	Length           [3]uint8 // N BYTE[3] Length of samples' data
-	Data             []uint8  // BYTE[N]   Samples data. Each bit represents a state on the EAR port (i.e. one sample). MSb is played first.
+	TStatesPerSample uint16  // WORD      Number of T-states per sample (bit of data)
+	Pause            uint16  // WORD      Pause after this block in milliseconds (ms.)
+	UsedBits         uint8   // BYTE      Used bits (samples) in last byte of data (1-8) (e.g. if this is 2, only first two samples of the last byte will be played)
+	Length           uint16  // N BYTE[3] Length of samples' data
+	LengthSpareByte  uint8   // NOTE: `length` above uses only 2-bytes for value but specification says 3-bytes, so this is for the spare.
+	Data             []uint8 // BYTE[N]   Samples data. Each bit represents a state on the EAR port (i.e. one sample). MSb is played first.
 }
 
 // CswRecording
 // ID: 18h (24d)
 // This block contains a sequence of raw pulses encoded in CSW format v2 (Compressed Square Wave).
 type CswRecording struct {
-	Length           uint32   // DWORD   Block length (without these four bytes)
-	Pause            uint16   // WORD    Pause after this block (in ms).
-	SampleRate       [3]uint8 // BYTE[3] Sampling rate
-	CompressionType  uint8    // BYTE    Compression type: RLE, Z-RLE
-	StoredPulseCount uint32   // DWORD   Number of stored pulses (after decompression, for validation purposes)
-	Data             []uint8  // BYTE[N] CSW data, encoded according to the CSW file format specification.
+	Length           uint32  // DWORD   Block length (without these four bytes)
+	Pause            uint16  // WORD    Pause after this block (in ms).
+	SampleRate       uint16  // BYTE[3] Sampling rate
+	SampleSpareByte  uint8   // NOTE: `SampleRate` above uses only 2-bytes for value but specification says 3-bytes, so this is for the spare.
+	CompressionType  uint8   // BYTE    Compression type: RLE, Z-RLE
+	StoredPulseCount uint32  // DWORD   Number of stored pulses (after decompression, for validation purposes)
+	Data             []uint8 // BYTE[N] CSW data, encoded according to the CSW file format specification.
 }
 
 // GeneralizedData

@@ -22,15 +22,15 @@ func (s *StandardSpeedData) Process(file *File) {
 	file.ReadBytes(int(s.Length))
 }
 
-func (s *StandardSpeedData) Id() int {
+func (s StandardSpeedData) Id() int {
 	return 16
 }
 
-func (s *StandardSpeedData) Name() string {
+func (s StandardSpeedData) Name() string {
 	return "Standard Speed Data"
 }
 
 // Metadata returns a human readable string of the block data
-func (s *StandardSpeedData) Metadata() string {
+func (s StandardSpeedData) Metadata() string {
 	return fmt.Sprintf("Pause:  %d\nLength: %d", s.Pause, s.Length)
 }
