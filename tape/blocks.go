@@ -3,8 +3,36 @@ package tape
 
 type Block interface{}
 
+// Block ID table, as `HEX (DECIMAL)` values
+//
+// ID 10 (16): StandardSpeedData
+// ID 11 (17): TurboSpeedData
+// ID 12 (18): PureTone
+// ID 13 (19): SequenceOfPulses
+// ID 14 (20): PureData
+// ID 15 (21): DirectRecording
+// ID 18 (24): CswRecording
+// ID 19 (25): GeneralizedData
+// ID 20 (32): PauseTheTapeCommand
+// ID 21 (33): GroupStart
+// ID 22 (34): GroupEnd
+// ID 23 (35): JumpTo
+// ID 24 (36): LoopStart
+// ID 25 (37): LoopEnd
+// ID 26 (38): CallSequence
+// ID 27 (39): ReturnFromSequence
+// ID 28 (40): Select
+// ID 2A (42): StopTheTapeIfIn48kMode
+// ID 2B (43): SetSignalLevel
+// ID 30 (48): TextDescription
+// ID 31 (49): Message
+// ID 32 (50): ArchiveInfo
+// ID 33 (51): HardwareType
+// ID 35 (53): CustomInfo
+// ID 5A (90): GlueBlock
+
 // StandardSpeedData
-// ID: 10
+// ID: 10h (16d)
 // This block must be replayed with the standard Spectrum ROM timing values - see the values in
 // curly brackets in block ID 11. The pilot tone consists in 8063 pulses if the first data byte
 // (flag byte) is < 128, 3223 otherwise. This block can be used for the ROM loading routines AND
@@ -16,7 +44,7 @@ type StandardSpeedData struct {
 }
 
 // TurboSpeedData
-// ID: 11
+// ID: 11h (17d)
 // This block is very similar to the normal TAP block but with some additional info on the timings
 // and other important differences. The same tape encoding is used as for the standard speed data
 // block. If a block should use some non-standard sync or pilot tones (i.e. all sorts of protection
@@ -35,7 +63,7 @@ type TurboSpeedData struct {
 }
 
 // PureTone
-// ID: 12
+// ID: 12h (18d)
 // This will produce a tone which is basically the same as the pilot tone in the ID 10, ID 11
 // blocks. You can define how long the pulse is and how many pulses are in the tone.
 type PureTone struct {
@@ -44,7 +72,7 @@ type PureTone struct {
 }
 
 // SequenceOfPulses
-// ID: 13
+// ID: 13h (19d)
 // This will produce N pulses, each having its own timing. Up to 255 pulses can be stored in this
 // block; this is useful for non-standard sync tones used by some protection schemes.
 type SequenceOfPulses struct {
@@ -53,7 +81,7 @@ type SequenceOfPulses struct {
 }
 
 // PureData
-// ID: 14
+// ID: 14h (20d)
 // This is the same as in the turbo loading data block, except that it has no pilot or sync pulses.
 type PureData struct {
 	ZeroBitPulse uint16   // WORD      Length of ZERO bit pulse
@@ -65,7 +93,7 @@ type PureData struct {
 }
 
 // DirectRecording
-// ID: 15
+// ID: 15h (21d)
 // This block is used for tapes which have some parts in a format such that the turbo loader block
 // cannot be used. This is not like a VOC file, since the information is much more compact. Each
 // sample value is represented by one bit only (0 for low, 1 for high) which means that the block
@@ -82,7 +110,7 @@ type DirectRecording struct {
 }
 
 // CswRecording
-// ID: 18
+// ID: 18h (24d)
 // This block contains a sequence of raw pulses encoded in CSW format v2 (Compressed Square Wave).
 type CswRecording struct {
 	Length           uint32   // DWORD   Block length (without these four bytes)
@@ -94,7 +122,7 @@ type CswRecording struct {
 }
 
 // GeneralizedData
-// ID: 19
+// ID: 19h (25d)
 // This block has been specifically developed to represent an extremely wide range of data encoding techniques.
 // The basic idea is that each loading component (pilot tone, sync pulses, data) is associated to a
 // specific sequence of pulses, where each sequence (wave) can contain a different number of pulses
@@ -145,7 +173,7 @@ type PilotRLE struct {
 }
 
 // PauseTheTapeCommand
-// ID: 20
+// ID: 20h (32d)
 // This will make a silence (low amplitude level (0)) for a given time in milliseconds. If the
 // value is 0 then the emulator or utility should (in effect) STOP THE TAPE, i.e. should not
 // continue loading until the user or emulator requests it.
@@ -154,7 +182,7 @@ type PauseTapeCommand struct {
 }
 
 // GroupStart
-// ID: 21
+// ID: 21h (33d)
 // This block marks the start of a group of blocks which are to be treated as one single
 // (composite) block. This is very handy for tapes that use lots of subblocks like Bleepload
 // (which may well have over 160 custom loading blocks). You can also give the group a name
@@ -166,12 +194,12 @@ type GroupStart struct {
 }
 
 // GroupEnd
-// ID: 22
+// ID: 22h (34d)
 // This indicates the end of a group. This block has no body.
 type GroupEnd struct{}
 
 // JumpTo
-// ID: 23
+// ID: 23h (35d)
 // This block will enable you to jump from one block to another within the file. The value is a
 // signed short word (usually 'signed short' in C); Some examples:
 //   - Jump 0 = 'Loop Forever' - this should never happen
@@ -184,7 +212,7 @@ type JumpTo struct {
 }
 
 // LoopStart
-// ID: 24
+// ID: 24h (36d)
 // If you have a sequence of identical blocks, or of identical groups of blocks, you can use
 // this block to tell how many times they should be repeated. This block is the same as the
 // FOR statement in BASIC.
@@ -193,14 +221,14 @@ type LoopStart struct {
 }
 
 // LoopEnd
-// ID: 25
+// ID: 25h (37d)
 // This is the same as BASIC's NEXT statement. It means that the utility should jump back to the
 // start of the loop if it hasn't been run for the specified number of times.
 // This block has no body.
 type LoopEnd struct{}
 
 // CallSequence
-// ID: 26
+// ID: 26h (38d)
 // This block is an analogue of the CALL Subroutine statement. It basically executes a sequence of
 // blocks that are somewhere else and then goes back to the next block. Because more than one call
 // can be normally used you can include a list of sequences to be called. The 'nesting' of call
@@ -214,14 +242,14 @@ type CallSequence struct {
 }
 
 // ReturnFromSequence
-// ID: 27
+// ID: 27h (39d)
 // This block indicates the end of the Called Sequence. The next block played will be the block after
 // the last CALL block (or the next Call, if the Call block had multiple calls).
 // This block has no body.
 type ReturnFromSequence struct{}
 
 // Select
-// ID: 28
+// ID: 28h (40d)
 // This block is useful when the tape consists of two or more separately-loadable parts. With this
 // block, you are able to select one of the parts and the utility/emulator will start loading from
 // that block. For example you can use it when the game has a separate Trainer or when it is a
@@ -240,7 +268,7 @@ type Selection struct {
 }
 
 // StopTheTapeIfIn48kMode
-// ID: 2A
+// ID: 2Ah (42d)
 // When this block is encountered, the tape will stop ONLY if the machine is an 48K Spectrum.
 // This block is to be used for multi-loading games that load one level at a time in 48K mode,
 // but load the entire tape at once if in 128K mode.
@@ -250,7 +278,7 @@ type StopTheTapeIfIn48kMode struct {
 }
 
 // SetSignalLevel
-// ID: 2B
+// ID: 2Bh (43d)
 // This block sets the current signal level to the specified value (high or low). It should be used
 // whenever it is necessary to avoid any ambiguities, e.g. with custom loaders which are level-sensitive.
 type SetSignalLevel struct {
@@ -259,7 +287,7 @@ type SetSignalLevel struct {
 }
 
 // TextDescription
-// ID: 30
+// ID: 30h (48d)
 // This is meant to identify parts of the tape, so you know where level 1 starts, where to rewind
 // to when the game ends, etc. This description is not guaranteed to be shown while the tape is
 // playing, but can be read while browsing the tape or changing the tape pointer.
@@ -271,7 +299,7 @@ type TextDescription struct {
 }
 
 // Message
-// ID: 31
+// ID: 31h (49d)
 // This will enable the emulators to display a message for a given time. This should not stop the
 // tape and it should not make silence. If the time is 0 then the emulator should wait for the user
 // to press a key.
@@ -286,7 +314,7 @@ type Message struct {
 }
 
 // ArchiveInfo
-// ID: 32
+// ID: 32h (50d)
 // Use this block at the beginning of the tape to identify the title of the game, author,
 // publisher, year of publication, price (including the currency), type of software (arcade
 // adventure, puzzle, word processor, ...), protection scheme it uses (Speedlock 1, Alkatraz,
@@ -319,7 +347,7 @@ type Text struct {
 }
 
 // HardwareType
-// ID: 33
+// ID: 33h (51d)
 // This blocks contains information about the hardware that the programs on this tape use.
 // Please include only machines and hardware for which you are 100% sure that it either runs
 // (or doesn't run) on or with, or you know it uses (or doesn't use) the hardware or special
@@ -346,7 +374,7 @@ type HardwareInfo struct {
 }
 
 // CustomInfo
-// ID: 35
+// ID: 35h (53d)
 // This block can be used to save any information you want. For example, it might contain some
 // information written by a utility, extra settings required by a particular emulator, or even
 // poke data.
@@ -357,7 +385,7 @@ type CustomInfo struct {
 }
 
 // GlueBlock
-// ID: 5A
+// ID: 5Ah (90d)
 // This block is generated when you merge two ZX Tape files together. It is here so that you can
 // easily copy the files together and use them. Of course, this means that resulting file would
 // be 10 bytes longer than if this block was not used. All you have to do if you encounter this
