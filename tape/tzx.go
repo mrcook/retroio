@@ -130,7 +130,10 @@ func (t *Tzx) processBlockData(id byte) {
 		rs := &ReturnFromSequence{}
 		rs.Process(t.file)
 		t.blocks = append(t.blocks, rs)
-	case 40: // Select()
+	case 40:
+		s := &Select{}
+		s.Process(t.file)
+		t.blocks = append(t.blocks, s)
 	case 42: // StopTheTapeIfIn48kMode()
 	case 43: // SetSignalLevel()
 	case 48: // TextDescription()
