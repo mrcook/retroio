@@ -35,19 +35,6 @@ type Block interface {
 // ID 35 (53): CustomInfo
 // ID 5A (90): GlueBlock
 
-// CswRecording
-// ID: 18h (24d)
-// This block contains a sequence of raw pulses encoded in CSW format v2 (Compressed Square Wave).
-type CswRecording struct {
-	Length           uint32  // DWORD   Block length (without these four bytes)
-	Pause            uint16  // WORD    Pause after this block (in ms).
-	SampleRate       uint16  // BYTE[3] Sampling rate
-	SampleSpareByte  uint8   // NOTE: `SampleRate` above uses only 2-bytes for value but specification says 3-bytes, so this is for the spare.
-	CompressionType  uint8   // BYTE    Compression type: RLE, Z-RLE
-	StoredPulseCount uint32  // DWORD   Number of stored pulses (after decompression, for validation purposes)
-	Data             []uint8 // BYTE[N] CSW data, encoded according to the CSW file format specification.
-}
-
 // GeneralizedData
 // ID: 19h (25d)
 // This block has been specifically developed to represent an extremely wide range of data encoding techniques.
