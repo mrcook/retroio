@@ -35,39 +35,6 @@ type Block interface {
 // ID 35 (53): CustomInfo
 // ID 5A (90): GlueBlock
 
-// ArchiveInfo
-// ID: 32h (50d)
-// Use this block at the beginning of the tape to identify the title of the game, author,
-// publisher, year of publication, price (including the currency), type of software (arcade
-// adventure, puzzle, word processor, ...), protection scheme it uses (Speedlock 1, Alkatraz,
-// ...) and its origin (Original, Budget re-release, ...), etc. This block is built in a way
-// that allows easy future expansion. The block consists of a series of text strings. Each text
-// has its identification number (which tells us what the text means) and then the ASCII text.
-// To make it possible to skip this block, if needed, the length of the whole block is at the
-// beginning of it.
-// If all texts on the tape are in English language then you don't have to supply the 'Language' field.
-type ArchiveInfo struct {
-	Length      uint16 // WORD  Length of the whole block (without these two bytes)
-	StringCount uint8  // N BYTE  Number of text strings
-	Strings     []Text // TEXT[N] List of text strings
-}
-
-type Text struct {
-	TypeID uint8 // BYTE  Text identification byte:
-	//                       00 - Full title
-	//                       01 - Software house/publisher
-	//                       02 - Author(s)
-	//                       03 - Year of publication
-	//                       04 - Language
-	//                       05 - Game/utility type
-	//                       06 - Price
-	//                       07 - Protection scheme/loader
-	//                       08 - Origin
-	//                       FF - Comment(s)
-	Length     uint8  // L BYTE  Length of text string
-	Characters []byte // CHAR[L] Text string in ASCII format
-}
-
 // HardwareType
 // ID: 33h (51d)
 // This blocks contains information about the hardware that the programs on this tape use.
