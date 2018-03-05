@@ -51,7 +51,7 @@ func (h HardwareType) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (h HardwareType) Metadata() string {
-	str := fmt.Sprintf("> %s\n", h.Name())
+	str := fmt.Sprintf("> %s:\n", h.Name())
 	for _, b := range h.Machines {
 		str += fmt.Sprintf("- Type: %d\n", b.Type)
 		str += fmt.Sprintf("  ID:   %d\n", b.Id)

@@ -35,8 +35,5 @@ func (c CustomInfo) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (c CustomInfo) Metadata() string {
-	str := fmt.Sprintf("> %s\n", c.Name())
-	str += fmt.Sprintf(" - Type: %s\n", c.Identification)
-	str += fmt.Sprintf(" - Info: %s\n", c.Info)
-	return str
+	return fmt.Sprintf("> %-19s : %s - %s", c.Name(), c.Identification, c.Info)
 }
