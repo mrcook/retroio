@@ -1,6 +1,8 @@
 package tape
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // ArchiveInfo
 // ID: 32h (50d)
@@ -66,6 +68,12 @@ func (a ArchiveInfo) Name() string {
 func (a ArchiveInfo) Metadata() string {
 	str := ""
 	for _, b := range a.Strings {
+		// replace newline with comma
+		for i := range b.Characters {
+			if b.Characters[i] == 10 || b.Characters[i] == 13 {
+				b.Characters[i] = 44
+			}
+		}
 		str += fmt.Sprintf("  %-10s: %s\n", headings[b.TypeID], b.Characters)
 	}
 
