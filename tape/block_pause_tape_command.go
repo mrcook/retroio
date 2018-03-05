@@ -27,5 +27,5 @@ func (p PauseTapeCommand) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (p PauseTapeCommand) Metadata() string {
-	return fmt.Sprintf("> %s : %d ms.\n", p.Name(), p.Pause)
+	return fmt.Sprintf("> %-19s : %d ms.", p.Name(), p.Pause)
 }

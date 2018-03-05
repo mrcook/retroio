@@ -32,5 +32,5 @@ func (t TextDescription) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (t TextDescription) Metadata() string {
-	return fmt.Sprintf("> %-19s : %s\n", t.Name(), t.Description)
+	return fmt.Sprintf("> %-19s : %s", t.Name(), t.Description)
 }

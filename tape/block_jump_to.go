@@ -29,5 +29,5 @@ func (j JumpTo) Name() string {
 
 // Metadata returns a human readable string of the block data
 func (j JumpTo) Metadata() string {
-	return fmt.Sprintf("> %s : %d\n", j.Name(), j.Value)
+	return fmt.Sprintf("> %-19s : %d", j.Name(), j.Value)
 }
