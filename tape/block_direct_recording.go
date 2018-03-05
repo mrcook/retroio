@@ -15,8 +15,7 @@ type DirectRecording struct {
 	TStatesPerSample uint16  // WORD      Number of T-states per sample (bit of data)
 	Pause            uint16  // WORD      Pause after this block in milliseconds (ms.)
 	UsedBits         uint8   // BYTE      Used bits (samples) in last byte of data (1-8) (e.g. if this is 2, only first two samples of the last byte will be played)
-	Length           uint16  // N BYTE[3] Length of samples' data
-	LengthSpareByte  uint8   // NOTE: `length` above uses only 2-bytes for value but specification says 3-bytes, so this is for the spare.
+	Length           uint32  // N BYTE[3] Length of samples' data
 	Data             []uint8 // BYTE[N]   Samples data. Each bit represents a state on the EAR port (i.e. one sample). MSb is played first.
 }
 
@@ -24,8 +23,10 @@ func (d *DirectRecording) Process(file *File) {
 	d.TStatesPerSample = file.ReadShort()
 	d.Pause = file.ReadShort()
 	d.UsedBits, _ = file.ReadByte()
-	d.Length = file.ReadShort()
-	d.LengthSpareByte, _ = file.ReadByte()
+
+	length := file.ReadBytes(3)
+	length = append(length, 0) // add 4th byte
+	d.Length = file.BytesToLong(length)
 
 	// Yep, we're discarding the data for the moment
 	file.ReadBytes(int(d.Length))
