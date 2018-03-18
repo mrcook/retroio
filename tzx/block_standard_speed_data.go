@@ -3,6 +3,7 @@ package tzx
 import (
 	"fmt"
 
+	"github.com/mrcook/tzxbrowser/tap"
 	"github.com/mrcook/tzxbrowser/tape"
 )
 
@@ -22,8 +23,11 @@ func (s *StandardSpeedData) Process(file *tape.File) {
 	s.Pause = file.ReadShort()
 	s.Length = file.ReadShort()
 
-	// Yep, we're discarding the data for the moment
-	file.ReadBytes(int(s.Length))
+	// For the moment, discard data unless it's a TAP block
+	data := file.ReadBytes(int(s.Length))
+	if s.Length == 19 {
+		s.Data = data
+	}
 }
 
 func (s StandardSpeedData) Id() int {
@@ -39,6 +43,12 @@ func (s StandardSpeedData) ToString() string {
 	str := fmt.Sprintf("> %-19s : %d bytes, pause for %d ms.", s.Name(), s.Length, s.Pause)
 
 	if s.Length == 19 {
+		b, err := tap.Unmarshal(s.Data)
+		if err != nil {
+			str += fmt.Sprintf("TAP BLOCK ERROR: %v\n", err)
+		} else {
+			str += "\n" + b.ToString()
+		}
 	}
 
 	return str

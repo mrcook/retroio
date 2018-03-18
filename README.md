@@ -16,7 +16,9 @@ The TZX metadata will be printed to the terminal.
 
 ## TZX Specification
 
-Source: https://www.worldofspectrum.org/TZXformat.html
+Sources:
+    - https://www.worldofspectrum.org/TZXformat.html
+    - http://www.zx-modules.de/fileformats/tapformat.html
 
 `TZX` is a file format designed to preserve cassette tapes compatible with the
 ZX Spectrum computers, although some specialized versions of the format have
