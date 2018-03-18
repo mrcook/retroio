@@ -28,7 +28,7 @@ func (s StopTapeWhen48kMode) Name() string {
 	return "Stop Tape when in 48k Mode"
 }
 
-// Metadata returns a human readable string of the block data
-func (s StopTapeWhen48kMode) Metadata() string {
+// ToString returns a human readable string of the block data
+func (s StopTapeWhen48kMode) ToString() string {
 	return fmt.Sprintf("> %s", s.Name())
 }

@@ -4,5 +4,5 @@ package tape
 type Block interface {
 	Id() int
 	Name() string
-	Metadata() string
+	ToString() string
 }

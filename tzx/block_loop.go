@@ -27,8 +27,8 @@ func (l LoopStart) Name() string {
 	return "Loop Start"
 }
 
-// Metadata returns a human readable string of the block data
-func (l LoopStart) Metadata() string {
+// ToString returns a human readable string of the block data
+func (l LoopStart) ToString() string {
 	return fmt.Sprintf("> %-19s : %d times", l.Name(), l.RepetitionCount)
 }
 
@@ -49,7 +49,7 @@ func (l LoopEnd) Name() string {
 	return "Loop End"
 }
 
-// Metadata returns a human readable string of the block data
-func (l LoopEnd) Metadata() string {
+// ToString returns a human readable string of the block data
+func (l LoopEnd) ToString() string {
 	return fmt.Sprintf("> %s", l.Name())
 }

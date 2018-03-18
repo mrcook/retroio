@@ -31,7 +31,7 @@ func (s SequenceOfPulses) Name() string {
 	return "Sequence of Pulses"
 }
 
-// Metadata returns a human readable string of the block data
-func (s SequenceOfPulses) Metadata() string {
+// ToString returns a human readable string of the block data
+func (s SequenceOfPulses) ToString() string {
 	return fmt.Sprintf("> %-19s : %d pulses", s.Name(), s.Count)
 }

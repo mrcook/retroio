@@ -48,8 +48,8 @@ func (s Select) Name() string {
 	return "Select"
 }
 
-// Metadata returns a human readable string of the block data
-func (s Select) Metadata() string {
+// ToString returns a human readable string of the block data
+func (s Select) ToString() string {
 	str := fmt.Sprintf("> %s\n", s.Name())
 	for _, b := range s.Selections {
 		str += fmt.Sprintf("- Offset:      %d\n", b.RelativeOffset)

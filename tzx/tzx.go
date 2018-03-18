@@ -173,9 +173,9 @@ func (t *Tzx) processBlockData(id byte) {
 func (t *Tzx) DisplayTapeMetadata() {
 	fmt.Printf("TZX Revision: %d.%d\n", t.header.MajorVersion, t.header.MinorVersion)
 	fmt.Println()
-	fmt.Println(t.archive.Metadata())
+	fmt.Println(t.archive.ToString())
 	for _, block := range t.blocks {
-		fmt.Println(block.Metadata())
+		fmt.Println(block.ToString())
 	}
 }
 

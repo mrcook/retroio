@@ -34,7 +34,12 @@ func (s StandardSpeedData) Name() string {
 	return "Standard Speed Data"
 }
 
-// Metadata returns a human readable string of the block data
-func (s StandardSpeedData) Metadata() string {
-	return fmt.Sprintf("> %-19s : %d bytes, pause for %d ms.", s.Name(), s.Length, s.Pause)
+// ToString returns a human readable string of the block data
+func (s StandardSpeedData) ToString() string {
+	str := fmt.Sprintf("> %-19s : %d bytes, pause for %d ms.", s.Name(), s.Length, s.Pause)
+
+	if s.Length == 19 {
+	}
+
+	return str
 }

@@ -37,7 +37,7 @@ func (c CustomInfo) Name() string {
 	return "Custom Info"
 }
 
-// Metadata returns a human readable string of the block data
-func (c CustomInfo) Metadata() string {
+// ToString returns a human readable string of the block data
+func (c CustomInfo) ToString() string {
 	return fmt.Sprintf("> %-19s : %s - %s", c.Name(), c.Identification, c.Info)
 }

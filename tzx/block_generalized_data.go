@@ -70,7 +70,7 @@ func (g GeneralizedData) Name() string {
 	return "Generalized Data"
 }
 
-// Metadata returns a human readable string of the block data
-func (g GeneralizedData) Metadata() string {
+// ToString returns a human readable string of the block data
+func (g GeneralizedData) ToString() string {
 	return fmt.Sprintf("> %s", g.Name())
 }

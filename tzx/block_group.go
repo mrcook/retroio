@@ -34,8 +34,8 @@ func (g GroupStart) Name() string {
 	return "Group Start"
 }
 
-// Metadata returns a human readable string of the block data
-func (g GroupStart) Metadata() string {
+// ToString returns a human readable string of the block data
+func (g GroupStart) ToString() string {
 	return fmt.Sprintf("> %-19s : %s", g.Name(), g.GroupName)
 }
 
@@ -54,7 +54,7 @@ func (g GroupEnd) Name() string {
 	return "Group End"
 }
 
-// Metadata returns a human readable string of the block data
-func (g GroupEnd) Metadata() string {
+// ToString returns a human readable string of the block data
+func (g GroupEnd) ToString() string {
 	return fmt.Sprintf("> %s", g.Name())
 }

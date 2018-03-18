@@ -28,7 +28,7 @@ func (p PureTone) Name() string {
 	return "Pure Tone"
 }
 
-// Metadata returns a human readable string of the block data
-func (p PureTone) Metadata() string {
+// ToString returns a human readable string of the block data
+func (p PureTone) ToString() string {
 	return fmt.Sprintf("> %-19s : %d T-States, %d pulses", p.Name(), p.Length, p.PulseCount)
 }

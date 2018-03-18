@@ -66,8 +66,8 @@ func (a ArchiveInfo) Name() string {
 	return "Archive Info"
 }
 
-// Metadata returns a human readable string of the block data
-func (a ArchiveInfo) Metadata() string {
+// ToString returns a human readable string of the block data
+func (a ArchiveInfo) ToString() string {
 	str := ""
 	for _, b := range a.Strings {
 		// replace newline with comma

@@ -27,7 +27,7 @@ func (p PauseTapeCommand) Name() string {
 	return "Pause Tape Command"
 }
 
-// Metadata returns a human readable string of the block data
-func (p PauseTapeCommand) Metadata() string {
+// ToString returns a human readable string of the block data
+func (p PauseTapeCommand) ToString() string {
 	return fmt.Sprintf("> %-19s : %d ms.", p.Name(), p.Pause)
 }

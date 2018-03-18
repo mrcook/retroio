@@ -39,8 +39,8 @@ func (c CswRecording) Name() string {
 	return "CSW Recording"
 }
 
-// Metadata returns a human readable string of the block data
-func (c CswRecording) Metadata() string {
+// ToString returns a human readable string of the block data
+func (c CswRecording) ToString() string {
 	str := fmt.Sprintf("> %s\n", c.Name())
 	str += fmt.Sprintf(" - Pause (ms.): %d\n", c.Pause)
 	str += fmt.Sprintf(" - Sample Rate: %d\n", c.SampleRate)

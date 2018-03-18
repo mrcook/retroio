@@ -28,7 +28,7 @@ func (s SetSignalLevel) Name() string {
 	return "Set Signal Level"
 }
 
-// Metadata returns a human readable string of the block data
-func (s SetSignalLevel) Metadata() string {
+// ToString returns a human readable string of the block data
+func (s SetSignalLevel) ToString() string {
 	return fmt.Sprintf("> %-19s : signal level: %d", s.Name(), s.SignalLevel)
 }
