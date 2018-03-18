@@ -13,6 +13,25 @@ to a spectrum, but also as an experiment in working with binary data files.
 
 The TZX metadata will be printed to the terminal.
 
+### Example output
+
+```
+TZX Revision: 1.10
+
+  Title     : Skool Daze
+  Publisher : Microsphere
+  Authors   : David S. Reidy, Keith Warrington
+  Year      : 1984
+  Loader    : Microsphere
+  Comment   : Timing corrected by Mikie.
+
+> Standard Speed Data : 19 bytes, pause for 970 ms.
+  - Header       : BASIC Program
+  - Filename     : skooldaze 
+  - AutoStartLine: 0
+> Standard Speed Data : 333 bytes, pause for 5981 ms.
+> Turbo Speed Data    : 82109 bytes, pause for 0 ms.
+```
 
 ## TZX Specification
 
