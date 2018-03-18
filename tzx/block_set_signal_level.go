@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // SetSignalLevel
 // ID: 2Bh (43d)
@@ -11,7 +15,7 @@ type SetSignalLevel struct {
 	SignalLevel uint8  // BYTE  Signal level (0=low, 1=high)
 }
 
-func (s *SetSignalLevel) Process(file *File) {
+func (s *SetSignalLevel) Process(file *tape.File) {
 	s.Length = file.ReadLong()
 	s.SignalLevel, _ = file.ReadByte()
 }

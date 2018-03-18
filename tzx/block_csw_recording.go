@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // CswRecording
 // ID: 18h (24d)
@@ -15,7 +19,7 @@ type CswRecording struct {
 	Data             []uint8 // BYTE[N]  CSW data, encoded according to the CSW file format specification.
 }
 
-func (c *CswRecording) Process(file *File) {
+func (c *CswRecording) Process(file *tape.File) {
 	c.Length = file.ReadLong()
 	c.Pause = file.ReadShort()
 	c.SampleRate = file.ReadShort()

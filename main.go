@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/mrcook/tzxbrowser/tape"
+	"github.com/mrcook/tzxbrowser/tzx"
 )
 
 const version = "0.0.1"
@@ -41,13 +41,13 @@ func init() {
 }
 
 func main() {
-	tzx := tape.Tzx{}
-	if err := tzx.Open(os.Args[1]); err != nil {
+	tape := tzx.Tzx{}
+	if err := tape.Open(os.Args[1]); err != nil {
 		fmt.Println(err)
 		return
 	}
-	defer tzx.Close()
+	defer tape.Close()
 
-	tzx.Process()
-	tzx.DisplayTapeMetadata()
+	tape.Process()
+	tape.DisplayTapeMetadata()
 }

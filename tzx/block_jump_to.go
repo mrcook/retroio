@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // JumpTo
 // ID: 23h (35d)
@@ -15,7 +19,7 @@ type JumpTo struct {
 	Value int16 // WORD  Relative jump value
 }
 
-func (j *JumpTo) Process(file *File) {
+func (j *JumpTo) Process(file *tape.File) {
 	j.Value = file.ReadSignedShort()
 }
 

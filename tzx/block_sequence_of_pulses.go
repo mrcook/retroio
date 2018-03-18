@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // SequenceOfPulses
 // ID: 13h (19d)
@@ -11,7 +15,7 @@ type SequenceOfPulses struct {
 	Lengths []uint16 // WORD[N] Pulses' lengths
 }
 
-func (s *SequenceOfPulses) Process(file *File) {
+func (s *SequenceOfPulses) Process(file *tape.File) {
 	s.Count, _ = file.ReadByte()
 
 	for i := 0; i < int(s.Count); i++ {

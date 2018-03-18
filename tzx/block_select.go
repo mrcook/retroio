@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // Select
 // ID: 28h (40d)
@@ -21,7 +25,7 @@ type Selection struct {
 	Description    []uint8 // CHAR[L] Description text (please use single line and max. 30 chars)
 }
 
-func (s *Select) Process(file *File) {
+func (s *Select) Process(file *tape.File) {
 	s.Length = file.ReadShort()
 	s.Count, _ = file.ReadByte()
 

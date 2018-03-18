@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // StandardSpeedData
 // ID: 10h (16d)
@@ -14,7 +18,7 @@ type StandardSpeedData struct {
 	Data   []uint8 // BYTE[N] Data as in .TAP files
 }
 
-func (s *StandardSpeedData) Process(file *File) {
+func (s *StandardSpeedData) Process(file *tape.File) {
 	s.Pause = file.ReadShort()
 	s.Length = file.ReadShort()
 

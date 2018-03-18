@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // GroupStart
 // ID: 21h (33d)
@@ -14,7 +18,7 @@ type GroupStart struct {
 	GroupName []byte // CHAR[L] Group name in ASCII format (please keep it under 30 characters long)
 }
 
-func (g *GroupStart) Process(file *File) {
+func (g *GroupStart) Process(file *tape.File) {
 	g.Length, _ = file.ReadByte()
 
 	for _, b := range file.ReadBytes(int(g.Length)) {
@@ -40,7 +44,7 @@ func (g GroupStart) Metadata() string {
 // This indicates the end of a group. This block has no body.
 type GroupEnd struct{}
 
-func (g *GroupEnd) Process(file *File) {}
+func (g *GroupEnd) Process(file *tape.File) {}
 
 func (g GroupEnd) Id() int {
 	return 34

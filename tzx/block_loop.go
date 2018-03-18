@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // LoopStart
 // ID: 24h (36d)
@@ -11,7 +15,7 @@ type LoopStart struct {
 	RepetitionCount uint16 // WORD  Number of repetitions (greater than 1)
 }
 
-func (l *LoopStart) Process(file *File) {
+func (l *LoopStart) Process(file *tape.File) {
 	l.RepetitionCount = file.ReadShort()
 }
 
@@ -35,7 +39,7 @@ func (l LoopStart) Metadata() string {
 // This block has no body.
 type LoopEnd struct{}
 
-func (l *LoopEnd) Process(file *File) {}
+func (l *LoopEnd) Process(file *tape.File) {}
 
 func (l LoopEnd) Id() int {
 	return 37

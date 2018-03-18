@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // HardwareType
 // ID: 33h (51d)
@@ -29,7 +33,7 @@ type HardwareInfo struct {
 	//                           03 - The tape DOESN'T RUN on this machine or with this hardware.
 }
 
-func (h *HardwareType) Process(file *File) {
+func (h *HardwareType) Process(file *tape.File) {
 	h.TypeCount, _ = file.ReadByte()
 
 	for i := 0; i < int(h.TypeCount); i++ {

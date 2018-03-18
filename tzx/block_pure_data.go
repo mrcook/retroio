@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // PureData
 // ID: 14h (20d)
@@ -14,7 +18,7 @@ type PureData struct {
 	Data         []uint8 // BYTE[N]   Data as in .TAP files
 }
 
-func (p *PureData) Process(file *File) {
+func (p *PureData) Process(file *tape.File) {
 	p.OneBitPulse = file.ReadShort()
 	p.ZeroBitPulse = file.ReadShort()
 	p.UsedBits, _ = file.ReadByte()

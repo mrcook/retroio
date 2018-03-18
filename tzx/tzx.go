@@ -1,4 +1,4 @@
-package tape
+package tzx
 
 import (
 	"bytes"
@@ -6,13 +6,15 @@ import (
 	"fmt"
 	"io"
 	"log"
+
+	"github.com/mrcook/tzxbrowser/tape"
 )
 
 type Tzx struct {
-	file    *File
+	file    *tape.File
 	header  Header
 	archive ArchiveInfo
-	blocks  []Block
+	blocks  []tape.Block
 }
 
 func (t *Tzx) Process() {
@@ -178,7 +180,7 @@ func (t *Tzx) DisplayTapeMetadata() {
 }
 
 func (t *Tzx) Open(filename string) error {
-	t.file = &File{}
+	t.file = &tape.File{}
 	return t.file.Open(filename)
 }
 

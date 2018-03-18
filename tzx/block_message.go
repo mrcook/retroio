@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // Message
 // ID: 31h (49d)
@@ -17,7 +21,7 @@ type Message struct {
 	Message     []byte // CHAR[N] Message that should be displayed in ASCII format
 }
 
-func (m *Message) Process(file *File) {
+func (m *Message) Process(file *tape.File) {
 	m.DisplayTime, _ = file.ReadByte()
 	m.Length, _ = file.ReadByte()
 

@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // CallSequence
 // ID: 26h (38d)
@@ -16,7 +20,7 @@ type CallSequence struct {
 	Blocks []uint16 // WORD[N] Array of call block numbers (relative-signed offsets)
 }
 
-func (c *CallSequence) Process(file *File) {
+func (c *CallSequence) Process(file *tape.File) {
 	c.Count = file.ReadShort()
 
 	for i := 0; i < int(c.Count); i++ {
@@ -48,7 +52,7 @@ func (c CallSequence) Metadata() string {
 // This block has no body.
 type ReturnFromSequence struct{}
 
-func (r ReturnFromSequence) Process(file *File) {}
+func (r ReturnFromSequence) Process(file *tape.File) {}
 
 func (r ReturnFromSequence) Id() int {
 	return 39

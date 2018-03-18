@@ -1,7 +1,9 @@
-package tape
+package tzx
 
 import (
 	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
 )
 
 // ArchiveInfo
@@ -41,7 +43,7 @@ var headings = map[uint8]string{
 	255: "Comment",   // FF - Comment(s)
 }
 
-func (a *ArchiveInfo) Process(file *File) {
+func (a *ArchiveInfo) Process(file *tape.File) {
 	a.Length = file.ReadShort()
 	a.StringCount, _ = file.ReadByte()
 

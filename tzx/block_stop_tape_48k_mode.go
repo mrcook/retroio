@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // StopTapeWhen48kMode
 // ID: 2Ah (42d)
@@ -12,7 +16,7 @@ type StopTapeWhen48kMode struct {
 	Length uint32 // DWORD Length of the block without these four bytes (0)
 }
 
-func (s *StopTapeWhen48kMode) Process(file *File) {
+func (s *StopTapeWhen48kMode) Process(file *tape.File) {
 	s.Length = file.ReadLong()
 }
 

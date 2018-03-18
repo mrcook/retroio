@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // GlueBlock
 // ID: 5Ah (90d)
@@ -14,7 +18,7 @@ type GlueBlock struct {
 	Value [9]byte // BYTE[9] Value: { "XTape!",0x1A,MajR,MinR } Just skip these 9 bytes and you will end up on the next ID.
 }
 
-func (g *GlueBlock) Process(file *File) {
+func (g *GlueBlock) Process(file *tape.File) {
 	for i, b := range file.ReadBytes(9) {
 		g.Value[i] = b
 	}

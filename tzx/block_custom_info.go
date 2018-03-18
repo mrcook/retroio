@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // CustomInfo
 // ID: 35h (53d)
@@ -13,7 +17,7 @@ type CustomInfo struct {
 	Info           []uint8  // BYTE[L]   Custom info
 }
 
-func (c *CustomInfo) Process(file *File) {
+func (c *CustomInfo) Process(file *tape.File) {
 	for i, b := range file.ReadBytes(10) {
 		c.Identification[i] = b
 	}

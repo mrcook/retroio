@@ -1,8 +1,10 @@
-package tape
+package tzx
 
 import (
 	"fmt"
 	"log"
+
+	"github.com/mrcook/tzxbrowser/tape"
 )
 
 // GeneralizedData
@@ -56,7 +58,7 @@ type PilotRLE struct {
 	RepetitionCount uint16 // WORD  Number of repetitions
 }
 
-func (g *GeneralizedData) Process(file *File) {
+func (g *GeneralizedData) Process(file *tape.File) {
 	log.Fatal("GeneralizedData is not currently supported - unable to continue processing file.")
 }
 

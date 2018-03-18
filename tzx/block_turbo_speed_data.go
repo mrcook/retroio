@@ -1,6 +1,10 @@
-package tape
+package tzx
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
+)
 
 // TurboSpeedData
 // ID: 11h (17d)
@@ -21,7 +25,7 @@ type TurboSpeedData struct {
 	Data            []uint8 // BYTE[N]   Data as in .TAP files
 }
 
-func (t *TurboSpeedData) Process(file *File) {
+func (t *TurboSpeedData) Process(file *tape.File) {
 	t.PilotPulse = file.ReadShort()
 	t.SyncFirstPulse = file.ReadShort()
 	t.SyncSecondPulse = file.ReadShort()

@@ -1,5 +1,5 @@
 // Package contains TZX header data block
-package tape
+package tzx
 
 // Header is the first block of data found in all TZX files.
 // The file is identified with the first 8 bytes being 'ZXTape!' plus the 'end of file' byte 26 (1A hex).

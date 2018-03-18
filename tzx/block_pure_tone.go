@@ -1,7 +1,9 @@
-package tape
+package tzx
 
 import (
 	"fmt"
+
+	"github.com/mrcook/tzxbrowser/tape"
 )
 
 // PureTone
@@ -13,7 +15,7 @@ type PureTone struct {
 	PulseCount uint16 // WORD Number of pulses
 }
 
-func (p *PureTone) Process(file *File) {
+func (p *PureTone) Process(file *tape.File) {
 	p.Length = file.ReadShort()
 	p.PulseCount = file.ReadShort()
 }
