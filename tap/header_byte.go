@@ -16,8 +16,8 @@ type ByteHeader struct {
 
 // ToString returns a formatted string for the header
 func (h ByteHeader) ToString() string {
-	str := fmt.Sprintf("  - %-13s: %s\n", flagLabel(h.Flag), typeLabel(h.DataType))
-	str += fmt.Sprintf("  - Filename     : %s\n", h.Filename)
-	str += fmt.Sprintf("  - Start Address: %d", h.StartAddress)
+	str := fmt.Sprintf("     - %-13s: %s\n", flagLabel(h.Flag), typeLabel(h.DataType))
+	str += fmt.Sprintf("     - Filename     : %s\n", h.Filename)
+	str += fmt.Sprintf("     - Start Address: %d", h.StartAddress)
 	return str
 }

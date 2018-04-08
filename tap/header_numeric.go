@@ -17,8 +17,8 @@ type NumericHeader struct {
 
 // ToString returns a formatted string for the header
 func (h NumericHeader) ToString() string {
-	str := fmt.Sprintf("  - %-13s: %s\n", flagLabel(h.Flag), typeLabel(h.DataType))
-	str += fmt.Sprintf("  - Filename     : %s\n", h.Filename)
-	str += fmt.Sprintf("  - Variable Name: %c", h.VariableName-128)
+	str := fmt.Sprintf("     - %-13s: %s\n", flagLabel(h.Flag), typeLabel(h.DataType))
+	str += fmt.Sprintf("     - Filename     : %s\n", h.Filename)
+	str += fmt.Sprintf("     - Variable Name: %c", h.VariableName-128)
 	return str
 }

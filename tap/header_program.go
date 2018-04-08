@@ -16,8 +16,8 @@ type ProgramHeader struct {
 
 // ToString returns a formatted string for the header
 func (h ProgramHeader) ToString() string {
-	str := fmt.Sprintf("  - %-13s: %s\n", flagLabel(h.Flag), typeLabel(h.DataType))
-	str += fmt.Sprintf("  - Filename     : %s\n", h.Filename)
-	str += fmt.Sprintf("  - AutoStartLine: %d", h.AutoStartLine)
+	str := fmt.Sprintf("     - %-13s: %s\n", flagLabel(h.Flag), typeLabel(h.DataType))
+	str += fmt.Sprintf("     - Filename     : %s\n", h.Filename)
+	str += fmt.Sprintf("     - AutoStartLine: %d", h.AutoStartLine)
 	return str
 }

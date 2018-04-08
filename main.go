@@ -8,7 +8,7 @@ import (
 	"github.com/mrcook/tzxbrowser/tzx"
 )
 
-const version = "0.1.0"
+const version = "0.2.0"
 
 func init() {
 	showVersion := flag.Bool("v", false, "Prints the current version")

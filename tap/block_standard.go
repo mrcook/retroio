@@ -12,5 +12,5 @@ type StandardDataBlocks struct {
 
 // ToString returns a formatted string for the block
 func (b StandardDataBlocks) ToString() string {
-	return fmt.Sprintf("  - %s\n", flagLabel(b.Flag))
+	return fmt.Sprintf("     - %s\n", flagLabel(b.Flag))
 }

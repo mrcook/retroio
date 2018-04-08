@@ -17,8 +17,8 @@ type AlphanumericHeader struct {
 
 // ToString returns a formatted string for the header
 func (h AlphanumericHeader) ToString() string {
-	str := fmt.Sprintf("  - %-13s: %s\n", flagLabel(h.Flag), typeLabel(h.DataType))
-	str += fmt.Sprintf("  - Filename     : %s\n", h.Filename)
-	str += fmt.Sprintf("  - Variable Name: %c", h.VariableName-192)
+	str := fmt.Sprintf("     - %-13s: %s\n", flagLabel(h.Flag), typeLabel(h.DataType))
+	str += fmt.Sprintf("     - Filename     : %s\n", h.Filename)
+	str += fmt.Sprintf("     - Variable Name: %c", h.VariableName-192)
 	return str
 }
