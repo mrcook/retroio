@@ -58,14 +58,18 @@ type PilotRLE struct {
 	RepetitionCount uint16 // WORD  Number of repetitions
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (g *GeneralizedData) Read(file *tape.File) {
 	log.Fatal("GeneralizedData is not currently supported - unable to continue processing file.")
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (g GeneralizedData) Id() uint8 {
 	return 0x19
 }
 
+// Name of the block as given in the TZX specification.
 func (g GeneralizedData) Name() string {
 	return "Generalized Data"
 }

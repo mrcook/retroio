@@ -18,6 +18,8 @@ type GroupStart struct {
 	GroupName []byte // CHAR[L] Group name in ASCII format (please keep it under 30 characters long)
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (g *GroupStart) Read(file *tape.File) {
 	g.Length, _ = file.ReadByte()
 
@@ -26,10 +28,12 @@ func (g *GroupStart) Read(file *tape.File) {
 	}
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (g GroupStart) Id() uint8 {
 	return 0x21
 }
 
+// Name of the block as given in the TZX specification.
 func (g GroupStart) Name() string {
 	return "Group Start"
 }
@@ -44,12 +48,16 @@ func (g GroupStart) ToString() string {
 // This indicates the end of a group. This block has no body.
 type GroupEnd struct{}
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (g *GroupEnd) Read(file *tape.File) {}
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (g GroupEnd) Id() uint8 {
 	return 0x22
 }
 
+// Name of the block as given in the TZX specification.
 func (g GroupEnd) Name() string {
 	return "Group End"
 }

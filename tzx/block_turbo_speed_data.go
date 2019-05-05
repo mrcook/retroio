@@ -25,6 +25,8 @@ type TurboSpeedData struct {
 	Data            []uint8 // BYTE[N]   Data as in .TAP files
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (t *TurboSpeedData) Read(file *tape.File) {
 	t.PilotPulse = file.ReadShort()
 	t.SyncFirstPulse = file.ReadShort()
@@ -43,10 +45,12 @@ func (t *TurboSpeedData) Read(file *tape.File) {
 	file.ReadBytes(int(t.Length))
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (t TurboSpeedData) Id() uint8 {
 	return 0x11
 }
 
+// Name of the block as given in the TZX specification.
 func (t TurboSpeedData) Name() string {
 	return "Turbo Speed Data"
 }

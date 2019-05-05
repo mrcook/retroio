@@ -18,16 +18,20 @@ type GlueBlock struct {
 	Value [9]byte // BYTE[9] Value: { "XTape!",0x1A,MajR,MinR } Just skip these 9 bytes and you will end up on the next ID.
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (g *GlueBlock) Read(file *tape.File) {
 	for i, b := range file.ReadBytes(9) {
 		g.Value[i] = b
 	}
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (g GlueBlock) Id() uint8 {
 	return 0x5a
 }
 
+// Name of the block as given in the TZX specification.
 func (g GlueBlock) Name() string {
 	return "Glue Block"
 }

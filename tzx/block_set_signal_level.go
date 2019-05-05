@@ -15,15 +15,19 @@ type SetSignalLevel struct {
 	SignalLevel uint8  // BYTE  Signal level (0=low, 1=high)
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (s *SetSignalLevel) Read(file *tape.File) {
 	s.Length = file.ReadLong()
 	s.SignalLevel, _ = file.ReadByte()
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (s SetSignalLevel) Id() uint8 {
 	return 0x2b
 }
 
+// Name of the block as given in the TZX specification.
 func (s SetSignalLevel) Name() string {
 	return "Set Signal Level"
 }

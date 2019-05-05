@@ -19,6 +19,8 @@ type CswRecording struct {
 	Data             []uint8 // BYTE[N]  CSW data, encoded according to the CSW file format specification.
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (c *CswRecording) Read(file *tape.File) {
 	c.Length = file.ReadLong()
 	c.Pause = file.ReadShort()
@@ -31,10 +33,12 @@ func (c *CswRecording) Read(file *tape.File) {
 	file.ReadBytes(int(c.Length))
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (c CswRecording) Id() uint8 {
 	return 0x18
 }
 
+// Name of the block as given in the TZX specification.
 func (c CswRecording) Name() string {
 	return "CSW Recording"
 }

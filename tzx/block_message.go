@@ -21,6 +21,8 @@ type Message struct {
 	Message     []byte // CHAR[N] Message that should be displayed in ASCII format
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (m *Message) Read(file *tape.File) {
 	m.DisplayTime, _ = file.ReadByte()
 	m.Length, _ = file.ReadByte()
@@ -30,10 +32,12 @@ func (m *Message) Read(file *tape.File) {
 	}
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (m Message) Id() uint8 {
 	return 0x31
 }
 
+// Name of the block as given in the TZX specification.
 func (m Message) Name() string {
 	return "Message"
 }

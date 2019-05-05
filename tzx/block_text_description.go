@@ -18,6 +18,8 @@ type TextDescription struct {
 	Description []byte // CHAR[N] Text description in ASCII format
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (t *TextDescription) Read(file *tape.File) {
 	t.Length, _ = file.ReadByte()
 
@@ -26,10 +28,12 @@ func (t *TextDescription) Read(file *tape.File) {
 	}
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (t TextDescription) Id() uint8 {
 	return 0x30
 }
 
+// Name of the block as given in the TZX specification.
 func (t TextDescription) Name() string {
 	return "Text Description"
 }

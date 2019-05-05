@@ -17,6 +17,7 @@ type Tzx struct {
 	blocks  []tape.Block
 }
 
+// Read the tape header and block data.
 func (t *Tzx) Read() {
 	if err := t.readHeader(); err != nil {
 		fmt.Print(err)
@@ -29,6 +30,7 @@ func (t *Tzx) Read() {
 	}
 }
 
+// readHeader processes the TZX header data and validates that the tape format is correct.
 func (t *Tzx) readHeader() error {
 	t.header = Header{}
 	data := t.file.ReadBytes(10)
@@ -46,7 +48,7 @@ func (t *Tzx) readHeader() error {
 	return nil
 }
 
-// readBlocks processes all the TZX data blocks
+// readBlocks processes all the TZX data blocks.
 func (t *Tzx) readBlocks() error {
 	for {
 		blockID, err := t.file.ReadByte()
@@ -62,6 +64,7 @@ func (t *Tzx) readBlocks() error {
 	return nil
 }
 
+// readBlockData processes the data for the given block ID.
 func (t *Tzx) readBlockData(id byte) {
 	switch id {
 	case 0x10:
@@ -170,6 +173,7 @@ func (t *Tzx) readBlockData(id byte) {
 	}
 }
 
+// DisplayTapeMetadata print all the tape metadata; archive info, data blocks, etc., to the terminal.
 func (t *Tzx) DisplayTapeMetadata() {
 	fmt.Printf("Tape image TZX revision %d.%d\n", t.header.MajorVersion, t.header.MinorVersion)
 	fmt.Println()
@@ -179,11 +183,13 @@ func (t *Tzx) DisplayTapeMetadata() {
 	}
 }
 
+// Open a TZX file for reading.
 func (t *Tzx) Open(filename string) error {
 	t.file = &tape.File{}
 	return t.file.Open(filename)
 }
 
+// Close an open TZX file.
 func (t *Tzx) Close() error {
 	return t.file.Close()
 }

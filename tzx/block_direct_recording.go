@@ -23,6 +23,8 @@ type DirectRecording struct {
 	Data             []uint8 // BYTE[N]   Samples data. Each bit represents a state on the EAR port (i.e. one sample). MSb is played first.
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (d *DirectRecording) Read(file *tape.File) {
 	d.TStatesPerSample = file.ReadShort()
 	d.Pause = file.ReadShort()
@@ -36,10 +38,12 @@ func (d *DirectRecording) Read(file *tape.File) {
 	file.ReadBytes(int(d.Length))
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (d DirectRecording) Id() uint8 {
 	return 0x15
 }
 
+// Name of the block as given in the TZX specification.
 func (d DirectRecording) Name() string {
 	return "Direct Recording"
 }

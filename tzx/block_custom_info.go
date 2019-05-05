@@ -17,6 +17,8 @@ type CustomInfo struct {
 	Info           []uint8  // BYTE[L]   Custom info
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (c *CustomInfo) Read(file *tape.File) {
 	for i, b := range file.ReadBytes(10) {
 		c.Identification[i] = b
@@ -29,10 +31,12 @@ func (c *CustomInfo) Read(file *tape.File) {
 	}
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (c CustomInfo) Id() uint8 {
 	return 0x35
 }
 
+// Name of the block as given in the TZX specification.
 func (c CustomInfo) Name() string {
 	return "Custom Info"
 }

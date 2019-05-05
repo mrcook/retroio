@@ -15,6 +15,8 @@ type SequenceOfPulses struct {
 	Lengths []uint16 // WORD[N] Pulses' lengths
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (s *SequenceOfPulses) Read(file *tape.File) {
 	s.Count, _ = file.ReadByte()
 
@@ -23,10 +25,12 @@ func (s *SequenceOfPulses) Read(file *tape.File) {
 	}
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (s SequenceOfPulses) Id() uint8 {
 	return 0x13
 }
 
+// Name of the block as given in the TZX specification.
 func (s SequenceOfPulses) Name() string {
 	return "Sequence of Pulses"
 }

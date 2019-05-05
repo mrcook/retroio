@@ -19,14 +19,18 @@ type JumpTo struct {
 	Value int16 // WORD  Relative jump value
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (j *JumpTo) Read(file *tape.File) {
 	j.Value = file.ReadSignedShort()
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (j JumpTo) Id() uint8 {
 	return 0x23
 }
 
+// Name of the block as given in the TZX specification.
 func (j JumpTo) Name() string {
 	return "Jump To"
 }

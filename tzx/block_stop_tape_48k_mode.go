@@ -16,14 +16,18 @@ type StopTapeWhen48kMode struct {
 	Length uint32 // DWORD Length of the block without these four bytes (0)
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (s *StopTapeWhen48kMode) Read(file *tape.File) {
 	s.Length = file.ReadLong()
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (s StopTapeWhen48kMode) Id() uint8 {
 	return 0x2a
 }
 
+// Name of the block as given in the TZX specification.
 func (s StopTapeWhen48kMode) Name() string {
 	return "Stop Tape when in 48k Mode"
 }

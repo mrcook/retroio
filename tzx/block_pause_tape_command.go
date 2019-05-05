@@ -15,14 +15,18 @@ type PauseTapeCommand struct {
 	Pause uint16 // WORD  Pause duration (ms.)
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (p *PauseTapeCommand) Read(file *tape.File) {
 	p.Pause = file.ReadShort()
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (p PauseTapeCommand) Id() uint8 {
 	return 0x20
 }
 
+// Name of the block as given in the TZX specification.
 func (p PauseTapeCommand) Name() string {
 	return "Pause Tape Command"
 }

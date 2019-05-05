@@ -15,14 +15,18 @@ type LoopStart struct {
 	RepetitionCount uint16 // WORD  Number of repetitions (greater than 1)
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (l *LoopStart) Read(file *tape.File) {
 	l.RepetitionCount = file.ReadShort()
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (l LoopStart) Id() uint8 {
 	return 0x24
 }
 
+// Name of the block as given in the TZX specification.
 func (l LoopStart) Name() string {
 	return "Loop Start"
 }
@@ -39,12 +43,16 @@ func (l LoopStart) ToString() string {
 // This block has no body.
 type LoopEnd struct{}
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (l *LoopEnd) Read(file *tape.File) {}
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (l LoopEnd) Id() uint8 {
 	return 0x25
 }
 
+// Name of the block as given in the TZX specification.
 func (l LoopEnd) Name() string {
 	return "Loop End"
 }

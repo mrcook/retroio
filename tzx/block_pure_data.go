@@ -18,6 +18,8 @@ type PureData struct {
 	Data         []uint8 // BYTE[N]   Data as in .TAP files
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (p *PureData) Read(file *tape.File) {
 	p.OneBitPulse = file.ReadShort()
 	p.ZeroBitPulse = file.ReadShort()
@@ -32,10 +34,12 @@ func (p *PureData) Read(file *tape.File) {
 	file.ReadBytes(int(p.Length))
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (p PureData) Id() uint8 {
 	return 0x14
 }
 
+// Name of the block as given in the TZX specification.
 func (p PureData) Name() string {
 	return "Pure Data"
 }

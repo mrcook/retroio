@@ -43,6 +43,8 @@ var headings = map[uint8]string{
 	0xff: "Comment",   // FF - Comment(s)
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (a *ArchiveInfo) Read(file *tape.File) {
 	a.Length = file.ReadShort()
 	a.StringCount, _ = file.ReadByte()
@@ -58,10 +60,12 @@ func (a *ArchiveInfo) Read(file *tape.File) {
 	}
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (a ArchiveInfo) Id() uint8 {
 	return 0x32
 }
 
+// Name of the block as given in the TZX specification.
 func (a ArchiveInfo) Name() string {
 	return "Archive Info"
 }

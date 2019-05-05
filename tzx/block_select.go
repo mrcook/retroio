@@ -25,6 +25,8 @@ type Selection struct {
 	Description    []uint8 // CHAR[L] Description text (please use single line and max. 30 chars)
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (s *Select) Read(file *tape.File) {
 	s.Length = file.ReadShort()
 	s.Count, _ = file.ReadByte()
@@ -40,10 +42,12 @@ func (s *Select) Read(file *tape.File) {
 	}
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (s Select) Id() uint8 {
 	return 0x28
 }
 
+// Name of the block as given in the TZX specification.
 func (s Select) Name() string {
 	return "Select"
 }

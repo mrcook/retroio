@@ -20,6 +20,8 @@ type CallSequence struct {
 	Blocks []uint16 // WORD[N] Array of call block numbers (relative-signed offsets)
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (c *CallSequence) Read(file *tape.File) {
 	c.Count = file.ReadShort()
 
@@ -28,10 +30,12 @@ func (c *CallSequence) Read(file *tape.File) {
 	}
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (c CallSequence) Id() uint8 {
 	return 0x26
 }
 
+// Name of the block as given in the TZX specification.
 func (c CallSequence) Name() string {
 	return "Call Sequence"
 }
@@ -52,12 +56,16 @@ func (c CallSequence) ToString() string {
 // This block has no body.
 type ReturnFromSequence struct{}
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (r ReturnFromSequence) Read(file *tape.File) {}
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (r ReturnFromSequence) Id() uint8 {
 	return 0x27
 }
 
+// Name of the block as given in the TZX specification.
 func (r ReturnFromSequence) Name() string {
 	return "Return from Sequence"
 }

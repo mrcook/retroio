@@ -19,6 +19,8 @@ type StandardSpeedData struct {
 	Data   []uint8 // BYTE[N] Data as in .TAP files
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (s *StandardSpeedData) Read(file *tape.File) {
 	s.Pause = file.ReadShort()
 	s.Length = file.ReadShort()
@@ -30,10 +32,12 @@ func (s *StandardSpeedData) Read(file *tape.File) {
 	}
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (s StandardSpeedData) Id() uint8 {
 	return 0x10
 }
 
+// Name of the block as given in the TZX specification.
 func (s StandardSpeedData) Name() string {
 	return "Standard Speed Data"
 }

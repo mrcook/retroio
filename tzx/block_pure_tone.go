@@ -15,15 +15,19 @@ type PureTone struct {
 	PulseCount uint16 // WORD Number of pulses
 }
 
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
 func (p *PureTone) Read(file *tape.File) {
 	p.Length = file.ReadShort()
 	p.PulseCount = file.ReadShort()
 }
 
+// Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (p PureTone) Id() uint8 {
 	return 0x12
 }
 
+// Name of the block as given in the TZX specification.
 func (p PureTone) Name() string {
 	return "Pure Tone"
 }
