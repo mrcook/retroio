@@ -7,7 +7,7 @@ import (
 	"io"
 	"log"
 
-	"github.com/mrcook/tzxbrowser/tape"
+	"github.com/mrcook/tzxit/tape"
 )
 
 type Tzx struct {
@@ -171,7 +171,7 @@ func (t *Tzx) processBlockData(id byte) {
 }
 
 func (t *Tzx) DisplayTapeMetadata() {
-	fmt.Printf("TZX Revision: %d.%d\n", t.header.MajorVersion, t.header.MinorVersion)
+	fmt.Printf("Tape image TZX revision %d.%d\n", t.header.MajorVersion, t.header.MinorVersion)
 	fmt.Println()
 	fmt.Println(t.archive.ToString())
 	for i, block := range t.blocks {

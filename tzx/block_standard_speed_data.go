@@ -3,8 +3,8 @@ package tzx
 import (
 	"fmt"
 
-	"github.com/mrcook/tzxbrowser/tap"
-	"github.com/mrcook/tzxbrowser/tape"
+	"github.com/mrcook/tzxit/tap"
+	"github.com/mrcook/tzxit/tape"
 )
 
 // StandardSpeedData

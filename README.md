@@ -1,4 +1,4 @@
-# TZX Browser
+# TZX Utility
 
 A utility program for working with the ZX Spectrum tape files (TZX), written
 in the Go language.
@@ -9,7 +9,7 @@ to a spectrum, but also as an experiment in working with binary data files.
 
 ## Usage
 
-`$ tzxbrowser /path/to/tape.tzx`
+`$ tzx read /path/to/tape.tzx`
 
 The TZX metadata will be printed to the terminal.
 
