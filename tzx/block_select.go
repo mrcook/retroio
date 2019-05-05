@@ -25,7 +25,7 @@ type Selection struct {
 	Description    []uint8 // CHAR[L] Description text (please use single line and max. 30 chars)
 }
 
-func (s *Select) Process(file *tape.File) {
+func (s *Select) Read(file *tape.File) {
 	s.Length = file.ReadShort()
 	s.Count, _ = file.ReadByte()
 

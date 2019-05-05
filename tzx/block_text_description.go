@@ -18,7 +18,7 @@ type TextDescription struct {
 	Description []byte // CHAR[N] Text description in ASCII format
 }
 
-func (t *TextDescription) Process(file *tape.File) {
+func (t *TextDescription) Read(file *tape.File) {
 	t.Length, _ = file.ReadByte()
 
 	for _, b := range file.ReadBytes(int(t.Length)) {

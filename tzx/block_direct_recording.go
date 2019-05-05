@@ -23,7 +23,7 @@ type DirectRecording struct {
 	Data             []uint8 // BYTE[N]   Samples data. Each bit represents a state on the EAR port (i.e. one sample). MSb is played first.
 }
 
-func (d *DirectRecording) Process(file *tape.File) {
+func (d *DirectRecording) Read(file *tape.File) {
 	d.TStatesPerSample = file.ReadShort()
 	d.Pause = file.ReadShort()
 	d.UsedBits, _ = file.ReadByte()

@@ -18,7 +18,7 @@ type PureData struct {
 	Data         []uint8 // BYTE[N]   Data as in .TAP files
 }
 
-func (p *PureData) Process(file *tape.File) {
+func (p *PureData) Read(file *tape.File) {
 	p.OneBitPulse = file.ReadShort()
 	p.ZeroBitPulse = file.ReadShort()
 	p.UsedBits, _ = file.ReadByte()

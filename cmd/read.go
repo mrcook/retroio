@@ -23,7 +23,7 @@ var readCmd = &cobra.Command{
 		}
 		defer tape.Close()
 
-		tape.Process()
+		tape.Read()
 		tape.DisplayTapeMetadata()
 	},
 }

@@ -43,7 +43,7 @@ var headings = map[uint8]string{
 	255: "Comment",   // FF - Comment(s)
 }
 
-func (a *ArchiveInfo) Process(file *tape.File) {
+func (a *ArchiveInfo) Read(file *tape.File) {
 	a.Length = file.ReadShort()
 	a.StringCount, _ = file.ReadByte()
 

@@ -15,7 +15,7 @@ type SetSignalLevel struct {
 	SignalLevel uint8  // BYTE  Signal level (0=low, 1=high)
 }
 
-func (s *SetSignalLevel) Process(file *tape.File) {
+func (s *SetSignalLevel) Read(file *tape.File) {
 	s.Length = file.ReadLong()
 	s.SignalLevel, _ = file.ReadByte()
 }

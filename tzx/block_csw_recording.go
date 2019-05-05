@@ -19,7 +19,7 @@ type CswRecording struct {
 	Data             []uint8 // BYTE[N]  CSW data, encoded according to the CSW file format specification.
 }
 
-func (c *CswRecording) Process(file *tape.File) {
+func (c *CswRecording) Read(file *tape.File) {
 	c.Length = file.ReadLong()
 	c.Pause = file.ReadShort()
 	c.SampleRate = file.ReadShort()

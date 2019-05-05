@@ -17,7 +17,7 @@ type CustomInfo struct {
 	Info           []uint8  // BYTE[L]   Custom info
 }
 
-func (c *CustomInfo) Process(file *tape.File) {
+func (c *CustomInfo) Read(file *tape.File) {
 	for i, b := range file.ReadBytes(10) {
 		c.Identification[i] = b
 	}

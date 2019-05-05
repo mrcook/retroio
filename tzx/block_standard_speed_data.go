@@ -19,7 +19,7 @@ type StandardSpeedData struct {
 	Data   []uint8 // BYTE[N] Data as in .TAP files
 }
 
-func (s *StandardSpeedData) Process(file *tape.File) {
+func (s *StandardSpeedData) Read(file *tape.File) {
 	s.Pause = file.ReadShort()
 	s.Length = file.ReadShort()
 

@@ -20,7 +20,7 @@ type CallSequence struct {
 	Blocks []uint16 // WORD[N] Array of call block numbers (relative-signed offsets)
 }
 
-func (c *CallSequence) Process(file *tape.File) {
+func (c *CallSequence) Read(file *tape.File) {
 	c.Count = file.ReadShort()
 
 	for i := 0; i < int(c.Count); i++ {
@@ -52,7 +52,7 @@ func (c CallSequence) ToString() string {
 // This block has no body.
 type ReturnFromSequence struct{}
 
-func (r ReturnFromSequence) Process(file *tape.File) {}
+func (r ReturnFromSequence) Read(file *tape.File) {}
 
 func (r ReturnFromSequence) Id() int {
 	return 39

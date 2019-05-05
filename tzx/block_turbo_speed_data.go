@@ -25,7 +25,7 @@ type TurboSpeedData struct {
 	Data            []uint8 // BYTE[N]   Data as in .TAP files
 }
 
-func (t *TurboSpeedData) Process(file *tape.File) {
+func (t *TurboSpeedData) Read(file *tape.File) {
 	t.PilotPulse = file.ReadShort()
 	t.SyncFirstPulse = file.ReadShort()
 	t.SyncSecondPulse = file.ReadShort()

@@ -19,7 +19,7 @@ type JumpTo struct {
 	Value int16 // WORD  Relative jump value
 }
 
-func (j *JumpTo) Process(file *tape.File) {
+func (j *JumpTo) Read(file *tape.File) {
 	j.Value = file.ReadSignedShort()
 }
 

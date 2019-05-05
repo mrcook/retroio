@@ -15,7 +15,7 @@ type LoopStart struct {
 	RepetitionCount uint16 // WORD  Number of repetitions (greater than 1)
 }
 
-func (l *LoopStart) Process(file *tape.File) {
+func (l *LoopStart) Read(file *tape.File) {
 	l.RepetitionCount = file.ReadShort()
 }
 
@@ -39,7 +39,7 @@ func (l LoopStart) ToString() string {
 // This block has no body.
 type LoopEnd struct{}
 
-func (l *LoopEnd) Process(file *tape.File) {}
+func (l *LoopEnd) Read(file *tape.File) {}
 
 func (l LoopEnd) Id() int {
 	return 37

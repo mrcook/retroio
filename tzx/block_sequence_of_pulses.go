@@ -15,7 +15,7 @@ type SequenceOfPulses struct {
 	Lengths []uint16 // WORD[N] Pulses' lengths
 }
 
-func (s *SequenceOfPulses) Process(file *tape.File) {
+func (s *SequenceOfPulses) Read(file *tape.File) {
 	s.Count, _ = file.ReadByte()
 
 	for i := 0; i < int(s.Count); i++ {

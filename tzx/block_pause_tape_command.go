@@ -15,7 +15,7 @@ type PauseTapeCommand struct {
 	Pause uint16 // WORD  Pause duration (ms.)
 }
 
-func (p *PauseTapeCommand) Process(file *tape.File) {
+func (p *PauseTapeCommand) Read(file *tape.File) {
 	p.Pause = file.ReadShort()
 }
 

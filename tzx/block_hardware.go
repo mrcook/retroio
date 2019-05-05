@@ -29,7 +29,7 @@ type HardwareInfo struct {
 	Information uint8 // BYTE  Hardware information
 }
 
-func (h *HardwareType) Process(file *tape.File) {
+func (h *HardwareType) Read(file *tape.File) {
 	h.TypeCount, _ = file.ReadByte()
 
 	for i := 0; i < int(h.TypeCount); i++ {

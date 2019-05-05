@@ -17,7 +17,7 @@ type Tzx struct {
 	blocks  []tape.Block
 }
 
-func (t *Tzx) Process() {
+func (t *Tzx) Read() {
 	if err := t.readHeader(); err != nil {
 		fmt.Print(err)
 		return
@@ -57,112 +57,112 @@ func (t *Tzx) readBlocks() error {
 			break
 		}
 
-		t.processBlockData(blockID)
+		t.readBlockData(blockID)
 	}
 	return nil
 }
 
-func (t *Tzx) processBlockData(id byte) {
+func (t *Tzx) readBlockData(id byte) {
 	switch id {
 	case 16:
 		ssd := &StandardSpeedData{}
-		ssd.Process(t.file)
+		ssd.Read(t.file)
 		t.blocks = append(t.blocks, ssd)
 	case 17:
 		tsd := &TurboSpeedData{}
-		tsd.Process(t.file)
+		tsd.Read(t.file)
 		t.blocks = append(t.blocks, tsd)
 	case 18:
 		pt := &PureTone{}
-		pt.Process(t.file)
+		pt.Read(t.file)
 		t.blocks = append(t.blocks, pt)
 	case 19:
 		sop := &SequenceOfPulses{}
-		sop.Process(t.file)
+		sop.Read(t.file)
 		t.blocks = append(t.blocks, sop)
 	case 20:
 		pd := &PureData{}
-		pd.Process(t.file)
+		pd.Read(t.file)
 		t.blocks = append(t.blocks, pd)
 	case 21:
 		dr := &DirectRecording{}
-		dr.Process(t.file)
+		dr.Read(t.file)
 		t.blocks = append(t.blocks, dr)
 	case 24:
 		cr := &CswRecording{}
-		cr.Process(t.file)
+		cr.Read(t.file)
 		t.blocks = append(t.blocks, cr)
 	case 25:
 		gd := &GeneralizedData{}
-		gd.Process(t.file)
+		gd.Read(t.file)
 		t.blocks = append(t.blocks, gd)
 	case 32:
 		pt := &PauseTapeCommand{}
-		pt.Process(t.file)
+		pt.Read(t.file)
 		t.blocks = append(t.blocks, pt)
 	case 33:
 		gs := &GroupStart{}
-		gs.Process(t.file)
+		gs.Read(t.file)
 		t.blocks = append(t.blocks, gs)
 	case 34:
 		ge := &GroupEnd{}
-		ge.Process(t.file)
+		ge.Read(t.file)
 		t.blocks = append(t.blocks, ge)
 	case 35:
 		jt := &JumpTo{}
-		jt.Process(t.file)
+		jt.Read(t.file)
 		t.blocks = append(t.blocks, jt)
 	case 36:
 		ls := &LoopStart{}
-		ls.Process(t.file)
+		ls.Read(t.file)
 		t.blocks = append(t.blocks, ls)
 	case 37:
 		ls := &LoopEnd{}
-		ls.Process(t.file)
+		ls.Read(t.file)
 		t.blocks = append(t.blocks, ls)
 	case 38:
 		cs := &CallSequence{}
-		cs.Process(t.file)
+		cs.Read(t.file)
 		t.blocks = append(t.blocks, cs)
 	case 39:
 		rs := &ReturnFromSequence{}
-		rs.Process(t.file)
+		rs.Read(t.file)
 		t.blocks = append(t.blocks, rs)
 	case 40:
 		s := &Select{}
-		s.Process(t.file)
+		s.Read(t.file)
 		t.blocks = append(t.blocks, s)
 	case 42:
 		st := &StopTapeWhen48kMode{}
-		st.Process(t.file)
+		st.Read(t.file)
 		t.blocks = append(t.blocks, st)
 	case 43:
 		sl := &SetSignalLevel{}
-		sl.Process(t.file)
+		sl.Read(t.file)
 		t.blocks = append(t.blocks, sl)
 	case 48:
 		td := &TextDescription{}
-		td.Process(t.file)
+		td.Read(t.file)
 		t.blocks = append(t.blocks, td)
 	case 49:
 		m := &Message{}
-		m.Process(t.file)
+		m.Read(t.file)
 		t.blocks = append(t.blocks, m)
 	case 50:
 		ai := ArchiveInfo{}
-		ai.Process(t.file)
+		ai.Read(t.file)
 		t.archive = ai
 	case 51:
 		ht := &HardwareType{}
-		ht.Process(t.file)
+		ht.Read(t.file)
 		t.blocks = append(t.blocks, ht)
 	case 53:
 		ci := &CustomInfo{}
-		ci.Process(t.file)
+		ci.Read(t.file)
 		t.blocks = append(t.blocks, ci)
 	case 90:
 		gb := &GlueBlock{}
-		gb.Process(t.file)
+		gb.Read(t.file)
 		t.blocks = append(t.blocks, gb)
 	default:
 		// probably ID's 16,17,34,35,40 (HEX) / 22,23,52,64 (DECIMAL)

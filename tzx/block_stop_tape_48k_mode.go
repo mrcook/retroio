@@ -16,7 +16,7 @@ type StopTapeWhen48kMode struct {
 	Length uint32 // DWORD Length of the block without these four bytes (0)
 }
 
-func (s *StopTapeWhen48kMode) Process(file *tape.File) {
+func (s *StopTapeWhen48kMode) Read(file *tape.File) {
 	s.Length = file.ReadLong()
 }
 

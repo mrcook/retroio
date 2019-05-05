@@ -18,7 +18,7 @@ type GlueBlock struct {
 	Value [9]byte // BYTE[9] Value: { "XTape!",0x1A,MajR,MinR } Just skip these 9 bytes and you will end up on the next ID.
 }
 
-func (g *GlueBlock) Process(file *tape.File) {
+func (g *GlueBlock) Read(file *tape.File) {
 	for i, b := range file.ReadBytes(9) {
 		g.Value[i] = b
 	}

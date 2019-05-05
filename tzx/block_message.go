@@ -21,7 +21,7 @@ type Message struct {
 	Message     []byte // CHAR[N] Message that should be displayed in ASCII format
 }
 
-func (m *Message) Process(file *tape.File) {
+func (m *Message) Read(file *tape.File) {
 	m.DisplayTime, _ = file.ReadByte()
 	m.Length, _ = file.ReadByte()
 

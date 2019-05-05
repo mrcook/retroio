@@ -15,7 +15,7 @@ type PureTone struct {
 	PulseCount uint16 // WORD Number of pulses
 }
 
-func (p *PureTone) Process(file *tape.File) {
+func (p *PureTone) Read(file *tape.File) {
 	p.Length = file.ReadShort()
 	p.PulseCount = file.ReadShort()
 }
