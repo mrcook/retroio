@@ -26,8 +26,8 @@ func (g *GroupStart) Read(file *tape.File) {
 	}
 }
 
-func (g GroupStart) Id() int {
-	return 33
+func (g GroupStart) Id() uint8 {
+	return 0x21
 }
 
 func (g GroupStart) Name() string {
@@ -46,8 +46,8 @@ type GroupEnd struct{}
 
 func (g *GroupEnd) Read(file *tape.File) {}
 
-func (g GroupEnd) Id() int {
-	return 34
+func (g GroupEnd) Id() uint8 {
+	return 0x22
 }
 
 func (g GroupEnd) Name() string {

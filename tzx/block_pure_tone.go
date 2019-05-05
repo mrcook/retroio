@@ -20,8 +20,8 @@ func (p *PureTone) Read(file *tape.File) {
 	p.PulseCount = file.ReadShort()
 }
 
-func (p PureTone) Id() int {
-	return 18
+func (p PureTone) Id() uint8 {
+	return 0x12
 }
 
 func (p PureTone) Name() string {

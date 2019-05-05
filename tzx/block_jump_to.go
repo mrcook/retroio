@@ -23,8 +23,8 @@ func (j *JumpTo) Read(file *tape.File) {
 	j.Value = file.ReadSignedShort()
 }
 
-func (j JumpTo) Id() int {
-	return 35
+func (j JumpTo) Id() uint8 {
+	return 0x23
 }
 
 func (j JumpTo) Name() string {

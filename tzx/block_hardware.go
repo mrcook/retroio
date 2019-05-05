@@ -41,8 +41,8 @@ func (h *HardwareType) Read(file *tape.File) {
 	}
 }
 
-func (h HardwareType) Id() int {
-	return 51
+func (h HardwareType) Id() uint8 {
+	return 0x33
 }
 
 func (h HardwareType) Name() string {

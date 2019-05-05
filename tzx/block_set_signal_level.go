@@ -20,8 +20,8 @@ func (s *SetSignalLevel) Read(file *tape.File) {
 	s.SignalLevel, _ = file.ReadByte()
 }
 
-func (s SetSignalLevel) Id() int {
-	return 43
+func (s SetSignalLevel) Id() uint8 {
+	return 0x2b
 }
 
 func (s SetSignalLevel) Name() string {

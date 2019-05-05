@@ -26,8 +26,8 @@ func (t *TextDescription) Read(file *tape.File) {
 	}
 }
 
-func (t TextDescription) Id() int {
-	return 48
+func (t TextDescription) Id() uint8 {
+	return 0x30
 }
 
 func (t TextDescription) Name() string {

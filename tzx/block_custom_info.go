@@ -29,8 +29,8 @@ func (c *CustomInfo) Read(file *tape.File) {
 	}
 }
 
-func (c CustomInfo) Id() int {
-	return 53
+func (c CustomInfo) Id() uint8 {
+	return 0x35
 }
 
 func (c CustomInfo) Name() string {

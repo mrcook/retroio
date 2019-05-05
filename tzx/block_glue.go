@@ -24,8 +24,8 @@ func (g *GlueBlock) Read(file *tape.File) {
 	}
 }
 
-func (g GlueBlock) Id() int {
-	return 90
+func (g GlueBlock) Id() uint8 {
+	return 0x5a
 }
 
 func (g GlueBlock) Name() string {

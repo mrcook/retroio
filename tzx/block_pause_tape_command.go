@@ -19,8 +19,8 @@ func (p *PauseTapeCommand) Read(file *tape.File) {
 	p.Pause = file.ReadShort()
 }
 
-func (p PauseTapeCommand) Id() int {
-	return 32
+func (p PauseTapeCommand) Id() uint8 {
+	return 0x20
 }
 
 func (p PauseTapeCommand) Name() string {

@@ -30,8 +30,8 @@ func (s *StandardSpeedData) Read(file *tape.File) {
 	}
 }
 
-func (s StandardSpeedData) Id() int {
-	return 16
+func (s StandardSpeedData) Id() uint8 {
+	return 0x10
 }
 
 func (s StandardSpeedData) Name() string {

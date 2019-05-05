@@ -28,8 +28,8 @@ func (c *CallSequence) Read(file *tape.File) {
 	}
 }
 
-func (c CallSequence) Id() int {
-	return 38
+func (c CallSequence) Id() uint8 {
+	return 0x26
 }
 
 func (c CallSequence) Name() string {
@@ -54,8 +54,8 @@ type ReturnFromSequence struct{}
 
 func (r ReturnFromSequence) Read(file *tape.File) {}
 
-func (r ReturnFromSequence) Id() int {
-	return 39
+func (r ReturnFromSequence) Id() uint8 {
+	return 0x27
 }
 
 func (r ReturnFromSequence) Name() string {

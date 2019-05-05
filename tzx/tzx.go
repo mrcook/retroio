@@ -64,109 +64,109 @@ func (t *Tzx) readBlocks() error {
 
 func (t *Tzx) readBlockData(id byte) {
 	switch id {
-	case 16:
+	case 0x10:
 		ssd := &StandardSpeedData{}
 		ssd.Read(t.file)
 		t.blocks = append(t.blocks, ssd)
-	case 17:
+	case 0x11:
 		tsd := &TurboSpeedData{}
 		tsd.Read(t.file)
 		t.blocks = append(t.blocks, tsd)
-	case 18:
+	case 0x12:
 		pt := &PureTone{}
 		pt.Read(t.file)
 		t.blocks = append(t.blocks, pt)
-	case 19:
+	case 0x13:
 		sop := &SequenceOfPulses{}
 		sop.Read(t.file)
 		t.blocks = append(t.blocks, sop)
-	case 20:
+	case 0x14:
 		pd := &PureData{}
 		pd.Read(t.file)
 		t.blocks = append(t.blocks, pd)
-	case 21:
+	case 0x15:
 		dr := &DirectRecording{}
 		dr.Read(t.file)
 		t.blocks = append(t.blocks, dr)
-	case 24:
+	case 0x18:
 		cr := &CswRecording{}
 		cr.Read(t.file)
 		t.blocks = append(t.blocks, cr)
-	case 25:
+	case 0x19:
 		gd := &GeneralizedData{}
 		gd.Read(t.file)
 		t.blocks = append(t.blocks, gd)
-	case 32:
+	case 0x20:
 		pt := &PauseTapeCommand{}
 		pt.Read(t.file)
 		t.blocks = append(t.blocks, pt)
-	case 33:
+	case 0x21:
 		gs := &GroupStart{}
 		gs.Read(t.file)
 		t.blocks = append(t.blocks, gs)
-	case 34:
+	case 0x22:
 		ge := &GroupEnd{}
 		ge.Read(t.file)
 		t.blocks = append(t.blocks, ge)
-	case 35:
+	case 0x23:
 		jt := &JumpTo{}
 		jt.Read(t.file)
 		t.blocks = append(t.blocks, jt)
-	case 36:
+	case 0x24:
 		ls := &LoopStart{}
 		ls.Read(t.file)
 		t.blocks = append(t.blocks, ls)
-	case 37:
+	case 0x25:
 		ls := &LoopEnd{}
 		ls.Read(t.file)
 		t.blocks = append(t.blocks, ls)
-	case 38:
+	case 0x26:
 		cs := &CallSequence{}
 		cs.Read(t.file)
 		t.blocks = append(t.blocks, cs)
-	case 39:
+	case 0x27:
 		rs := &ReturnFromSequence{}
 		rs.Read(t.file)
 		t.blocks = append(t.blocks, rs)
-	case 40:
+	case 0x28:
 		s := &Select{}
 		s.Read(t.file)
 		t.blocks = append(t.blocks, s)
-	case 42:
+	case 0x2a:
 		st := &StopTapeWhen48kMode{}
 		st.Read(t.file)
 		t.blocks = append(t.blocks, st)
-	case 43:
+	case 0x2b:
 		sl := &SetSignalLevel{}
 		sl.Read(t.file)
 		t.blocks = append(t.blocks, sl)
-	case 48:
+	case 0x30:
 		td := &TextDescription{}
 		td.Read(t.file)
 		t.blocks = append(t.blocks, td)
-	case 49:
+	case 0x31:
 		m := &Message{}
 		m.Read(t.file)
 		t.blocks = append(t.blocks, m)
-	case 50:
+	case 0x32:
 		ai := ArchiveInfo{}
 		ai.Read(t.file)
 		t.archive = ai
-	case 51:
+	case 0x33:
 		ht := &HardwareType{}
 		ht.Read(t.file)
 		t.blocks = append(t.blocks, ht)
-	case 53:
+	case 0x35:
 		ci := &CustomInfo{}
 		ci.Read(t.file)
 		t.blocks = append(t.blocks, ci)
-	case 90:
+	case 0x5a: // (90 dec, ASCII Letter 'Z')
 		gb := &GlueBlock{}
 		gb.Read(t.file)
 		t.blocks = append(t.blocks, gb)
 	default:
-		// probably ID's 16,17,34,35,40 (HEX) / 22,23,52,64 (DECIMAL)
-		log.Fatalf("ID %d is deprecated/not supported", id)
+		// probably ID's 16,17,34,35,40 (HEX)
+		log.Fatalf("ID 0x%02X is deprecated/not supported", id)
 	}
 }
 

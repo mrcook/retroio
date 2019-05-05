@@ -62,8 +62,8 @@ func (g *GeneralizedData) Read(file *tape.File) {
 	log.Fatal("GeneralizedData is not currently supported - unable to continue processing file.")
 }
 
-func (g GeneralizedData) Id() int {
-	return 25
+func (g GeneralizedData) Id() uint8 {
+	return 0x19
 }
 
 func (g GeneralizedData) Name() string {

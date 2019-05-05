@@ -30,8 +30,8 @@ func (m *Message) Read(file *tape.File) {
 	}
 }
 
-func (m Message) Id() int {
-	return 49
+func (m Message) Id() uint8 {
+	return 0x31
 }
 
 func (m Message) Name() string {

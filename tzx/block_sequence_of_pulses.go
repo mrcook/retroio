@@ -23,8 +23,8 @@ func (s *SequenceOfPulses) Read(file *tape.File) {
 	}
 }
 
-func (s SequenceOfPulses) Id() int {
-	return 19
+func (s SequenceOfPulses) Id() uint8 {
+	return 0x13
 }
 
 func (s SequenceOfPulses) Name() string {

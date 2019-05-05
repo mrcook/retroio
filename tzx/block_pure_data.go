@@ -32,8 +32,8 @@ func (p *PureData) Read(file *tape.File) {
 	file.ReadBytes(int(p.Length))
 }
 
-func (p PureData) Id() int {
-	return 20
+func (p PureData) Id() uint8 {
+	return 0x14
 }
 
 func (p PureData) Name() string {

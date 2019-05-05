@@ -43,8 +43,8 @@ func (t *TurboSpeedData) Read(file *tape.File) {
 	file.ReadBytes(int(t.Length))
 }
 
-func (t TurboSpeedData) Id() int {
-	return 17
+func (t TurboSpeedData) Id() uint8 {
+	return 0x11
 }
 
 func (t TurboSpeedData) Name() string {

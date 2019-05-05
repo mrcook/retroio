@@ -36,8 +36,8 @@ func (d *DirectRecording) Read(file *tape.File) {
 	file.ReadBytes(int(d.Length))
 }
 
-func (d DirectRecording) Id() int {
-	return 21
+func (d DirectRecording) Id() uint8 {
+	return 0x15
 }
 
 func (d DirectRecording) Name() string {

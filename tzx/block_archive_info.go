@@ -31,16 +31,16 @@ type Text struct {
 
 // Headings for the Text ID's.
 var headings = map[uint8]string{
-	0:   "Title",     // 00 - Full title
-	1:   "Publisher", // 01 - Software house/publisher
-	2:   "Authors",   // 02 - Author(s)
-	3:   "Year",      // 03 - Year of publication
-	4:   "Language",  // 04 - Language
-	5:   "Category",  // 05 - Game/utility type
-	6:   "Price",     // 06 - Price
-	7:   "Loader",    // 07 - Protection scheme/loader
-	8:   "Origin",    // 08 - Origin
-	255: "Comment",   // FF - Comment(s)
+	0x00: "Title",     // 00 - Full title
+	0x01: "Publisher", // 01 - Software house/publisher
+	0x02: "Authors",   // 02 - Author(s)
+	0x03: "Year",      // 03 - Year of publication
+	0x04: "Language",  // 04 - Language
+	0x05: "Category",  // 05 - Game/utility type
+	0x06: "Price",     // 06 - Price
+	0x07: "Loader",    // 07 - Protection scheme/loader
+	0x08: "Origin",    // 08 - Origin
+	0xff: "Comment",   // FF - Comment(s)
 }
 
 func (a *ArchiveInfo) Read(file *tape.File) {
@@ -58,8 +58,8 @@ func (a *ArchiveInfo) Read(file *tape.File) {
 	}
 }
 
-func (a ArchiveInfo) Id() int {
-	return 50
+func (a ArchiveInfo) Id() uint8 {
+	return 0x32
 }
 
 func (a ArchiveInfo) Name() string {
@@ -72,8 +72,8 @@ func (a ArchiveInfo) ToString() string {
 	for _, b := range a.Strings {
 		// replace newline with comma
 		for i := range b.Characters {
-			if b.Characters[i] == 10 || b.Characters[i] == 13 {
-				b.Characters[i] = 44
+			if b.Characters[i] == 0x0a || b.Characters[i] == 0x0d {
+				b.Characters[i] = 0x2c // 44d
 			}
 		}
 		str += fmt.Sprintf("  %-10s: %s\n", headings[b.TypeID], b.Characters)

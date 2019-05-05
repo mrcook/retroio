@@ -40,8 +40,8 @@ func (s *Select) Read(file *tape.File) {
 	}
 }
 
-func (s Select) Id() int {
-	return 40
+func (s Select) Id() uint8 {
+	return 0x28
 }
 
 func (s Select) Name() string {

@@ -31,8 +31,8 @@ func (c *CswRecording) Read(file *tape.File) {
 	file.ReadBytes(int(c.Length))
 }
 
-func (c CswRecording) Id() int {
-	return 24
+func (c CswRecording) Id() uint8 {
+	return 0x18
 }
 
 func (c CswRecording) Name() string {

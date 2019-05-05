@@ -20,8 +20,8 @@ func (s *StopTapeWhen48kMode) Read(file *tape.File) {
 	s.Length = file.ReadLong()
 }
 
-func (s StopTapeWhen48kMode) Id() int {
-	return 42
+func (s StopTapeWhen48kMode) Id() uint8 {
+	return 0x2a
 }
 
 func (s StopTapeWhen48kMode) Name() string {

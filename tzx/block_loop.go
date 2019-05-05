@@ -19,8 +19,8 @@ func (l *LoopStart) Read(file *tape.File) {
 	l.RepetitionCount = file.ReadShort()
 }
 
-func (l LoopStart) Id() int {
-	return 36
+func (l LoopStart) Id() uint8 {
+	return 0x24
 }
 
 func (l LoopStart) Name() string {
@@ -41,8 +41,8 @@ type LoopEnd struct{}
 
 func (l *LoopEnd) Read(file *tape.File) {}
 
-func (l LoopEnd) Id() int {
-	return 37
+func (l LoopEnd) Id() uint8 {
+	return 0x25
 }
 
 func (l LoopEnd) Name() string {
