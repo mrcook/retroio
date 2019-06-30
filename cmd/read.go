@@ -8,10 +8,12 @@ import (
 	"github.com/mrcook/tzxit/tzx"
 )
 
+var format string
+
 var readCmd = &cobra.Command{
-	Use:                   "read TZX",
-	Short:                 "Read a TZX file",
-	Long:                  `Read the metadata from a TZX file.`,
+	Use:                   "read TZX/TAP",
+	Short:                 "Read a TZX or TAP file",
+	Long:                  `Read the metadata from a TZX or TAP file.`,
 	Aliases:               []string{"r"},
 	Args:                  cobra.ExactArgs(1),
 	DisableFlagsInUseLine: true,
@@ -29,5 +31,7 @@ var readCmd = &cobra.Command{
 }
 
 func init() {
+	readCmd.Flags().StringVarP(&format, "format", "f", "tzx", `Tape format: TZX or TAP (default: TZX)`)
+
 	rootCmd.AddCommand(readCmd)
 }
