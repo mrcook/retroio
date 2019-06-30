@@ -5,14 +5,14 @@ import "fmt"
 // AlphanumericHeader for storing string arrays
 // case #3: alphanumeric data array header
 type AlphanumericHeader struct {
-	Flag         uint8    // BYTE      flag byte      always 0. Byte indicating a standard ROM loading header
-	DataType     uint8    // BYTE      data type      always 2: Byte indicating an alphanumeric array
-	Filename     [10]byte // CHAR[10]  file name      loading name of the program. filled with spaces (CHR$(32))
-	DataLength   uint16   // WORD      [data length]  length of the following data (after the header) = length of string array +3
-	UnusedByte   uint8    // BYTE      unused         unused byte
-	VariableName byte     // BYTE      variable name  = (1..26 meaning A$..Z$) +192
-	UnusedWord   uint16   // WORD      unused         = 32768
-	Checksum     uint8    // BYTE      checksum byte  simply all bytes (including flag byte) XORed
+	Flag         uint8    // BYTE      Always 0: byte indicating a standard ROM loading header.
+	DataType     uint8    // BYTE      Always 2: Byte indicating an alphanumeric array.
+	Filename     [10]byte // CHAR[10]  Loading name of the program. Filled with spaces (0x20) to 10 characters.
+	DataLength   uint16   // WORD      Length of data following the header = length of string array + 3.
+	UnusedByte   uint8    // BYTE      Unused byte.
+	VariableName byte     // BYTE      = (1..26 meaning A$..Z$) + 192.
+	UnusedWord   uint16   // WORD      = 32768.
+	Checksum     uint8    // BYTE      Simply all bytes XORed (including flag byte).
 }
 
 // ToString returns a formatted string for the header

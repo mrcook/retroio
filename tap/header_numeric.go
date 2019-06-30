@@ -5,14 +5,14 @@ import "fmt"
 // NumericHeader for storing numeric arrays
 // case #2: numeric data array header
 type NumericHeader struct {
-	Flag         uint8    // BYTE     flag byte      always 0. Byte indicating a standard ROM loading header
-	DataType     uint8    // BYTE     data type      always 1: Byte indicating a numeric array
-	Filename     [10]byte // CHAR[10] file name      loading name of the program. filled with spaces (CHR$(32))
-	DataLength   uint16   // WORD     [data length]  length of the following data (after the header) = length of number array * 5 +3
-	UnusedByte   uint8    // BYTE     unused         unused byte
-	VariableName byte     // BYTE     variable name  = (1..26 meaning A..Z) +128
-	UnusedWord   uint16   // WORD     unused         = 32768
-	Checksum     uint8    // BYTE     checksum byte  simply all bytes (including flag byte) XORed
+	Flag         uint8    // BYTE     Always 0: byte indicating a standard ROM loading header.
+	DataType     uint8    // BYTE     Always 1: Byte indicating a numeric array.
+	Filename     [10]byte // CHAR[10] Loading name of the program. Filled with spaces (0x20) to 10 characters.
+	DataLength   uint16   // WORD     Length of data following the header = length of number array * 5 + 3.
+	UnusedByte   uint8    // BYTE     Unused byte.
+	VariableName byte     // BYTE     = (1..26 meaning A..Z) + 128.
+	UnusedWord   uint16   // WORD     = 32768.
+	Checksum     uint8    // BYTE     Simply all bytes XORed (including flag byte).
 }
 
 // ToString returns a formatted string for the header

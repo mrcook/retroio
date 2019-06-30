@@ -5,13 +5,13 @@ import "fmt"
 // ByteHeader for storing Machine Code or Screens
 // case #4: byte header or SCREEN$ header
 type ByteHeader struct {
-	Flag         uint8    // BYTE      flag byte      always 0. Byte indicating a standard ROM loading header
-	DataType     uint8    // BYTE      data type      always 3: Byte indicating a byte header
-	Filename     [10]byte // CHAR[10]  file name      loading name of the program. filled with spaces (CHR$(32))
-	DataLength   uint16   // WORD      [data length]  length of the following data (after the header) in case of a SCREEN$ header = 6912
-	StartAddress uint16   // WORD      start address  in case of a SCREEN$ header = 16384
-	UnusedWord   uint16   // WORD      unused         = 32768
-	Checksum     uint8    // BYTE      checksum byte  simply all bytes (including flag byte) XORed
+	Flag         uint8    // BYTE      Always 0: byte indicating a standard ROM loading header.
+	DataType     uint8    // BYTE      Always 3: Byte indicating a byte header.
+	Filename     [10]byte // CHAR[10]  Loading name of the program. Filled with spaces (0x20) to 10 characters.
+	DataLength   uint16   // WORD      Length of data following the header, in case of a SCREEN$ header = 6912.
+	StartAddress uint16   // WORD      In case of a SCREEN$ header = 16384.
+	UnusedWord   uint16   // WORD      = 32768.
+	Checksum     uint8    // BYTE      Simply all bytes XORed (including flag byte).
 }
 
 // ToString returns a formatted string for the header
