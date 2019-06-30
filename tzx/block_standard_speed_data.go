@@ -14,9 +14,11 @@ import (
 // (flag byte) is < 128, 3223 otherwise. This block can be used for the ROM loading routines AND
 // for custom loading routines that use the same timings as ROM ones do.
 type StandardSpeedData struct {
-	Pause  uint16  // WORD    Pause after this block (ms.) {1000}
-	Length uint16  // WORD    Length of data that follow
-	Data   []uint8 // BYTE[N] Data as in .TAP files
+	Pause  uint16 // WORD    Pause after this block (ms.) {1000}
+	Length uint16 // WORD    Length of data that follow
+
+	//Data   tap.TapeData // BYTE[N] Data as in .TAP files: may be a header, or any data from ZX-Spectrum
+	Data []byte
 }
 
 // Read the tape and extract the data.

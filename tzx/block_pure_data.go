@@ -10,12 +10,14 @@ import (
 // ID: 14h (20d)
 // This is the same as in the turbo loading data block, except that it has no pilot or sync pulses.
 type PureData struct {
-	ZeroBitPulse uint16  // WORD      Length of ZERO bit pulse
-	OneBitPulse  uint16  // WORD      Length of ONE bit pulse
-	UsedBits     uint8   // BYTE      Used bits in last byte (other bits should be 0) (e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)
-	Pause        uint16  // WORD      Pause after this block (ms.)
-	Length       uint32  // N BYTE[3] Length of data that follow
-	Data         []uint8 // BYTE[N]   Data as in .TAP files
+	ZeroBitPulse uint16 // WORD      Length of ZERO bit pulse
+	OneBitPulse  uint16 // WORD      Length of ONE bit pulse
+	UsedBits     uint8  // BYTE      Used bits in last byte (other bits should be 0) (e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)
+	Pause        uint16 // WORD      Pause after this block (ms.)
+	Length       uint32 // N BYTE[3] Length of data that follow
+
+	//Data         tap.TapeData // BYTE[N]   Data as in .TAP files: may be a header, or any data from ZX-Spectrum
+	Data []byte
 }
 
 // Read the tape and extract the data.
