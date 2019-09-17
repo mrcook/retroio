@@ -11,7 +11,7 @@ import (
 // rootCmd represents the base command when called without any sub commands
 var rootCmd = &cobra.Command{
 	Use:     "tzxit",
-	Version: "0.3.0",
+	Version: "0.4.0",
 	Short:   "tzxit: a CLI based ZX Spectrum cassette tape utility",
 	Long: `tzxit is a command line utility for reading and writing ZX Spectrum
 tape cassette images using the TZX specification.`,

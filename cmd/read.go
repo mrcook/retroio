@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -18,15 +19,23 @@ var readCmd = &cobra.Command{
 	Args:                  cobra.ExactArgs(1),
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
-		tape := tzx.Tzx{}
-		if err := tape.Open(args[0]); err != nil {
+		file, err := os.Open(args[0])
+		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		defer tape.Close()
+		defer file.Close()
 
-		tape.Read()
-		tape.DisplayTapeMetadata()
+		r, err := tzx.NewReader(file)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		if err := r.ReadBlocks(); err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		r.DisplayTapeMetadata()
 	},
 }
 
