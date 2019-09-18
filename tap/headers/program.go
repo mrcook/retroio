@@ -19,7 +19,7 @@ func (b ProgramData) BlockType() string {
 }
 
 func (b ProgramData) Name() string {
-	return "BASIC Program Data"
+	return "BASIC Program"
 }
 
 // ToString returns a formatted string for the header

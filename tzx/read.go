@@ -305,6 +305,7 @@ func (h header) valid() error {
 			h.MajorVersion,
 			h.MinorVersion,
 		)
+		fmt.Println()
 	}
 
 	return validationError
