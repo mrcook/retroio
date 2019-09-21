@@ -1,10 +1,19 @@
 package headers
 
-import "fmt"
+import (
+	"bufio"
+	"encoding/binary"
+	"fmt"
+	"log"
 
-// NumericData header for storing numeric arrays
-// case #2: numeric data array header
+	"github.com/mrcook/tzxit/tape"
+)
+
+// NumericData header for storing numeric arrays.
+// Case #2: numeric data array header.
 type NumericData struct {
+	Length uint16 // Length of the data in this block
+
 	Flag         uint8    // BYTE     Always 0: byte indicating a standard ROM loading header.
 	DataType     uint8    // BYTE     Always 1: Byte indicating a numeric array.
 	Filename     [10]byte // CHAR[10] Loading name of the program. Filled with spaces (0x20) to 10 characters.
@@ -15,8 +24,21 @@ type NumericData struct {
 	Checksum     uint8    // BYTE     Simply all bytes XORed (including flag byte).
 }
 
-func (b NumericData) BlockType() string {
-	return "Header"
+// Read the tape and extract the data.
+// It is expected that the tape pointer is at the correct position for reading.
+func (b *NumericData) Read(reader *bufio.Reader) {
+	// TODO: is fatal acceptable here?
+	if length, err := tape.PeekBlockLength(reader); err != nil {
+		log.Fatalf("unexpected error reading block %v.", err)
+	} else if length != 19 {
+		log.Fatalf("expected header length to be 19, got '%d'.", length)
+	}
+
+	_ = binary.Read(reader, binary.LittleEndian, b)
+}
+
+func (b NumericData) Id() uint8 {
+	return b.DataType
 }
 
 func (b NumericData) Name() string {
@@ -25,7 +47,7 @@ func (b NumericData) Name() string {
 
 // ToString returns a formatted string for the header
 func (b NumericData) ToString() string {
-	str := fmt.Sprintf("     - %-13s: %s\n", b.BlockType(), b.Name())
+	str := fmt.Sprintf(" - Header       : %s\n", b.Name())
 	str += fmt.Sprintf("     - Filename     : %s\n", b.Filename)
 	str += fmt.Sprintf("     - Variable Name: %c", b.VariableName-128)
 	return str

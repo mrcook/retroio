@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -21,16 +22,16 @@ type CswRecording struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (c *CswRecording) Read(file *tape.Reader) {
-	c.Length = file.ReadLong()
-	c.Pause = file.ReadShort()
-	c.SampleRate = file.ReadShort()
-	c.SampleSpareByte, _ = file.ReadByte()
-	c.CompressionType, _ = file.ReadByte()
-	c.StoredPulseCount = file.ReadLong()
+func (c *CswRecording) Read(reader *bufio.Reader) {
+	c.Length = tape.ReadLong(reader)
+	c.Pause = tape.ReadShort(reader)
+	c.SampleRate = tape.ReadShort(reader)
+	c.SampleSpareByte, _ = reader.ReadByte()
+	c.CompressionType, _ = reader.ReadByte()
+	c.StoredPulseCount = tape.ReadLong(reader)
 
 	// Yep, we're discarding the data for the moment
-	file.ReadBytes(int(c.Length))
+	tape.ReadNextBytes(reader, int(c.Length))
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

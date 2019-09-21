@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -21,8 +22,8 @@ type JumpTo struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (j *JumpTo) Read(file *tape.Reader) {
-	j.Value = file.ReadSignedShort()
+func (j *JumpTo) Read(reader *bufio.Reader) {
+	j.Value = tape.ReadSignedShort(reader)
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

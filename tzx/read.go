@@ -1,6 +1,8 @@
-package tzx
-
-// Rules and Definitions (https://www.worldofspectrum.org/TZXformat.html)
+// Package tzx implements reading of ZX Spectrum TZX formatted files,
+// as specified in the TZX specification.
+// https://www.worldofspectrum.org/TZXformat.html
+//
+// Rules and Definitions
 //
 //  * Any value requiring more than one byte is stored in little endian format (i.e. LSB first).
 //  * Unused bits should be set to zero.
@@ -46,13 +48,13 @@ package tzx
 //      LSB = least significant byte
 //      MSb = most significant bit
 //      LSb = least significant bit
+package tzx
 
 import (
-	"bytes"
+	"bufio"
 	"encoding/binary"
 	"fmt"
 	"io"
-	"log"
 
 	"github.com/pkg/errors"
 
@@ -65,8 +67,21 @@ const (
 	supportedMinorVersion = 20
 )
 
-// Header is the first block of data found in all TZX files.
+// Reader wraps a bufio.Reader that can be used to read binary data from a tape
+// file, but also provides addition functions for reading TZX files.
 //
+// TZX files store the header information at the start of the file, followed
+// by zero or more data blocks. Some TZX files include an ArchiveInfo block,
+// which is always stored as the first block, directly after the header.
+type Reader struct {
+	reader *bufio.Reader
+
+	header  // valid after NewReader
+	archive blocks.ArchiveInfo
+	blocks  []tape.Block
+}
+
+// Header is the first block of data found in all TZX files.
 // The file is identified with the first 7 bytes being `ZXTape!`, followed by the
 // _end of file_ byte `26` (`1A` hex). This is followed by two bytes containing
 // the major and minor version numbers of the TZX specification used.
@@ -77,53 +92,51 @@ type header struct {
 	MinorVersion uint8   // TZX minor revision number
 }
 
-// A Reader is an io.Reader that can be read to retrieve the binary
-// data from a TZX format file.
+// NewReader wraps the given buffered Reader and creates a new TZX Reader.
+// NOTE: It's the caller's responsibility to call Close on the Reader when done.
 //
-// TZX files store the header information at the start of the file, followed
-// by zero or more data blocks. Some TZX files include an ArchiveInfo block,
-// which is always stored as the first block, directly after the header.
-type Reader struct {
-	header  // valid after NewReader
-	archive blocks.ArchiveInfo
-	reader  *tape.Reader
-	blocks  []Block
-}
-
-// Block is an interface for TZX data blocks
-type Block interface {
-	Id() uint8
-	Name() string
-	ToString() string
-}
-
-// NewReader creates a new Reader reading the given reader.
-//
-// It is the caller's responsibility to call Close on the Reader when done.
-//
-// The Reader.Header fields will be valid in the Reader returned.
-func NewReader(r io.Reader) (*Reader, error) {
-	t := &Reader{}
-	t.reader = tape.NewReader(r)
+// The Reader.header fields will be valid in the Reader returned.
+func NewReader(r *bufio.Reader) (*Reader, error) {
+	t := &Reader{reader: r}
 
 	if err := t.readHeader(); err != nil {
 		return nil, err
-	} else if err := t.header.valid(); err != nil {
+	}
+	if err := t.header.valid(); err != nil {
 		return nil, err
 	}
 
 	return t, nil
 }
 
-// Read the TZX data blocks.
+// ReadBlocks processes each TZX blocks in the tape file.
 func (r *Reader) ReadBlocks() error {
-	if err := r.readBlocks(); err != nil {
-		return err
+	for {
+		blockID, err := r.reader.ReadByte()
+		if err != nil && err == io.EOF {
+			break // no problems, we're done!
+		} else if err != nil {
+			return err
+		}
+
+		block, err := r.readDataBlock(blockID)
+		if err != nil {
+			// should never be an EOF error for valid tape files
+			return errors.Wrap(err, "Unable to complete reading TZX blocks")
+		}
+
+		// TODO: improve how we handle this!
+		if blockID == 0x32 {
+			r.archive = blocks.ArchiveInfo{}
+			r.archive.Read(r.reader)
+		} else {
+			r.blocks = append(r.blocks, block)
+		}
 	}
 	return nil
 }
 
-// DisplayTapeMetadata print all the tape metadata; archive info, data blocks, etc., to the terminal.
+// DisplayTapeMetadata outputs the metadata, archive info, data blocks, etc., to the terminal.
 func (r Reader) DisplayTapeMetadata() {
 	fmt.Println("Tzxit processing complete!")
 	fmt.Println()
@@ -139,14 +152,10 @@ func (r Reader) DisplayTapeMetadata() {
 	fmt.Printf("TZX revision: v%d.%d\n", r.MajorVersion, r.MinorVersion)
 }
 
-// readHeader processes the TZX header data and validates that the tape format is correct.
+// readHeader reads the tape header data and validates that the format is correct.
 func (r *Reader) readHeader() error {
 	r.header = header{}
-	data := r.reader.ReadBytes(10)
-
-	buffer := bytes.NewBuffer(data)
-	err := binary.Read(buffer, binary.LittleEndian, &r.header)
-	if err != nil {
+	if err := binary.Read(r.reader, binary.LittleEndian, &r.header); err != nil {
 		return fmt.Errorf("binary.Read failed: %v", err)
 	}
 
@@ -157,128 +166,69 @@ func (r *Reader) readHeader() error {
 	return nil
 }
 
-// readBlocks processes all the TZX data blocks.
-func (r *Reader) readBlocks() error {
-	for {
-		blockID, err := r.reader.ReadByte()
-		if err != nil {
-			if err != io.EOF {
-				return err
-			}
-			break
-		}
-		r.readBlockData(blockID)
-	}
-	return nil
-}
+// readDataBlock reads the TZX data for the given block ID.
+func (r Reader) readDataBlock(id byte) (tape.Block, error) {
+	var block tape.Block
 
-// readBlockData processes the data for the given block ID.
-func (r *Reader) readBlockData(id byte) {
 	switch id {
 	case 0x10:
-		ssd := &blocks.StandardSpeedData{}
-		ssd.Read(r.reader)
-		r.blocks = append(r.blocks, ssd)
+		block = &blocks.StandardSpeedData{}
 	case 0x11:
-		tsd := &blocks.TurboSpeedData{}
-		tsd.Read(r.reader)
-		r.blocks = append(r.blocks, tsd)
+		block = &blocks.TurboSpeedData{}
 	case 0x12:
-		pt := &blocks.PureTone{}
-		pt.Read(r.reader)
-		r.blocks = append(r.blocks, pt)
+		block = &blocks.PureTone{}
 	case 0x13:
-		sop := &blocks.SequenceOfPulses{}
-		sop.Read(r.reader)
-		r.blocks = append(r.blocks, sop)
+		block = &blocks.SequenceOfPulses{}
 	case 0x14:
-		pd := &blocks.PureData{}
-		pd.Read(r.reader)
-		r.blocks = append(r.blocks, pd)
+		block = &blocks.PureData{}
 	case 0x15:
-		dr := &blocks.DirectRecording{}
-		dr.Read(r.reader)
-		r.blocks = append(r.blocks, dr)
+		block = &blocks.DirectRecording{}
 	case 0x18:
-		cr := &blocks.CswRecording{}
-		cr.Read(r.reader)
-		r.blocks = append(r.blocks, cr)
+		block = &blocks.CswRecording{}
 	case 0x19:
-		gd := &blocks.GeneralizedData{}
-		gd.Read(r.reader)
-		r.blocks = append(r.blocks, gd)
+		block = &blocks.GeneralizedData{}
 	case 0x20:
-		pt := &blocks.PauseTapeCommand{}
-		pt.Read(r.reader)
-		r.blocks = append(r.blocks, pt)
+		block = &blocks.PauseTapeCommand{}
 	case 0x21:
-		gs := &blocks.GroupStart{}
-		gs.Read(r.reader)
-		r.blocks = append(r.blocks, gs)
+		block = &blocks.GroupStart{}
 	case 0x22:
-		ge := &blocks.GroupEnd{}
-		ge.Read(r.reader)
-		r.blocks = append(r.blocks, ge)
+		block = &blocks.GroupEnd{}
 	case 0x23:
-		jt := &blocks.JumpTo{}
-		jt.Read(r.reader)
-		r.blocks = append(r.blocks, jt)
+		block = &blocks.JumpTo{}
 	case 0x24:
-		ls := &blocks.LoopStart{}
-		ls.Read(r.reader)
-		r.blocks = append(r.blocks, ls)
+		block = &blocks.LoopStart{}
 	case 0x25:
-		ls := &blocks.LoopEnd{}
-		ls.Read(r.reader)
-		r.blocks = append(r.blocks, ls)
+		block = &blocks.LoopEnd{}
 	case 0x26:
-		cs := &blocks.CallSequence{}
-		cs.Read(r.reader)
-		r.blocks = append(r.blocks, cs)
+		block = &blocks.CallSequence{}
 	case 0x27:
-		rs := &blocks.ReturnFromSequence{}
-		rs.Read(r.reader)
-		r.blocks = append(r.blocks, rs)
+		block = &blocks.ReturnFromSequence{}
 	case 0x28:
-		s := &blocks.Select{}
-		s.Read(r.reader)
-		r.blocks = append(r.blocks, s)
+		block = &blocks.Select{}
 	case 0x2a:
-		st := &blocks.StopTapeWhen48kMode{}
-		st.Read(r.reader)
-		r.blocks = append(r.blocks, st)
+		block = &blocks.StopTapeWhen48kMode{}
 	case 0x2b:
-		sl := &blocks.SetSignalLevel{}
-		sl.Read(r.reader)
-		r.blocks = append(r.blocks, sl)
+		block = &blocks.SetSignalLevel{}
 	case 0x30:
-		td := &blocks.TextDescription{}
-		td.Read(r.reader)
-		r.blocks = append(r.blocks, td)
+		block = &blocks.TextDescription{}
 	case 0x31:
-		m := &blocks.Message{}
-		m.Read(r.reader)
-		r.blocks = append(r.blocks, m)
+		block = &blocks.Message{}
 	case 0x32:
-		ai := blocks.ArchiveInfo{}
-		ai.Read(r.reader)
-		r.archive = ai
+		// should never reach here, handle separately!
+		return nil, nil
 	case 0x33:
-		ht := &blocks.HardwareType{}
-		ht.Read(r.reader)
-		r.blocks = append(r.blocks, ht)
+		block = &blocks.HardwareType{}
 	case 0x35:
-		ci := &blocks.CustomInfo{}
-		ci.Read(r.reader)
-		r.blocks = append(r.blocks, ci)
+		block = &blocks.CustomInfo{}
 	case 0x5a: // (90 dec, ASCII Letter 'Z')
-		gb := &blocks.GlueBlock{}
-		gb.Read(r.reader)
-		r.blocks = append(r.blocks, gb)
+		block = &blocks.GlueBlock{}
 	default:
 		// probably ID's 16,17,34,35,40 (HEX)
-		log.Fatalf("ID 0x%02X is deprecated/not supported", id)
+		return nil, fmt.Errorf("TZX block ID 0x%02X is deprecated/not supported", id)
 	}
+	block.Read(r.reader)
+
+	return block, nil
 }
 
 // Validates the TZX header data.

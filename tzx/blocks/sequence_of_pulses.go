@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -17,11 +18,11 @@ type SequenceOfPulses struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *SequenceOfPulses) Read(file *tape.Reader) {
-	s.Count, _ = file.ReadByte()
+func (s *SequenceOfPulses) Read(reader *bufio.Reader) {
+	s.Count, _ = reader.ReadByte()
 
 	for i := 0; i < int(s.Count); i++ {
-		s.Lengths = append(s.Lengths, file.ReadShort())
+		s.Lengths = append(s.Lengths, tape.ReadShort(reader))
 	}
 }
 

@@ -1,8 +1,10 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
+	"github.com/mrcook/tzxit/tap"
 	"github.com/mrcook/tzxit/tape"
 )
 
@@ -14,26 +16,29 @@ type PureData struct {
 	OneBitPulse  uint16 // WORD      Length of ONE bit pulse
 	UsedBits     uint8  // BYTE      Used bits in last byte (other bits should be 0) (e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)
 	Pause        uint16 // WORD      Pause after this block (ms.)
-	Length       uint32 // N BYTE[3] Length of data that follow
 
-	//Data         tap.TapeData // BYTE[N]   Data as in .TAP files: may be a header, or any data from ZX-Spectrum
-	Data []byte
+	Length uint32 // N BYTE[3] Length of data that follows. NOTE the use of a DWORD for the property type
+
+	// A single .TAP DataBlock consisting of:
+	//   WORD    Length of data that follows
+	//   BYTE[N] Data as in .TAP files
+	DataBlock tap.DataBlock
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (p *PureData) Read(file *tape.Reader) {
-	p.OneBitPulse = file.ReadShort()
-	p.ZeroBitPulse = file.ReadShort()
-	p.UsedBits, _ = file.ReadByte()
-	p.Pause = file.ReadShort()
+func (p *PureData) Read(reader *bufio.Reader) {
+	p.OneBitPulse = tape.ReadShort(reader)
+	p.ZeroBitPulse = tape.ReadShort(reader)
+	p.UsedBits, _ = reader.ReadByte()
+	p.Pause = tape.ReadShort(reader)
 
-	length := file.ReadBytes(3)
+	length := tape.ReadNextBytes(reader, 3)
 	length = append(length, 0) // add 4th byte
-	p.Length = file.BytesToLong(length)
+	p.Length = tape.BytesToLong(length)
 
 	// Yep, we're discarding the data for the moment
-	file.ReadBytes(int(p.Length))
+	tape.ReadNextBytes(reader, int(p.Length))
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

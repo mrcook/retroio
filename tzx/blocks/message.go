@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -23,11 +24,11 @@ type Message struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (m *Message) Read(file *tape.Reader) {
-	m.DisplayTime, _ = file.ReadByte()
-	m.Length, _ = file.ReadByte()
+func (m *Message) Read(reader *bufio.Reader) {
+	m.DisplayTime, _ = reader.ReadByte()
+	m.Length, _ = reader.ReadByte()
 
-	for _, b := range file.ReadBytes(int(m.Length)) {
+	for _, b := range tape.ReadNextBytes(reader, int(m.Length)) {
 		m.Message = append(m.Message, b)
 	}
 }

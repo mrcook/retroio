@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -17,9 +18,9 @@ type SetSignalLevel struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *SetSignalLevel) Read(file *tape.Reader) {
-	s.Length = file.ReadLong()
-	s.SignalLevel, _ = file.ReadByte()
+func (s *SetSignalLevel) Read(reader *bufio.Reader) {
+	s.Length = tape.ReadLong(reader)
+	s.SignalLevel, _ = reader.ReadByte()
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

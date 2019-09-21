@@ -1,8 +1,10 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
+	"github.com/mrcook/tzxit/tap"
 	"github.com/mrcook/tzxit/tape"
 )
 
@@ -21,30 +23,33 @@ type TurboSpeedData struct {
 	PilotTone       uint16 // WORD      Length of PILOT tone (number of pulses) {8063 header (flag<128), 3223 data (flag>=128)}
 	UsedBits        uint8  // BYTE      Used bits in the last byte (other bits should be 0) {8} (e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)
 	Pause           uint16 // WORD      Pause after this block (ms.) {1000}
-	Length          uint32 // N BYTE[3] Length of data that follow - NOTE: 3rd byte will always be 0 (correct?)
 
-	//Data            tap.TapeData // BYTE[N]   Data as in .TAP files: may be a header, or any data from ZX-Spectrum
-	Data []byte
+	Length uint32 // N BYTE[3] Length of data that follows. NOTE the use of a DWORD for the property type
+
+	// A single .TAP DataBlock consisting of:
+	//   WORD    Length of data that follows
+	//   BYTE[N] Data as in .TAP files
+	DataBlock tap.DataBlock
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (t *TurboSpeedData) Read(file *tape.Reader) {
-	t.PilotPulse = file.ReadShort()
-	t.SyncFirstPulse = file.ReadShort()
-	t.SyncSecondPulse = file.ReadShort()
-	t.ZeroBitPulse = file.ReadShort()
-	t.OneBitPulse = file.ReadShort()
-	t.PilotTone = file.ReadShort()
-	t.UsedBits, _ = file.ReadByte()
-	t.Pause = file.ReadShort()
+func (t *TurboSpeedData) Read(reader *bufio.Reader) {
+	t.PilotPulse = tape.ReadShort(reader)
+	t.SyncFirstPulse = tape.ReadShort(reader)
+	t.SyncSecondPulse = tape.ReadShort(reader)
+	t.ZeroBitPulse = tape.ReadShort(reader)
+	t.OneBitPulse = tape.ReadShort(reader)
+	t.PilotTone = tape.ReadShort(reader)
+	t.UsedBits, _ = reader.ReadByte()
+	t.Pause = tape.ReadShort(reader)
 
-	length := file.ReadBytes(3)
+	length := tape.ReadNextBytes(reader, 3)
 	length = append(length, 0) // add 4th byte
-	t.Length = file.BytesToLong(length)
+	t.Length = tape.BytesToLong(length)
 
 	// Yep, we're discarding the data for the moment
-	file.ReadBytes(int(t.Length))
+	tape.ReadNextBytes(reader, int(t.Length))
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

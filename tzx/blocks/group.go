@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -20,10 +21,10 @@ type GroupStart struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (g *GroupStart) Read(file *tape.Reader) {
-	g.Length, _ = file.ReadByte()
+func (g *GroupStart) Read(reader *bufio.Reader) {
+	g.Length, _ = reader.ReadByte()
 
-	for _, b := range file.ReadBytes(int(g.Length)) {
+	for _, b := range tape.ReadNextBytes(reader, int(g.Length)) {
 		g.GroupName = append(g.GroupName, b)
 	}
 }
@@ -50,7 +51,7 @@ type GroupEnd struct{}
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (g *GroupEnd) Read(file *tape.Reader) {}
+func (g *GroupEnd) Read(reader *bufio.Reader) {}
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (g GroupEnd) Id() uint8 {

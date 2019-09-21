@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -17,9 +18,9 @@ type PureTone struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (p *PureTone) Read(file *tape.Reader) {
-	p.Length = file.ReadShort()
-	p.PulseCount = file.ReadShort()
+func (p *PureTone) Read(reader *bufio.Reader) {
+	p.Length = tape.ReadShort(reader)
+	p.PulseCount = tape.ReadShort(reader)
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

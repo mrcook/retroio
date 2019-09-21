@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -19,14 +20,14 @@ type CustomInfo struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (c *CustomInfo) Read(file *tape.Reader) {
-	for i, b := range file.ReadBytes(10) {
+func (c *CustomInfo) Read(reader *bufio.Reader) {
+	for i, b := range tape.ReadNextBytes(reader, 10) {
 		c.Identification[i] = b
 	}
 
-	c.Length = file.ReadLong()
+	c.Length = tape.ReadLong(reader)
 
-	for _, b := range file.ReadBytes(int(c.Length)) {
+	for _, b := range tape.ReadNextBytes(reader, int(c.Length)) {
 		c.Info = append(c.Info, b)
 	}
 }

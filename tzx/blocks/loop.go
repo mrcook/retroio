@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -17,8 +18,8 @@ type LoopStart struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (l *LoopStart) Read(file *tape.Reader) {
-	l.RepetitionCount = file.ReadShort()
+func (l *LoopStart) Read(reader *bufio.Reader) {
+	l.RepetitionCount = tape.ReadShort(reader)
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -45,7 +46,7 @@ type LoopEnd struct{}
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (l *LoopEnd) Read(file *tape.Reader) {}
+func (l *LoopEnd) Read(reader *bufio.Reader) {}
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (l LoopEnd) Id() uint8 {

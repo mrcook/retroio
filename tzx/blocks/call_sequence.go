@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -22,11 +23,11 @@ type CallSequence struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (c *CallSequence) Read(file *tape.Reader) {
-	c.Count = file.ReadShort()
+func (c *CallSequence) Read(reader *bufio.Reader) {
+	c.Count = tape.ReadShort(reader)
 
 	for i := 0; i < int(c.Count); i++ {
-		c.Blocks = append(c.Blocks, file.ReadShort())
+		c.Blocks = append(c.Blocks, tape.ReadShort(reader))
 	}
 }
 
@@ -58,7 +59,7 @@ type ReturnFromSequence struct{}
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (r ReturnFromSequence) Read(file *tape.Reader) {}
+func (r ReturnFromSequence) Read(reader *bufio.Reader) {}
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (r ReturnFromSequence) Id() uint8 {

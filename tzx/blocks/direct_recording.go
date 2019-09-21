@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -25,17 +26,17 @@ type DirectRecording struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (d *DirectRecording) Read(file *tape.Reader) {
-	d.TStatesPerSample = file.ReadShort()
-	d.Pause = file.ReadShort()
-	d.UsedBits, _ = file.ReadByte()
+func (d *DirectRecording) Read(reader *bufio.Reader) {
+	d.TStatesPerSample = tape.ReadShort(reader)
+	d.Pause = tape.ReadShort(reader)
+	d.UsedBits, _ = reader.ReadByte()
 
-	length := file.ReadBytes(3)
+	length := tape.ReadNextBytes(reader, 3)
 	length = append(length, 0) // add 4th byte
-	d.Length = file.BytesToLong(length)
+	d.Length = tape.BytesToLong(length)
 
 	// Yep, we're discarding the data for the moment
-	file.ReadBytes(int(d.Length))
+	tape.ReadNextBytes(reader, int(d.Length))
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

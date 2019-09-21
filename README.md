@@ -1,10 +1,10 @@
 # TZX Utility
 
-A utility program for working with the ZX Spectrum tape files (TZX), written
-in the Go language.
+A utility program for working with the ZX Spectrum tape files (TZX and TAP),
+written in the Go language.
 
 I wrote this program, in part to better understand how tape data is loaded in
-to a spectrum, but also as an experiment in working with binary data files.
+to a ZX Spectrum, but also as an experiment in working with binary data files.
 
 ## Installation
 
@@ -12,15 +12,18 @@ to a spectrum, but also as an experiment in working with binary data files.
 
 ## Usage
 
-    $ tzxit read /path/to/tape.tzx
+    $ tzxit read -f=tzx /path/to/tape.tzx
 
-The TZX metadata will be printed to the terminal.
+The tape metadata and block information will be output to the terminal.
+
+If you wish to read a TAP formatted file, set the `--format` (`-f`) flag to `tap`.
 
 ### Example output
 
 ```
-TZX Revision: 1.10
+Tzxit processing complete!
 
+ARCHIVE INFORMATION:
   Title     : Skool Daze
   Publisher : Microsphere
   Authors   : David S. Reidy, Keith Warrington
@@ -28,12 +31,16 @@ TZX Revision: 1.10
   Loader    : Microsphere
   Comment   : Timing corrected by Mikie.
 
-> Standard Speed Data : 19 bytes, pause for 970 ms.
-  - Header       : BASIC Program
-  - Filename     : skooldaze 
-  - AutoStartLine: 0
-> Standard Speed Data : 333 bytes, pause for 5981 ms.
-> Turbo Speed Data    : 82109 bytes, pause for 0 ms.
+DATA BLOCKS:
+#1 > Standard Speed Data : 19 bytes, pause for 970 ms.
+     - Header       : BASIC Program
+     - Filename     : skooldaze 
+     - AutoStartLine: 0
+#2 > Standard Speed Data : 333 bytes, pause for 5981 ms.
+     - Standard Data: 331 bytes
+#3 > Turbo Speed Data    : 82109 bytes, pause for 0 ms.
+
+TZX revision: 1.10
 ```
 
 ## TZX Specification

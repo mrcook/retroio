@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -20,10 +21,10 @@ type TextDescription struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (t *TextDescription) Read(file *tape.Reader) {
-	t.Length, _ = file.ReadByte()
+func (t *TextDescription) Read(reader *bufio.Reader) {
+	t.Length, _ = reader.ReadByte()
 
-	for _, b := range file.ReadBytes(int(t.Length)) {
+	for _, b := range tape.ReadNextBytes(reader, int(t.Length)) {
 		t.Description = append(t.Description, b)
 	}
 }

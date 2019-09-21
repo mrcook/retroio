@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -17,8 +18,8 @@ type PauseTapeCommand struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (p *PauseTapeCommand) Read(file *tape.Reader) {
-	p.Pause = file.ReadShort()
+func (p *PauseTapeCommand) Read(reader *bufio.Reader) {
+	p.Pause = tape.ReadShort(reader)
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

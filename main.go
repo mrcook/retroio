@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/mrcook/tzxit/cmd"
-)
+import "github.com/mrcook/tzxit/cmd"
 
 func main() {
 	cmd.Execute()

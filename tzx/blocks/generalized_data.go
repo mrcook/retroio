@@ -1,10 +1,9 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 	"log"
-
-	"github.com/mrcook/tzxit/tape"
 )
 
 // GeneralizedData
@@ -60,8 +59,8 @@ type PilotRLE struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (g *GeneralizedData) Read(file *tape.Reader) {
-	log.Fatal("GeneralizedData is not currently supported - unable to continue processing file.")
+func (g *GeneralizedData) Read(reader *bufio.Reader) {
+	log.Fatal("GeneralizedData is not currently supported - unable to continue.")
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

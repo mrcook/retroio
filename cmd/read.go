@@ -1,12 +1,14 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
 
+	"github.com/mrcook/tzxit/tap"
 	"github.com/mrcook/tzxit/tape"
 	"github.com/mrcook/tzxit/tzx"
 )
@@ -16,35 +18,37 @@ var format string
 var readCmd = &cobra.Command{
 	Use:                   "read FILE",
 	Short:                 "Read a TZX or TAP file",
-	Long:                  `Read the metadata from a TZX or TAP file.`,
+	Long:                  `Read all header and data blocks from a TZX or TAP file.`,
 	Args:                  cobra.ExactArgs(1),
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
-		file, err := os.Open(args[0])
+		normalizeFormatValue()
+
+		f, err := os.Open(args[0])
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		defer file.Close()
+		defer f.Close()
+		reader := bufio.NewReader(f)
 
 		var r tape.Tape
-
-		normalizeFormatValue()
-		if format == "tap" {
-			fmt.Println("TAP reading not yet supported")
-			return
-		} else if format == "tzx" {
-			if r, err = tzx.NewReader(file); err != nil {
-				fmt.Println(err.Error())
+		switch format {
+		case "tzx":
+			r, err = tzx.NewReader(reader)
+			if err != nil {
+				fmt.Println(err)
 				return
 			}
-		} else {
-			fmt.Println("Unsupported tape format")
+		case "tap":
+			r = tap.NewReader(reader)
+		default:
+			fmt.Println("Unsupported tape format.")
 			return
 		}
 
 		if err := r.ReadBlocks(); err != nil {
-			fmt.Println(err.Error())
+			fmt.Println(err)
 			return
 		}
 		r.DisplayTapeMetadata()

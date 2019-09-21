@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -20,8 +21,8 @@ type GlueBlock struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (g *GlueBlock) Read(file *tape.Reader) {
-	for i, b := range file.ReadBytes(9) {
+func (g *GlueBlock) Read(reader *bufio.Reader) {
+	for i, b := range tape.ReadNextBytes(reader, 9) {
 		g.Value[i] = b
 	}
 }

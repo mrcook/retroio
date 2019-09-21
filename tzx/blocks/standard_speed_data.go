@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tap"
@@ -14,23 +15,25 @@ import (
 // (flag byte) is < 128, 3223 otherwise. This block can be used for the ROM loading routines AND
 // for custom loading routines that use the same timings as ROM ones do.
 type StandardSpeedData struct {
-	Pause  uint16 // WORD    Pause after this block (ms.) {1000}
-	Length uint16 // WORD    Length of data that follow
+	Pause uint16 // WORD    Pause after this block (ms.) {1000}
 
-	//Data   tap.TapeData // BYTE[N] Data as in .TAP files: may be a header, or any data from ZX-Spectrum
-	Data []byte
+	// A single .TAP DataBlock consisting of:
+	//   WORD    Length of data that follows
+	//   BYTE[N] Data as in .TAP files
+	DataBlock tap.DataBlock
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *StandardSpeedData) Read(file *tape.Reader) {
-	s.Pause = file.ReadShort()
-	s.Length = file.ReadShort()
+func (s *StandardSpeedData) Read(reader *bufio.Reader) {
+	s.Pause = tape.ReadShort(reader)
 
-	// For the moment, discard data unless it's a TAP block
-	data := file.ReadBytes(int(s.Length))
-	if s.Length == 19 {
-		s.Data = data
+	t := tap.NewReader(reader)
+	length, _ := tape.PeekBlockLength(reader)
+	if length == 19 {
+		s.DataBlock, _ = t.ReadHeaderBlock()
+	} else {
+		s.DataBlock, _ = t.ReadDataBlock()
 	}
 }
 
@@ -46,16 +49,8 @@ func (s StandardSpeedData) Name() string {
 
 // ToString returns a human readable string of the block data
 func (s StandardSpeedData) ToString() string {
-	str := fmt.Sprintf("> %-19s : %d bytes, pause for %d ms.", s.Name(), s.Length, s.Pause)
-
-	if s.Length == 19 {
-		b, err := tap.Unmarshal(s.Data)
-		if err != nil {
-			str += fmt.Sprintf("TAP BLOCK ERROR: %v\n", err)
-		} else {
-			str += "\n" + b.ToString()
-		}
-	}
+	str := fmt.Sprintf("> %-19s : %d bytes, pause for %d ms.", s.Name(), s.DataBlock.Length, s.Pause)
+	str += fmt.Sprintf("\n    %s", s.DataBlock.TapeData.ToString())
 
 	return str
 }

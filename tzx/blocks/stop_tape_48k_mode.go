@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -18,8 +19,8 @@ type StopTapeWhen48kMode struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *StopTapeWhen48kMode) Read(file *tape.Reader) {
-	s.Length = file.ReadLong()
+func (s *StopTapeWhen48kMode) Read(reader *bufio.Reader) {
+	s.Length = tape.ReadLong(reader)
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

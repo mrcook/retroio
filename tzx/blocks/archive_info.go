@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -45,15 +46,15 @@ var headings = map[uint8]string{
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (a *ArchiveInfo) Read(file *tape.Reader) {
-	a.Length = file.ReadShort()
-	a.StringCount, _ = file.ReadByte()
+func (a *ArchiveInfo) Read(reader *bufio.Reader) {
+	a.Length = tape.ReadShort(reader)
+	a.StringCount, _ = reader.ReadByte()
 
 	for i := 0; i < int(a.StringCount); i++ {
 		var t Text
-		t.TypeID, _ = file.ReadByte()
-		t.Length, _ = file.ReadByte()
-		for _, c := range file.ReadBytes(int(t.Length)) {
+		t.TypeID, _ = reader.ReadByte()
+		t.Length, _ = reader.ReadByte()
+		for _, c := range tape.ReadNextBytes(reader, int(t.Length)) {
 			t.Characters = append(t.Characters, c)
 		}
 		a.Strings = append(a.Strings, t)

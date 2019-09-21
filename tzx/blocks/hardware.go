@@ -1,9 +1,8 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
-
-	"github.com/mrcook/tzxit/tape"
 )
 
 // HardwareType
@@ -31,14 +30,14 @@ type HardwareInfo struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (h *HardwareType) Read(file *tape.Reader) {
-	h.TypeCount, _ = file.ReadByte()
+func (h *HardwareType) Read(reader *bufio.Reader) {
+	h.TypeCount, _ = reader.ReadByte()
 
 	for i := 0; i < int(h.TypeCount); i++ {
 		var m HardwareInfo
-		m.Type, _ = file.ReadByte()
-		m.Id, _ = file.ReadByte()
-		m.Information, _ = file.ReadByte()
+		m.Type, _ = reader.ReadByte()
+		m.Id, _ = reader.ReadByte()
+		m.Information, _ = reader.ReadByte()
 		h.Machines = append(h.Machines, m)
 	}
 }

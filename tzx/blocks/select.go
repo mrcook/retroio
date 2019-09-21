@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"bufio"
 	"fmt"
 
 	"github.com/mrcook/tzxit/tape"
@@ -27,15 +28,15 @@ type Selection struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *Select) Read(file *tape.Reader) {
-	s.Length = file.ReadShort()
-	s.Count, _ = file.ReadByte()
+func (s *Select) Read(reader *bufio.Reader) {
+	s.Length = tape.ReadShort(reader)
+	s.Count, _ = reader.ReadByte()
 
 	for i := 0; i < int(s.Count); i++ {
 		var selection Selection
-		selection.RelativeOffset = file.ReadSignedShort()
-		selection.Length, _ = file.ReadByte()
-		for _, b := range file.ReadBytes(int(selection.Length)) {
+		selection.RelativeOffset = tape.ReadSignedShort(reader)
+		selection.Length, _ = reader.ReadByte()
+		for _, b := range tape.ReadNextBytes(reader, int(selection.Length)) {
 			selection.Description = append(selection.Description, b)
 		}
 		s.Selections = append(s.Selections, selection)
