@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 
-	"github.com/mrcook/tzxit/tape"
+	"mrcook/tzxit/tape"
 )
 
 // Fragment block for storing data without flag or checksum byte.

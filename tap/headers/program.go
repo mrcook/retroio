@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mrcook/tzxit/tape"
+	"mrcook/tzxit/tape"
 )
 
 // ProgramData header for storing BASIC programs.

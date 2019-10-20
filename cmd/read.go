@@ -8,9 +8,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/mrcook/tzxit/tap"
-	"github.com/mrcook/tzxit/tape"
-	"github.com/mrcook/tzxit/tzx"
+	"mrcook/tzxit/tap"
+	"mrcook/tzxit/tape"
+	"mrcook/tzxit/tzx"
 )
 
 var format string

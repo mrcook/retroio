@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mrcook/tzxit/tape"
+	"mrcook/tzxit/tape"
 )
 
 // NumericData header for storing numeric arrays.

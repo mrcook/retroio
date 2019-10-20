@@ -19,9 +19,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/mrcook/tzxit/tap/blocks"
-	"github.com/mrcook/tzxit/tap/headers"
-	"github.com/mrcook/tzxit/tape"
+	"mrcook/tzxit/tap/blocks"
+	"mrcook/tzxit/tap/headers"
+	"mrcook/tzxit/tape"
 )
 
 // Reader wraps a bufio.Reader that can be used to read binary data from a tape

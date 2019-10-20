@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"fmt"
 
-	"github.com/mrcook/tzxit/tap"
-	"github.com/mrcook/tzxit/tape"
+	"mrcook/tzxit/tap"
+	"mrcook/tzxit/tape"
 )
 
 // TurboSpeedData

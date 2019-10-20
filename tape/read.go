@@ -23,6 +23,7 @@ type Tape interface {
 // Block is an interface for Tape data blocks
 type Block interface {
 	Read(reader *bufio.Reader)
+	Id() uint8
 	Name() string
 	ToString() string
 }

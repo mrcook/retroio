@@ -1,4 +1,4 @@
-module github.com/mrcook/tzxit
+module mrcook/tzxit
 
 go 1.12
 

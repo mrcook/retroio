@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mrcook/tzxit/tape"
+	"mrcook/tzxit/tape"
 )
 
 // ByteData header for storing Machine Code or Screens.

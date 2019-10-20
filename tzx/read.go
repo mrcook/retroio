@@ -58,8 +58,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/mrcook/tzxit/tape"
-	"github.com/mrcook/tzxit/tzx/blocks"
+	"mrcook/tzxit/tape"
 )
 
 const (
@@ -77,7 +76,7 @@ type Reader struct {
 	reader *bufio.Reader
 
 	header  // valid after NewReader
-	archive blocks.ArchiveInfo
+	archive tape.Block
 	blocks  []tape.Block
 }
 
@@ -119,16 +118,14 @@ func (r *Reader) ReadBlocks() error {
 			return err
 		}
 
-		block, err := r.readDataBlock(blockID)
+		block, err := newFromBlockID(blockID)
 		if err != nil {
-			// should never be an EOF error for valid tape files
-			return errors.Wrap(err, "Unable to complete reading TZX blocks")
+			return err
 		}
+		block.Read(r.reader)
 
-		// TODO: improve how we handle this!
-		if blockID == 0x32 {
-			r.archive = blocks.ArchiveInfo{}
-			r.archive.Read(r.reader)
+		if block.Id() == 0x32 {
+			r.archive = block
 		} else {
 			r.blocks = append(r.blocks, block)
 		}
@@ -164,71 +161,6 @@ func (r *Reader) readHeader() error {
 	}
 
 	return nil
-}
-
-// readDataBlock reads the TZX data for the given block ID.
-func (r Reader) readDataBlock(id byte) (tape.Block, error) {
-	var block tape.Block
-
-	switch id {
-	case 0x10:
-		block = &blocks.StandardSpeedData{}
-	case 0x11:
-		block = &blocks.TurboSpeedData{}
-	case 0x12:
-		block = &blocks.PureTone{}
-	case 0x13:
-		block = &blocks.SequenceOfPulses{}
-	case 0x14:
-		block = &blocks.PureData{}
-	case 0x15:
-		block = &blocks.DirectRecording{}
-	case 0x18:
-		block = &blocks.CswRecording{}
-	case 0x19:
-		block = &blocks.GeneralizedData{}
-	case 0x20:
-		block = &blocks.PauseTapeCommand{}
-	case 0x21:
-		block = &blocks.GroupStart{}
-	case 0x22:
-		block = &blocks.GroupEnd{}
-	case 0x23:
-		block = &blocks.JumpTo{}
-	case 0x24:
-		block = &blocks.LoopStart{}
-	case 0x25:
-		block = &blocks.LoopEnd{}
-	case 0x26:
-		block = &blocks.CallSequence{}
-	case 0x27:
-		block = &blocks.ReturnFromSequence{}
-	case 0x28:
-		block = &blocks.Select{}
-	case 0x2a:
-		block = &blocks.StopTapeWhen48kMode{}
-	case 0x2b:
-		block = &blocks.SetSignalLevel{}
-	case 0x30:
-		block = &blocks.TextDescription{}
-	case 0x31:
-		block = &blocks.Message{}
-	case 0x32:
-		// should never reach here, handle separately!
-		return nil, nil
-	case 0x33:
-		block = &blocks.HardwareType{}
-	case 0x35:
-		block = &blocks.CustomInfo{}
-	case 0x5a: // (90 dec, ASCII Letter 'Z')
-		block = &blocks.GlueBlock{}
-	default:
-		// probably ID's 16,17,34,35,40 (HEX)
-		return nil, fmt.Errorf("TZX block ID 0x%02X is deprecated/not supported", id)
-	}
-	block.Read(r.reader)
-
-	return block, nil
 }
 
 // Validates the TZX header data.
