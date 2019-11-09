@@ -137,8 +137,11 @@ func (r *Reader) ReadBlocks() error {
 func (r Reader) DisplayTapeMetadata() {
 	fmt.Println("Tzxit processing complete!")
 	fmt.Println()
-	fmt.Println("ARCHIVE INFORMATION:")
-	fmt.Println(r.archive.ToString())
+
+	if r.archive != nil {
+		fmt.Println("ARCHIVE INFORMATION:")
+		fmt.Println(r.archive.ToString())
+	}
 
 	fmt.Println("DATA BLOCKS:")
 	for i, block := range r.blocks {
