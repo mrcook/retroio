@@ -1,18 +1,33 @@
-# TZX Utility
+# RetroIO (rio)
 
-A utility program for working with the ZX Spectrum tape files (TZX and TAP),
-written in the Go language.
+A command-line utility written in the Go programming language for working
+with disk and cassette tape files from computer systems of the 1980s as used
+in emulators.
+
+One example would be `tzx` tapes from the ZX Spectrum 8-bit home computer.
 
 I wrote this program, in part to better understand how tape data is loaded in
 to a ZX Spectrum, but also as an experiment in working with binary data files.
 
+
+## Supported Disk and Tape images
+
+ * ZX Spectrum: **TZX** and **TAP** 
+
+
 ## Installation
 
-    $ go get -u -v github.com/mrcook/tzxit/...
+    $ go get -u -v github.com/mrcook/retroio/...
+
+To install the app after manually cloning the repository you must first `cd` into the `rio` directory:
+
+    $ cd retroio/rio
+    $ go install
+
 
 ## Usage
 
-    $ tzxit read -f=tzx /path/to/tape.tzx
+    $ rio zx read -f=tzx /path/to/tape.tzx
 
 The tape metadata and block information will be output to the terminal.
 
@@ -43,7 +58,11 @@ DATA BLOCKS:
 TZX revision: 1.10
 ```
 
-## TZX Specification
+
+## Documentation and Specifications
+
+
+### TZX and TAP Specifications
 
 Sources:
 
@@ -61,7 +80,7 @@ the Ramsoft company became the maintainers, and created revision `v1.20`.
 The default file extension is `.tzx`.
 
 The tape files processable with this program are based on the TZX specification,
-revision: 1.20 (2006-12-19), therefore the following hex block ID's are not
+revision: 1.20 (2006-12-19), therefore the following `hex` block ID's are not
 supported: `16`, `17`, `34`, `35`, and `40`.
 
 NOTE: `GeneralizedData` blocks are also not currently supported.

@@ -3,9 +3,9 @@ package tzx
 import (
 	"fmt"
 
-	"mrcook/tzxit/tape"
-	"mrcook/tzxit/tzx/blocks"
-	"mrcook/tzxit/tzx/blocks/types"
+	"retroio/tape"
+	"retroio/tzx/blocks"
+	"retroio/tzx/blocks/types"
 )
 
 // newFromBlockID returns a TZX block based on the type ID byte.

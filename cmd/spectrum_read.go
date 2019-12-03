@@ -4,18 +4,15 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 
-	"mrcook/tzxit/tap"
-	"mrcook/tzxit/tape"
-	"mrcook/tzxit/tzx"
+	"retroio/tap"
+	"retroio/tape"
+	"retroio/tzx"
 )
 
-var format string
-
-var readCmd = &cobra.Command{
+var speccyReadCmd = &cobra.Command{
 	Use:                   "read FILE",
 	Short:                 "Read a TZX or TAP file",
 	Long:                  `Read all header and data blocks from a TZX or TAP file.`,
@@ -56,10 +53,6 @@ var readCmd = &cobra.Command{
 }
 
 func init() {
-	readCmd.Flags().StringVarP(&format, "format", "f", "tzx", `Tape format: TZX or TAP`)
-	rootCmd.AddCommand(readCmd)
-}
-
-func normalizeFormatValue() {
-	format = strings.ToLower(format)
+	speccyReadCmd.Flags().StringVarP(&format, "format", "f", "tzx", `Tape format: TZX or TAP`)
+	spectrumCmd.AddCommand(speccyReadCmd)
 }

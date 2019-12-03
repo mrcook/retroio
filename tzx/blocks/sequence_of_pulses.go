@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 
-	"mrcook/tzxit/tape"
+	"retroio/tape"
 )
 
 // SequenceOfPulses

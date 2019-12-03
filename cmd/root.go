@@ -1,20 +1,25 @@
-// Package cmd contains all the CLI commands.
+// Copyright (c) 2018-2019 Michael R. Cook. All rights reserved.
+// This work is licensed under the terms of the MIT license.
+// For a copy, see <https://opensource.org/licenses/MIT>.se.
 package cmd
 
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
 
+var format string
+
 // rootCmd represents the base command when called without any sub commands
 var rootCmd = &cobra.Command{
-	Use:     "tzxit",
-	Version: "0.6.1",
-	Short:   "tzxit: a CLI based ZX Spectrum cassette tape utility",
-	Long: `tzxit is a command line utility for reading and writing ZX Spectrum
-tape cassette images using the TZX specification.`,
+	Use:     "rio",
+	Version: "0.7.0",
+	Short:   "A CLI based utility for reading emulator disk and tape images",
+	Long: `RetroIO (rio) is a command line utility for reading emulator disk and
+cassette tape images of old computer systems from the 1980s.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(cmd.ValidArgs) == 0 {
 			_ = cmd.Help()
@@ -30,4 +35,8 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func normalizeFormatValue() {
+	format = strings.ToLower(format)
 }

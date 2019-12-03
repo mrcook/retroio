@@ -1,5 +1,5 @@
 // Package tape provides interfaces and byte reading helper functions for
-// processing ZX Spectrum tape files.
+// processing cassette tape files.
 //
 // Tape files may contain different cassette tape file formats used by various
 // emulators. Two of the most popular are TZX and TAP.

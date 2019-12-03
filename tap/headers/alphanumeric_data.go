@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"mrcook/tzxit/tape"
+	"retroio/tape"
 )
 
 // AlphanumericData header for storing string arrays.

@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"fmt"
 
-	"mrcook/tzxit/tap"
-	"mrcook/tzxit/tape"
+	"retroio/tap"
+	"retroio/tape"
 )
 
 // StandardSpeedData

@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 
-	"mrcook/tzxit/tape"
+	"retroio/tape"
 )
 
 // Standard data block for storing (2+[data length]) bytes.
