@@ -87,6 +87,11 @@ func (r Reader) PeekShort() (uint16, error) {
 	return binary.LittleEndian.Uint16(b[:]), nil
 }
 
+// Discard wraps the bufio.Discard function
+func (r Reader) Discard(n int) (int, error) {
+	return r.reader.Discard(n)
+}
+
 // BytesToLong converts a slice of 4 little endian ordered bytes.
 func (r Reader) BytesToLong(b []byte) uint32 {
 	return binary.LittleEndian.Uint32(b[:])

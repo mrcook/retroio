@@ -1,25 +1,27 @@
 # RetroIO (rio)
 
 A command-line utility written in the Go programming language for working
-with disk and cassette tape files from computer systems of the 1980s as used
-in emulators.
+with disk and cassette tape files used by emulators of home computers from
+the 1980s.
 
 One example would be `tzx` tapes from the ZX Spectrum 8-bit home computer.
 
-I wrote this program, in part to better understand how tape data is loaded in
-to a ZX Spectrum, but also as an experiment in working with binary data files.
+_Why? Well, I wrote this program in part to better understand how tape data
+is loaded in to a ZX Spectrum, but also as an experiment in working with
+binary data files._
 
 
-## Supported Disk and Tape images
+## Supported Storage Media
 
- * ZX Spectrum: **TZX** and **TAP** 
+ * ZX Spectrum:  **TZX**, **TAP**
+ * Commodore 64: **T64**, **TAP**
 
 
 ## Installation
 
     $ go get -u -v github.com/mrcook/retroio/...
 
-To install the app after manually cloning the repository you must first `cd` into the `rio` directory:
+To install the app after manually cloning the repository you must first change to the `rio` directory:
 
     $ cd retroio/rio
     $ go install
@@ -27,16 +29,18 @@ To install the app after manually cloning the repository you must first `cd` int
 
 ## Usage
 
-    $ rio zx read -f=tzx /path/to/tape.tzx
+    $ rio spectrum read /path/to/tape.tzx
 
-The tape metadata and block information will be output to the terminal.
+The media metadata and block information will be printed to the terminal.
 
-If you wish to read a TAP formatted file, set the `--format` (`-f`) flag to `tap`.
+The program will select the correct _format_ based on the file extension,
+however this can be overridden with the `--format` flag.
+
 
 ### Example output
 
 ```
-Tzxit processing complete!
+TZX processing complete!
 
 ARCHIVE INFORMATION:
   Title     : Skool Daze
@@ -47,43 +51,16 @@ ARCHIVE INFORMATION:
   Comment   : Timing corrected by Mikie.
 
 DATA BLOCKS:
-#1 > Standard Speed Data : 19 bytes, pause for 970 ms.
-     - Header       : BASIC Program
-     - Filename     : skooldaze 
-     - AutoStartLine: 0
-#2 > Standard Speed Data : 333 bytes, pause for 5981 ms.
-     - Standard Data: 331 bytes
-#3 > Turbo Speed Data    : 82109 bytes, pause for 0 ms.
+#1 Standard Speed Data : 19 bytes, pause for 970 ms.
+   - Header       : BASIC Program
+   - Filename     : skooldaze
+   - AutoStartLine: 0
+#2 Standard Speed Data : 333 bytes, pause for 5981 ms.
+   - Standard Data: 331 bytes
+#3 Turbo Speed Data    : 82109 bytes, pause for 0 ms.
 
 TZX revision: 1.10
 ```
-
-
-## Documentation and Specifications
-
-
-### TZX and TAP Specifications
-
-Sources:
-
-- https://www.worldofspectrum.org/TZXformat.html
-- http://www.zx-modules.de/fileformats/tapformat.html
-
-`TZX` is a file format designed to preserve cassette tapes compatible with the
-ZX Spectrum computers, although some specialized versions of the format have
-been defined for other machines such as the Amstrad CPC and C64.
-
-The format was originally created by Tomaz Kac, who was maintainer until
-`revision 1.13`, before passing it to Martijn v.d. Heide. For a brief period
-the Ramsoft company became the maintainers, and created revision `v1.20`.
-
-The default file extension is `.tzx`.
-
-The tape files processable with this program are based on the TZX specification,
-revision: 1.20 (2006-12-19), therefore the following `hex` block ID's are not
-supported: `16`, `17`, `34`, `35`, and `40`.
-
-NOTE: `GeneralizedData` blocks are also not currently supported.
 
 
 ## LICENSE

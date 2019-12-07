@@ -17,10 +17,10 @@ var format string
 // rootCmd represents the base command when called without any sub commands
 var rootCmd = &cobra.Command{
 	Use:     "rio",
-	Version: "0.7.0",
-	Short:   "A CLI based utility for reading emulator disk and tape images",
-	Long: `RetroIO (rio) is a command line utility for reading emulator disk and
-cassette tape images of old computer systems from the 1980s.`,
+	Version: "0.8.0",
+	Short:   "CLI utility for reading emulator disk and tape images",
+	Long: `RetroIO (rio) is a command line utility for reading emulator storage media
+(disks and cassette tape images) of home computers from the 1980s.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(cmd.ValidArgs) == 0 {
 			_ = cmd.Help()
@@ -46,6 +46,5 @@ func storageType(format, filename string) string {
 	if format == "" {
 		format = path.Ext(filename)
 	}
-
 	return strings.TrimPrefix(format, ".")
 }
