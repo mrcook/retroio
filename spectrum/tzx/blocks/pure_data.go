@@ -3,8 +3,8 @@ package blocks
 import (
 	"bufio"
 	"fmt"
+	tap2 "retroio/spectrum/tap"
 
-	"retroio/tap"
 	"retroio/tape"
 )
 
@@ -22,7 +22,7 @@ type PureData struct {
 	// A single .TAP DataBlock consisting of:
 	//   WORD    Length of data that follows
 	//   BYTE[N] Data as in .TAP files
-	DataBlock tap.DataBlock
+	DataBlock tap2.DataBlock
 }
 
 // Read the tape and extract the data.

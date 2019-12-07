@@ -7,9 +7,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"retroio/tap"
+	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx"
 	"retroio/tape"
-	"retroio/tzx"
 )
 
 var speccyReadCmd = &cobra.Command{

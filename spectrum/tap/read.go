@@ -16,11 +16,11 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	blocks2 "retroio/spectrum/tap/blocks"
+	headers2 "retroio/spectrum/tap/headers"
 
 	"github.com/pkg/errors"
 
-	"retroio/tap/blocks"
-	"retroio/tap/headers"
 	"retroio/tape"
 )
 
@@ -114,13 +114,13 @@ func (r *Reader) ReadHeaderBlock() (DataBlock, error) {
 
 	switch dataType {
 	case 0:
-		block.TapeData = &headers.ProgramData{}
+		block.TapeData = &headers2.ProgramData{}
 	case 1:
-		block.TapeData = &headers.NumericData{}
+		block.TapeData = &headers2.NumericData{}
 	case 2:
-		block.TapeData = &headers.AlphanumericData{}
+		block.TapeData = &headers2.AlphanumericData{}
 	case 3:
-		block.TapeData = &headers.ByteData{}
+		block.TapeData = &headers2.ByteData{}
 	default:
 		return block, errors.New(fmt.Sprintf("Unknown header type '%d'.", dataType))
 	}
@@ -142,9 +142,9 @@ func (r *Reader) ReadDataBlock() (DataBlock, error) {
 	}
 
 	if length < 2 {
-		block.TapeData = &blocks.Fragment{}
+		block.TapeData = &blocks2.Fragment{}
 	} else {
-		block.TapeData = &blocks.Standard{}
+		block.TapeData = &blocks2.Standard{}
 	}
 
 	block.Length = length

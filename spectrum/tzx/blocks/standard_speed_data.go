@@ -3,8 +3,8 @@ package blocks
 import (
 	"bufio"
 	"fmt"
+	tap2 "retroio/spectrum/tap"
 
-	"retroio/tap"
 	"retroio/tape"
 )
 
@@ -20,7 +20,7 @@ type StandardSpeedData struct {
 	// A single .TAP DataBlock consisting of:
 	//   WORD    Length of data that follows
 	//   BYTE[N] Data as in .TAP files
-	DataBlock tap.DataBlock
+	DataBlock tap2.DataBlock
 }
 
 // Read the tape and extract the data.
@@ -28,7 +28,7 @@ type StandardSpeedData struct {
 func (s *StandardSpeedData) Read(reader *bufio.Reader) {
 	s.Pause = tape.ReadShort(reader)
 
-	t := tap.NewReader(reader)
+	t := tap2.NewReader(reader)
 	length, _ := tape.PeekBlockLength(reader)
 	if length == 19 {
 		s.DataBlock, _ = t.ReadHeaderBlock()
