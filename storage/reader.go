@@ -36,11 +36,6 @@ func (r Reader) ReadByte() byte {
 	return b
 }
 
-// ReadByteWithError reads and a single byte, but also returns an error
-func (r Reader) ReadByteWithError() (byte, error) {
-	return r.reader.ReadByte()
-}
-
 // ReadNextBytes reads a variable length of bytes from the reader.
 func (r Reader) ReadNextBytes(number int) []byte {
 	b := make([]byte, number)
@@ -82,15 +77,6 @@ func (r Reader) Peek(n int) ([]byte, error) {
 	return b, nil
 }
 
-// PeekByte reads a byte without advancing the reader
-func (r Reader) PeekByte() (uint8, error) {
-	b, err := r.reader.Peek(1)
-	if err != nil {
-		return 0, err
-	}
-	return b[0], nil
-}
-
 // PeekShort reads two bytes without advancing the reader, then
 // converts the little endian ordered bytes to an uint16.
 func (r Reader) PeekShort() (uint16, error) {
@@ -99,26 +85,6 @@ func (r Reader) PeekShort() (uint16, error) {
 		return 0, err
 	}
 	return binary.LittleEndian.Uint16(b[:]), nil
-}
-
-// PeekLong reads four bytes without advancing the reader, then
-// converts the little endian ordered bytes to an uint32.
-func (r Reader) PeekLong() (uint32, error) {
-	b, err := r.reader.Peek(4)
-	if err != nil {
-		return 0, err
-	}
-	return binary.LittleEndian.Uint32(b[:]), nil
-}
-
-// Discard wraps the bufio.Discard function
-func (r Reader) Discard(n int) (int, error) {
-	return r.reader.Discard(n)
-}
-
-// Buffered wraps the bufio.Buffered function
-func (r Reader) Buffered() int {
-	return r.reader.Buffered()
 }
 
 // BytesToLong converts a slice of 4 little endian ordered bytes.

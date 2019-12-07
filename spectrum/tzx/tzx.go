@@ -130,12 +130,13 @@ func (t *TZX) readHeader() error {
 // readBlocks processes each TZX block on the tape.
 func (t *TZX) readBlocks() error {
 	for {
-		blockID, err := t.reader.ReadByteWithError()
+		_, err := t.reader.Peek(1)
 		if err != nil && err == io.EOF {
 			break // no problems, we're done!
 		} else if err != nil {
 			return err
 		}
+		blockID := t.reader.ReadByte()
 
 		block, err := newFromBlockID(blockID)
 		if err != nil {
