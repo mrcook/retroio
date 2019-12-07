@@ -1,12 +1,11 @@
 package headers
 
 import (
-	"bufio"
 	"encoding/binary"
 	"fmt"
 	"log"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // ProgramData header for storing BASIC programs.
@@ -25,9 +24,9 @@ type ProgramData struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (b *ProgramData) Read(reader *bufio.Reader) {
+func (b *ProgramData) Read(reader *storage.Reader) {
 	// TODO: is fatal acceptable here?
-	if length, err := tape.PeekBlockLength(reader); err != nil {
+	if length, err := reader.PeekShort(); err != nil {
 		log.Fatalf("unexpected error reading block %v.", err)
 	} else if length != 19 {
 		log.Fatalf("expected header length to be 19, got '%d'.", length)
@@ -46,8 +45,8 @@ func (b ProgramData) Name() string {
 
 // ToString returns a formatted string for the header
 func (b ProgramData) ToString() string {
-	str := fmt.Sprintf(" - Header       : %s\n", b.Name())
-	str += fmt.Sprintf("     - Filename     : %s\n", b.Filename)
-	str += fmt.Sprintf("     - AutoStartLine: %d", b.AutoStartLine)
+	str := fmt.Sprintf("%s\n", b.Name())
+	str += fmt.Sprintf("    - Filename     : %s\n", b.Filename)
+	str += fmt.Sprintf("    - AutoStartLine: %d", b.AutoStartLine)
 	return str
 }

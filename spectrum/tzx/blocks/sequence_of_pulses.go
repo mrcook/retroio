@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // SequenceOfPulses
@@ -18,11 +17,11 @@ type SequenceOfPulses struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *SequenceOfPulses) Read(reader *bufio.Reader) {
-	s.Count, _ = reader.ReadByte()
+func (s *SequenceOfPulses) Read(reader *storage.Reader) {
+	s.Count = reader.ReadByte()
 
 	for i := 0; i < int(s.Count); i++ {
-		s.Lengths = append(s.Lengths, tape.ReadShort(reader))
+		s.Lengths = append(s.Lengths, reader.ReadShort())
 	}
 }
 
@@ -38,5 +37,5 @@ func (s SequenceOfPulses) Name() string {
 
 // ToString returns a human readable string of the block data
 func (s SequenceOfPulses) ToString() string {
-	return fmt.Sprintf("> %-19s : %d pulses", s.Name(), s.Count)
+	return fmt.Sprintf("%-19s : %d pulses", s.Name(), s.Count)
 }

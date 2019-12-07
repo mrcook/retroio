@@ -1,11 +1,11 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
-	tap2 "retroio/spectrum/tap"
+	"io"
 
-	"retroio/tape"
+	"retroio/spectrum/tap"
+	"retroio/storage"
 )
 
 // TurboSpeedData
@@ -29,27 +29,28 @@ type TurboSpeedData struct {
 	// A single .TAP DataBlock consisting of:
 	//   WORD    Length of data that follows
 	//   BYTE[N] Data as in .TAP files
-	DataBlock tap2.DataBlock
+	DataBlock tap.BlockI
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (t *TurboSpeedData) Read(reader *bufio.Reader) {
-	t.PilotPulse = tape.ReadShort(reader)
-	t.SyncFirstPulse = tape.ReadShort(reader)
-	t.SyncSecondPulse = tape.ReadShort(reader)
-	t.ZeroBitPulse = tape.ReadShort(reader)
-	t.OneBitPulse = tape.ReadShort(reader)
-	t.PilotTone = tape.ReadShort(reader)
-	t.UsedBits, _ = reader.ReadByte()
-	t.Pause = tape.ReadShort(reader)
+func (t *TurboSpeedData) Read(reader *storage.Reader) {
+	t.PilotPulse = reader.ReadShort()
+	t.SyncFirstPulse = reader.ReadShort()
+	t.SyncSecondPulse = reader.ReadShort()
+	t.ZeroBitPulse = reader.ReadShort()
+	t.OneBitPulse = reader.ReadShort()
+	t.PilotTone = reader.ReadShort()
+	t.UsedBits = reader.ReadByte()
+	t.Pause = reader.ReadShort()
 
-	length := tape.ReadNextBytes(reader, 3)
+	length := reader.ReadNextBytes(3)
 	length = append(length, 0) // add 4th byte
-	t.Length = tape.BytesToLong(length)
+	t.Length = reader.BytesToLong(length)
 
 	// Yep, we're discarding the data for the moment
-	tape.ReadNextBytes(reader, int(t.Length))
+	data := make([]byte, t.Length)
+	_, _ = io.ReadFull(reader, data)
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -64,5 +65,5 @@ func (t TurboSpeedData) Name() string {
 
 // ToString returns a human readable string of the block data
 func (t TurboSpeedData) ToString() string {
-	return fmt.Sprintf("> %-19s : %d bytes, pause for %d ms.", t.Name(), t.Length, t.Pause)
+	return fmt.Sprintf("%-19s : %d bytes, pause for %d ms.", t.Name(), t.Length, t.Pause)
 }

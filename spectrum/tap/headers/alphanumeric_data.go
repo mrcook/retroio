@@ -1,12 +1,11 @@
 package headers
 
 import (
-	"bufio"
 	"encoding/binary"
 	"fmt"
 	"log"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // AlphanumericData header for storing string arrays.
@@ -26,9 +25,9 @@ type AlphanumericData struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (b *AlphanumericData) Read(reader *bufio.Reader) {
+func (b *AlphanumericData) Read(reader *storage.Reader) {
 	// TODO: is fatal acceptable here?
-	if length, err := tape.PeekBlockLength(reader); err != nil {
+	if length, err := reader.PeekShort(); err != nil {
 		log.Fatalf("unexpected error reading block %v.", err)
 	} else if length != 19 {
 		log.Fatalf("expected header length to be 19, got '%d'.", length)
@@ -47,8 +46,8 @@ func (b AlphanumericData) Name() string {
 
 // ToString returns a formatted string for the header
 func (b AlphanumericData) ToString() string {
-	str := fmt.Sprintf(" - Header       : %s\n", b.Name())
-	str += fmt.Sprintf("     - Filename     : %s\n", b.Filename)
-	str += fmt.Sprintf("     - Variable Name: %c", b.VariableName-192)
+	str := fmt.Sprintf("%s\n", b.Name())
+	str += fmt.Sprintf("    - Filename     : %s\n", b.Filename)
+	str += fmt.Sprintf("    - Variable Name: %c", b.VariableName-192)
 	return str
 }

@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // JumpTo
@@ -22,8 +21,8 @@ type JumpTo struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (j *JumpTo) Read(reader *bufio.Reader) {
-	j.Value = tape.ReadSignedShort(reader)
+func (j *JumpTo) Read(reader *storage.Reader) {
+	j.Value = reader.ReadShortToSigned()
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -38,5 +37,5 @@ func (j JumpTo) Name() string {
 
 // ToString returns a human readable string of the block data
 func (j JumpTo) ToString() string {
-	return fmt.Sprintf("> %-19s : %d", j.Name(), j.Value)
+	return fmt.Sprintf("%-19s : %d", j.Name(), j.Value)
 }

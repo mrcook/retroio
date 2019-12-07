@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // PauseTapeCommand
@@ -18,8 +17,8 @@ type PauseTapeCommand struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (p *PauseTapeCommand) Read(reader *bufio.Reader) {
-	p.Pause = tape.ReadShort(reader)
+func (p *PauseTapeCommand) Read(reader *storage.Reader) {
+	p.Pause = reader.ReadShort()
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -34,5 +33,5 @@ func (p PauseTapeCommand) Name() string {
 
 // ToString returns a human readable string of the block data
 func (p PauseTapeCommand) ToString() string {
-	return fmt.Sprintf("> %-19s : %d ms.", p.Name(), p.Pause)
+	return fmt.Sprintf("%-19s : %d ms.", p.Name(), p.Pause)
 }

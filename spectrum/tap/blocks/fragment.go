@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // Fragment block for storing data without flag or checksum byte.
@@ -20,10 +19,10 @@ type Fragment struct {
 
 // Read block data - reads 1 byte unless fragment size is zero length.
 // It is expected that the tape pointer is at the correct position for reading.
-func (b *Fragment) Read(reader *bufio.Reader) {
-	b.Length = tape.ReadShort(reader)
+func (b *Fragment) Read(reader *storage.Reader) {
+	b.Length = reader.ReadShort()
 	if b.Length > 0 {
-		b.Data = tape.ReadNextBytes(reader, int(b.Length))
+		b.Data = reader.ReadNextBytes(int(b.Length))
 	}
 }
 
@@ -37,5 +36,5 @@ func (b Fragment) Name() string {
 
 // ToString returns a formatted string for the block
 func (b Fragment) ToString() string {
-	return fmt.Sprintf("     - %s", b.Name())
+	return fmt.Sprintf("%-13s: %d bytes", b.Name(), len(b.Data))
 }

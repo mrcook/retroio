@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // CallSequence
@@ -23,11 +22,11 @@ type CallSequence struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (c *CallSequence) Read(reader *bufio.Reader) {
-	c.Count = tape.ReadShort(reader)
+func (c *CallSequence) Read(reader *storage.Reader) {
+	c.Count = reader.ReadShort()
 
 	for i := 0; i < int(c.Count); i++ {
-		c.Blocks = append(c.Blocks, tape.ReadShort(reader))
+		c.Blocks = append(c.Blocks, reader.ReadShort())
 	}
 }
 
@@ -43,7 +42,7 @@ func (c CallSequence) Name() string {
 
 // ToString returns a human readable string of the block data
 func (c CallSequence) ToString() string {
-	str := fmt.Sprintf("> %s\n", c.Name())
+	str := fmt.Sprintf("%s\n", c.Name())
 	for _, b := range c.Blocks {
 		str += fmt.Sprintf(" - %d\n", b)
 	}
@@ -59,7 +58,7 @@ type ReturnFromSequence struct{}
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (r ReturnFromSequence) Read(reader *bufio.Reader) {}
+func (r ReturnFromSequence) Read(reader *storage.Reader) {}
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (r ReturnFromSequence) Id() uint8 {

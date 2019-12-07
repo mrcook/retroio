@@ -51,14 +51,13 @@
 package tzx
 
 import (
-	"bufio"
 	"encoding/binary"
 	"fmt"
 	"io"
 
 	"github.com/pkg/errors"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 const (
@@ -66,18 +65,23 @@ const (
 	supportedMinorVersion = 20
 )
 
-// Reader wraps a bufio.Reader that can be used to read binary data from a tape
-// file, but also provides addition functions for reading TZX files.
-//
 // TZX files store the header information at the start of the file, followed
 // by zero or more data blocks. Some TZX files include an ArchiveInfo block,
 // which is always stored as the first block, directly after the header.
-type Reader struct {
-	reader *bufio.Reader
+type TZX struct {
+	reader *storage.Reader
 
-	header  // valid after NewReader
-	archive tape.Block
-	blocks  []tape.Block
+	header
+	archive Block
+	blocks  []Block
+}
+
+// Block is an interface for Tape data blocks
+type Block interface {
+	Read(reader *storage.Reader)
+	Id() uint8
+	Name() string
+	ToString() string
 }
 
 // Header is the first block of data found in all TZX files.
@@ -91,27 +95,42 @@ type header struct {
 	MinorVersion uint8   // TZX minor revision number
 }
 
-// NewReader wraps the given buffered Reader and creates a new TZX Reader.
-// NOTE: It's the caller's responsibility to call Close on the Reader when done.
-//
-// The Reader.header fields will be valid in the Reader returned.
-func NewReader(r *bufio.Reader) (*Reader, error) {
-	t := &Reader{reader: r}
-
-	if err := t.readHeader(); err != nil {
-		return nil, err
-	}
-	if err := t.header.valid(); err != nil {
-		return nil, err
-	}
-
-	return t, nil
+func New(reader *storage.Reader) *TZX {
+	return &TZX{reader: reader}
 }
 
-// ReadBlocks processes each TZX blocks in the tape file.
-func (r *Reader) ReadBlocks() error {
+// Read processes the header, and then each block on the tape.
+func (t *TZX) Read() error {
+	if err := t.readHeader(); err != nil {
+		return err
+	}
+
+	if err := t.readBlocks(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// readHeader reads the tape header data and validates that the format is correct.
+func (t *TZX) readHeader() error {
+	t.header = header{}
+
+	if err := binary.Read(t.reader, binary.LittleEndian, &t.header); err != nil {
+		return fmt.Errorf("binary.Read failed: %v", err)
+	}
+
+	if err := t.header.valid(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// readBlocks processes each TZX block on the tape.
+func (t *TZX) readBlocks() error {
 	for {
-		blockID, err := r.reader.ReadByte()
+		blockID, err := t.reader.ReadByteWithError()
 		if err != nil && err == io.EOF {
 			break // no problems, we're done!
 		} else if err != nil {
@@ -122,48 +141,34 @@ func (r *Reader) ReadBlocks() error {
 		if err != nil {
 			return err
 		}
-		block.Read(r.reader)
+		block.Read(t.reader)
 
 		if block.Id() == 0x32 {
-			r.archive = block
+			t.archive = block
 		} else {
-			r.blocks = append(r.blocks, block)
+			t.blocks = append(t.blocks, block)
 		}
 	}
 	return nil
 }
 
-// DisplayTapeMetadata outputs the metadata, archive info, data blocks, etc., to the terminal.
-func (r Reader) DisplayTapeMetadata() {
-	fmt.Println("Tzxit processing complete!")
+// DisplayImageMetadata prints the metadata, archive info, data blocks, etc.
+func (t TZX) DisplayImageMetadata() {
+	fmt.Println("TZX processing complete!")
 	fmt.Println()
 
-	if r.archive != nil {
+	if t.archive != nil {
 		fmt.Println("ARCHIVE INFORMATION:")
-		fmt.Println(r.archive.ToString())
+		fmt.Println(t.archive.ToString())
 	}
 
 	fmt.Println("DATA BLOCKS:")
-	for i, block := range r.blocks {
-		fmt.Printf("#%d %s\n", i+1, block.ToString())
+	for i, block := range t.blocks {
+		fmt.Printf("#%02d %s\n", i+1, block.ToString())
 	}
 
 	fmt.Println()
-	fmt.Printf("TZX revision: v%d.%d\n", r.MajorVersion, r.MinorVersion)
-}
-
-// readHeader reads the tape header data and validates that the format is correct.
-func (r *Reader) readHeader() error {
-	r.header = header{}
-	if err := binary.Read(r.reader, binary.LittleEndian, &r.header); err != nil {
-		return fmt.Errorf("binary.Read failed: %v", err)
-	}
-
-	if string(r.header.Signature[:]) != "ZXTape!" {
-		return fmt.Errorf("TZX file is not in correct format")
-	}
-
-	return nil
+	fmt.Printf("TZX revision: v%d.%d\n", t.MajorVersion, t.MinorVersion)
 }
 
 // Validates the TZX header data.

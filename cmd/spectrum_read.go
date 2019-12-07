@@ -1,54 +1,56 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 
+	"retroio/spectrum"
 	"retroio/spectrum/tap"
 	"retroio/spectrum/tzx"
-	"retroio/tape"
+	"retroio/storage"
 )
 
 var speccyReadCmd = &cobra.Command{
 	Use:                   "read FILE",
-	Short:                 "Read a TZX or TAP file",
+	Short:                 "Read a ZX Spectrum file",
 	Long:                  `Read all header and data blocks from a TZX or TAP file.`,
 	Args:                  cobra.ExactArgs(1),
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		normalizeFormatValue()
 
-		f, err := os.Open(args[0])
+		filename := args[0]
+
+		f, err := os.Open(filename)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 		defer f.Close()
-		reader := bufio.NewReader(f)
+		reader := storage.NewReader(f)
 
-		var r tape.Tape
-		switch format {
+		var dsk spectrum.Image
+		dskType := storageType(format, filename)
+
+		switch dskType {
 		case "tzx":
-			r, err = tzx.NewReader(reader)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			dsk = tzx.New(reader)
 		case "tap":
-			r = tap.NewReader(reader)
+			dsk = tap.New(reader)
 		default:
-			fmt.Println("Unsupported tape format.")
+			fmt.Printf("Unsupported tape format: '%s'", dskType)
 			return
 		}
 
-		if err := r.ReadBlocks(); err != nil {
+		if err := dsk.Read(); err != nil {
+			fmt.Println("Image read error!")
 			fmt.Println(err)
-			return
+			os.Exit(1)
 		}
-		r.DisplayTapeMetadata()
+
+		dsk.DisplayImageMetadata()
 	},
 }
 

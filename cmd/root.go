@@ -6,6 +6,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -39,4 +40,12 @@ func Execute() {
 
 func normalizeFormatValue() {
 	format = strings.ToLower(format)
+}
+
+func storageType(format, filename string) string {
+	if format == "" {
+		format = path.Ext(filename)
+	}
+
+	return strings.TrimPrefix(format, ".")
 }

@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // GlueBlock
@@ -21,8 +20,8 @@ type GlueBlock struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (g *GlueBlock) Read(reader *bufio.Reader) {
-	for i, b := range tape.ReadNextBytes(reader, 9) {
+func (g *GlueBlock) Read(reader *storage.Reader) {
+	for i, b := range reader.ReadNextBytes(9) {
 		g.Value[i] = b
 	}
 }
@@ -39,5 +38,5 @@ func (g GlueBlock) Name() string {
 
 // ToString returns a human readable string of the block data
 func (g GlueBlock) ToString() string {
-	return fmt.Sprintf("> %s", g.Name())
+	return fmt.Sprintf("%s", g.Name())
 }

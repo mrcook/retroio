@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // PureTone
@@ -18,9 +17,9 @@ type PureTone struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (p *PureTone) Read(reader *bufio.Reader) {
-	p.Length = tape.ReadShort(reader)
-	p.PulseCount = tape.ReadShort(reader)
+func (p *PureTone) Read(reader *storage.Reader) {
+	p.Length = reader.ReadShort()
+	p.PulseCount = reader.ReadShort()
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -35,5 +34,5 @@ func (p PureTone) Name() string {
 
 // ToString returns a human readable string of the block data
 func (p PureTone) ToString() string {
-	return fmt.Sprintf("> %-19s : %d T-States, %d pulses", p.Name(), p.Length, p.PulseCount)
+	return fmt.Sprintf("%-19s : %d T-States, %d pulses", p.Name(), p.Length, p.PulseCount)
 }

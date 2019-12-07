@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // Select
@@ -28,15 +27,15 @@ type Selection struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *Select) Read(reader *bufio.Reader) {
-	s.Length = tape.ReadShort(reader)
-	s.Count, _ = reader.ReadByte()
+func (s *Select) Read(reader *storage.Reader) {
+	s.Length = reader.ReadShort()
+	s.Count = reader.ReadByte()
 
 	for i := 0; i < int(s.Count); i++ {
 		var selection Selection
-		selection.RelativeOffset = tape.ReadSignedShort(reader)
-		selection.Length, _ = reader.ReadByte()
-		for _, b := range tape.ReadNextBytes(reader, int(selection.Length)) {
+		selection.RelativeOffset = reader.ReadShortToSigned()
+		selection.Length = reader.ReadByte()
+		for _, b := range reader.ReadNextBytes(int(selection.Length)) {
 			selection.Description = append(selection.Description, b)
 		}
 		s.Selections = append(s.Selections, selection)
@@ -55,7 +54,7 @@ func (s Select) Name() string {
 
 // ToString returns a human readable string of the block data
 func (s Select) ToString() string {
-	str := fmt.Sprintf("> %s\n", s.Name())
+	str := fmt.Sprintf("%s\n", s.Name())
 	for _, b := range s.Selections {
 		str += fmt.Sprintf("- Offset:      %d\n", b.RelativeOffset)
 		str += fmt.Sprintf("  Description: %s\n", b.Description)

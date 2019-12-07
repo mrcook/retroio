@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // Message
@@ -24,11 +23,11 @@ type Message struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (m *Message) Read(reader *bufio.Reader) {
-	m.DisplayTime, _ = reader.ReadByte()
-	m.Length, _ = reader.ReadByte()
+func (m *Message) Read(reader *storage.Reader) {
+	m.DisplayTime = reader.ReadByte()
+	m.Length = reader.ReadByte()
 
-	for _, b := range tape.ReadNextBytes(reader, int(m.Length)) {
+	for _, b := range reader.ReadNextBytes(int(m.Length)) {
 		m.Message = append(m.Message, b)
 	}
 }
@@ -45,7 +44,7 @@ func (m Message) Name() string {
 
 // ToString returns a human readable string of the block data
 func (m Message) ToString() string {
-	str := fmt.Sprintf("> %-19s : display for %d seconds\n", m.Name(), m.DisplayTime)
+	str := fmt.Sprintf("%-19s : display for %d seconds\n", m.Name(), m.DisplayTime)
 	str += fmt.Sprintf(" - Message: %s\n", m.Message)
 	return str
 }

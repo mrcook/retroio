@@ -1,10 +1,10 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
+	"io"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // CswRecording
@@ -22,16 +22,17 @@ type CswRecording struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (c *CswRecording) Read(reader *bufio.Reader) {
-	c.Length = tape.ReadLong(reader)
-	c.Pause = tape.ReadShort(reader)
-	c.SampleRate = tape.ReadShort(reader)
-	c.SampleSpareByte, _ = reader.ReadByte()
-	c.CompressionType, _ = reader.ReadByte()
-	c.StoredPulseCount = tape.ReadLong(reader)
+func (c *CswRecording) Read(reader *storage.Reader) {
+	c.Length = reader.ReadLong()
+	c.Pause = reader.ReadShort()
+	c.SampleRate = reader.ReadShort()
+	c.SampleSpareByte = reader.ReadByte()
+	c.CompressionType = reader.ReadByte()
+	c.StoredPulseCount = reader.ReadLong()
 
 	// Yep, we're discarding the data for the moment
-	tape.ReadNextBytes(reader, int(c.Length))
+	data := make([]byte, c.Length)
+	_, _ = io.ReadFull(reader, data)
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -46,7 +47,7 @@ func (c CswRecording) Name() string {
 
 // ToString returns a human readable string of the block data
 func (c CswRecording) ToString() string {
-	str := fmt.Sprintf("> %s\n", c.Name())
+	str := fmt.Sprintf("%s\n", c.Name())
 	str += fmt.Sprintf(" - Pause (ms.): %d\n", c.Pause)
 	str += fmt.Sprintf(" - Sample Rate: %d\n", c.SampleRate)
 	str += fmt.Sprintf(" - Compression: %d\n", c.CompressionType)

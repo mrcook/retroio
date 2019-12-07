@@ -1,10 +1,10 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
+	"io"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // DirectRecording
@@ -26,17 +26,18 @@ type DirectRecording struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (d *DirectRecording) Read(reader *bufio.Reader) {
-	d.TStatesPerSample = tape.ReadShort(reader)
-	d.Pause = tape.ReadShort(reader)
-	d.UsedBits, _ = reader.ReadByte()
+func (d *DirectRecording) Read(reader *storage.Reader) {
+	d.TStatesPerSample = reader.ReadShort()
+	d.Pause = reader.ReadShort()
+	d.UsedBits = reader.ReadByte()
 
-	length := tape.ReadNextBytes(reader, 3)
+	length := reader.ReadNextBytes(3)
 	length = append(length, 0) // add 4th byte
-	d.Length = tape.BytesToLong(length)
+	d.Length = reader.BytesToLong(length)
 
 	// Yep, we're discarding the data for the moment
-	tape.ReadNextBytes(reader, int(d.Length))
+	data := make([]byte, d.Length)
+	_, _ = io.ReadFull(reader, data)
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -51,5 +52,5 @@ func (d DirectRecording) Name() string {
 
 // ToString returns a human readable string of the block data
 func (d DirectRecording) ToString() string {
-	return fmt.Sprintf("> %-19s : %d T-States, %d bytes", d.Name(), d.TStatesPerSample, d.Length)
+	return fmt.Sprintf("%-19s : %d T-States, %d bytes", d.Name(), d.TStatesPerSample, d.Length)
 }

@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // StopTapeWhen48kMode
@@ -19,8 +18,8 @@ type StopTapeWhen48kMode struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *StopTapeWhen48kMode) Read(reader *bufio.Reader) {
-	s.Length = tape.ReadLong(reader)
+func (s *StopTapeWhen48kMode) Read(reader *storage.Reader) {
+	s.Length = reader.ReadLong()
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -35,5 +34,5 @@ func (s StopTapeWhen48kMode) Name() string {
 
 // ToString returns a human readable string of the block data
 func (s StopTapeWhen48kMode) ToString() string {
-	return fmt.Sprintf("> %s", s.Name())
+	return fmt.Sprintf("%s", s.Name())
 }

@@ -1,11 +1,10 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
-	tap2 "retroio/spectrum/tap"
 
-	"retroio/tape"
+	"retroio/spectrum/tap"
+	"retroio/storage"
 )
 
 // StandardSpeedData
@@ -20,16 +19,16 @@ type StandardSpeedData struct {
 	// A single .TAP DataBlock consisting of:
 	//   WORD    Length of data that follows
 	//   BYTE[N] Data as in .TAP files
-	DataBlock tap2.DataBlock
+	DataBlock tap.BlockI
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *StandardSpeedData) Read(reader *bufio.Reader) {
-	s.Pause = tape.ReadShort(reader)
+func (s *StandardSpeedData) Read(reader *storage.Reader) {
+	s.Pause = reader.ReadShort()
 
-	t := tap2.NewReader(reader)
-	length, _ := tape.PeekBlockLength(reader)
+	t := tap.New(reader)
+	length, _ := reader.PeekShort()
 	if length == 19 {
 		s.DataBlock, _ = t.ReadHeaderBlock()
 	} else {
@@ -49,8 +48,10 @@ func (s StandardSpeedData) Name() string {
 
 // ToString returns a human readable string of the block data
 func (s StandardSpeedData) ToString() string {
-	str := fmt.Sprintf("> %-19s : %d bytes, pause for %d ms.", s.Name(), s.DataBlock.Length, s.Pause)
-	str += fmt.Sprintf("\n    %s", s.DataBlock.TapeData.ToString())
+	length := 0 // s.DataBlock.Size() // FIXME: BlockI needs a Size() func
+
+	str := fmt.Sprintf("%-19s: %d bytes, pause for %d ms\n", s.Name(), length, s.Pause)
+	str += fmt.Sprintf("    - %s", s.DataBlock.ToString())
 
 	return str
 }

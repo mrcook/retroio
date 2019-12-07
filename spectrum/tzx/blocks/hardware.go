@@ -1,8 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
+
+	"retroio/storage"
 )
 
 // HardwareType
@@ -30,14 +31,14 @@ type HardwareInfo struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (h *HardwareType) Read(reader *bufio.Reader) {
-	h.TypeCount, _ = reader.ReadByte()
+func (h *HardwareType) Read(reader *storage.Reader) {
+	h.TypeCount = reader.ReadByte()
 
 	for i := 0; i < int(h.TypeCount); i++ {
 		var m HardwareInfo
-		m.Type, _ = reader.ReadByte()
-		m.Id, _ = reader.ReadByte()
-		m.Information, _ = reader.ReadByte()
+		m.Type = reader.ReadByte()
+		m.Id = reader.ReadByte()
+		m.Information = reader.ReadByte()
 		h.Machines = append(h.Machines, m)
 	}
 }
@@ -54,7 +55,7 @@ func (h HardwareType) Name() string {
 
 // ToString returns a human readable string of the block data
 func (h HardwareType) ToString() string {
-	str := fmt.Sprintf("> %s:\n", h.Name())
+	str := fmt.Sprintf("%s:\n", h.Name())
 	for _, m := range h.Machines {
 		str += fmt.Sprintf("- Type: %02X - %s\n", m.Type, hardwareReferenceTypes[m.Type])
 		str += fmt.Sprintf("  ID:   %02X - %s\n", m.Id, hardwareReferenceIDs[m.Type][m.Id])

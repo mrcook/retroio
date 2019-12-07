@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // SetSignalLevel
@@ -18,9 +17,9 @@ type SetSignalLevel struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *SetSignalLevel) Read(reader *bufio.Reader) {
-	s.Length = tape.ReadLong(reader)
-	s.SignalLevel, _ = reader.ReadByte()
+func (s *SetSignalLevel) Read(reader *storage.Reader) {
+	s.Length = reader.ReadLong()
+	s.SignalLevel = reader.ReadByte()
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -35,5 +34,5 @@ func (s SetSignalLevel) Name() string {
 
 // ToString returns a human readable string of the block data
 func (s SetSignalLevel) ToString() string {
-	return fmt.Sprintf("> %-19s : signal level: %d", s.Name(), s.SignalLevel)
+	return fmt.Sprintf("%-19s : signal level: %d", s.Name(), s.SignalLevel)
 }

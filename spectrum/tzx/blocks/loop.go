@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // LoopStart
@@ -18,8 +17,8 @@ type LoopStart struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (l *LoopStart) Read(reader *bufio.Reader) {
-	l.RepetitionCount = tape.ReadShort(reader)
+func (l *LoopStart) Read(reader *storage.Reader) {
+	l.RepetitionCount = reader.ReadShort()
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -34,7 +33,7 @@ func (l LoopStart) Name() string {
 
 // ToString returns a human readable string of the block data
 func (l LoopStart) ToString() string {
-	return fmt.Sprintf("> %-19s : %d times", l.Name(), l.RepetitionCount)
+	return fmt.Sprintf("%-19s : %d times", l.Name(), l.RepetitionCount)
 }
 
 // LoopEnd
@@ -46,7 +45,7 @@ type LoopEnd struct{}
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (l *LoopEnd) Read(reader *bufio.Reader) {}
+func (l *LoopEnd) Read(reader *storage.Reader) {}
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (l LoopEnd) Id() uint8 {
@@ -60,5 +59,5 @@ func (l LoopEnd) Name() string {
 
 // ToString returns a human readable string of the block data
 func (l LoopEnd) ToString() string {
-	return fmt.Sprintf("> %s", l.Name())
+	return fmt.Sprintf("%s", l.Name())
 }

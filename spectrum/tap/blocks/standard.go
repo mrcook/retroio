@@ -1,10 +1,10 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
+	"io"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // Standard data block for storing (2+[data length]) bytes.
@@ -19,9 +19,11 @@ type Standard struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (b *Standard) Read(reader *bufio.Reader) {
-	b.Length = tape.ReadShort(reader)
-	data := tape.ReadNextBytes(reader, int(b.Length))
+func (b *Standard) Read(reader *storage.Reader) {
+	b.Length = reader.ReadShort()
+
+	data := make([]byte, b.Length)
+	_, _ = io.ReadFull(reader, data)
 
 	b.Flag = data[0]
 	b.Data = data[1 : len(data)-1]
@@ -38,5 +40,5 @@ func (b Standard) Name() string {
 
 // ToString returns a formatted string for the block
 func (b Standard) ToString() string {
-	return fmt.Sprintf(" - %-13s: %d bytes", b.Name(), len(b.Data))
+	return fmt.Sprintf("%-13s: %d bytes", b.Name(), len(b.Data))
 }

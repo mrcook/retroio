@@ -1,10 +1,9 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
 
-	"retroio/tape"
+	"retroio/storage"
 )
 
 // GroupStart
@@ -21,10 +20,10 @@ type GroupStart struct {
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (g *GroupStart) Read(reader *bufio.Reader) {
-	g.Length, _ = reader.ReadByte()
+func (g *GroupStart) Read(reader *storage.Reader) {
+	g.Length = reader.ReadByte()
 
-	for _, b := range tape.ReadNextBytes(reader, int(g.Length)) {
+	for _, b := range reader.ReadNextBytes(int(g.Length)) {
 		g.GroupName = append(g.GroupName, b)
 	}
 }
@@ -41,7 +40,7 @@ func (g GroupStart) Name() string {
 
 // ToString returns a human readable string of the block data
 func (g GroupStart) ToString() string {
-	return fmt.Sprintf("> %-19s : %s", g.Name(), g.GroupName)
+	return fmt.Sprintf("%-19s : %s", g.Name(), g.GroupName)
 }
 
 // GroupEnd
@@ -51,7 +50,7 @@ type GroupEnd struct{}
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (g *GroupEnd) Read(reader *bufio.Reader) {}
+func (g *GroupEnd) Read(reader *storage.Reader) {}
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
 func (g GroupEnd) Id() uint8 {
@@ -65,5 +64,5 @@ func (g GroupEnd) Name() string {
 
 // ToString returns a human readable string of the block data
 func (g GroupEnd) ToString() string {
-	return fmt.Sprintf("> %s", g.Name())
+	return fmt.Sprintf("%s", g.Name())
 }

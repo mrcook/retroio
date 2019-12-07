@@ -1,11 +1,11 @@
 package blocks
 
 import (
-	"bufio"
 	"fmt"
-	tap2 "retroio/spectrum/tap"
+	"io"
 
-	"retroio/tape"
+	"retroio/spectrum/tap"
+	"retroio/storage"
 )
 
 // PureData
@@ -22,23 +22,24 @@ type PureData struct {
 	// A single .TAP DataBlock consisting of:
 	//   WORD    Length of data that follows
 	//   BYTE[N] Data as in .TAP files
-	DataBlock tap2.DataBlock
+	DataBlock tap.BlockI
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (p *PureData) Read(reader *bufio.Reader) {
-	p.OneBitPulse = tape.ReadShort(reader)
-	p.ZeroBitPulse = tape.ReadShort(reader)
-	p.UsedBits, _ = reader.ReadByte()
-	p.Pause = tape.ReadShort(reader)
+func (p *PureData) Read(reader *storage.Reader) {
+	p.OneBitPulse = reader.ReadShort()
+	p.ZeroBitPulse = reader.ReadShort()
+	p.UsedBits = reader.ReadByte()
+	p.Pause = reader.ReadShort()
 
-	length := tape.ReadNextBytes(reader, 3)
+	length := reader.ReadNextBytes(3)
 	length = append(length, 0) // add 4th byte
-	p.Length = tape.BytesToLong(length)
+	p.Length = reader.BytesToLong(length)
 
 	// Yep, we're discarding the data for the moment
-	tape.ReadNextBytes(reader, int(p.Length))
+	data := make([]byte, p.Length)
+	_, _ = io.ReadFull(reader, data)
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -53,5 +54,5 @@ func (p PureData) Name() string {
 
 // ToString returns a human readable string of the block data
 func (p PureData) ToString() string {
-	return fmt.Sprintf("> %-19s : %d bytes, pause for %d ms.", p.Name(), p.Length, p.Pause)
+	return fmt.Sprintf("%-19s : %d bytes, pause for %d ms.", p.Name(), p.Length, p.Pause)
 }
