@@ -3,21 +3,22 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"retroio/amstrad/cdt"
 
 	"github.com/spf13/cobra"
 
 	"retroio/spectrum"
-	"retroio/spectrum/tap"
-	"retroio/spectrum/tzx"
 	"retroio/storage"
 )
 
-var spectrumFormat string
+var amstradFormat string
 
-var speccyReadCmd = &cobra.Command{
-	Use:                   "read FILE",
-	Short:                 "Read a ZX Spectrum file",
-	Long:                  `Read all header and data blocks from a TZX or TAP file.`,
+var amstradReadCmd = &cobra.Command{
+	Use:   "read FILE",
+	Short: "Read an Amstrad file",
+	Long: `Read all header and data blocks from a CDT file.
+
+NOTE: this storage format is identical to the ZX Spectrum TZX format.`,
 	Args:                  cobra.ExactArgs(1),
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -32,13 +33,11 @@ var speccyReadCmd = &cobra.Command{
 		reader := storage.NewReader(f)
 
 		var dsk spectrum.Image
-		dskType := storageType(spectrumFormat, filename)
+		dskType := storageType(amstradFormat, filename)
 
 		switch dskType {
-		case "tap":
-			dsk = tap.New(reader)
-		case "tzx":
-			dsk = tzx.New(reader)
+		case "cdt":
+			dsk = cdt.New(reader)
 		default:
 			fmt.Printf("Unsupported storage format: '%s'", dskType)
 			return
@@ -55,6 +54,6 @@ var speccyReadCmd = &cobra.Command{
 }
 
 func init() {
-	speccyReadCmd.Flags().StringVarP(&spectrumFormat, "format", "f", "", `Storage format`)
-	spectrumCmd.AddCommand(speccyReadCmd)
+	amstradReadCmd.Flags().StringVarP(&amstradFormat, "format", "f", "", `Storage format`)
+	amstradCmd.AddCommand(amstradReadCmd)
 }

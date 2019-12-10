@@ -13,8 +13,11 @@ binary data files._
 
 ## Supported Storage Media
 
- * ZX Spectrum:  **TZX**, **TAP**
- * Commodore 64: **T64**, **TAP**
+Read only for:
+
+* Amstrad:      **CDT**
+* Commodore 64: **T64**, **TAP**
+* ZX Spectrum:  **TZX**, **TAP**
 
 
 ## Installation

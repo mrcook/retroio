@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path"
 
 	"github.com/spf13/cobra"
 
@@ -13,6 +12,8 @@ import (
 	"retroio/storage"
 )
 
+var commodoreFormat string
+
 var c64ReadCmd = &cobra.Command{
 	Use:                   "read FILE",
 	Short:                 "Read a T64 file",
@@ -20,8 +21,6 @@ var c64ReadCmd = &cobra.Command{
 	Args:                  cobra.ExactArgs(1),
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
-		normalizeFormatValue()
-
 		filename := args[0]
 
 		f, err := os.Open(filename)
@@ -33,15 +32,20 @@ var c64ReadCmd = &cobra.Command{
 		reader := storage.NewReader(f)
 
 		var dsk commodore.Image
-		switch path.Ext(filename) {
-		case ".tap":
+		dskType := storageType(commodoreFormat, filename)
+
+		switch dskType {
+		case "t64":
+			dsk = t64.New(reader)
+		case "tap":
 			dsk = tap.New(reader)
 		default:
-			dsk = t64.New(reader)
+			fmt.Printf("Unsupported storage format: '%s'", dskType)
+			return
 		}
 
 		if err := dsk.Read(); err != nil {
-			fmt.Println("Image read error!")
+			fmt.Println("Storage read error!")
 			fmt.Println(err)
 			os.Exit(1)
 		}
@@ -51,5 +55,6 @@ var c64ReadCmd = &cobra.Command{
 }
 
 func init() {
+	c64ReadCmd.Flags().StringVarP(&commodoreFormat, "format", "f", "", `Storage format`)
 	commodoreCmd.AddCommand(c64ReadCmd)
 }
