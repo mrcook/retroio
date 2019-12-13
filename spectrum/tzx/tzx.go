@@ -81,7 +81,6 @@ type Block interface {
 	Read(reader *storage.Reader)
 	Id() uint8
 	Name() string
-	ToString() string
 }
 
 // Header is the first block of data found in all TZX files.
@@ -160,12 +159,12 @@ func (t TZX) DisplayImageMetadata() {
 
 	if t.archive != nil {
 		fmt.Println("ARCHIVE INFORMATION:")
-		fmt.Println(t.archive.ToString())
+		fmt.Println(t.archive)
 	}
 
 	fmt.Println("DATA BLOCKS:")
 	for i, block := range t.blocks {
-		fmt.Printf("#%02d %s\n", i+1, block.ToString())
+		fmt.Printf("#%02d %s\n", i+1, block)
 	}
 
 	fmt.Println()

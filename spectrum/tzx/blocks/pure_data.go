@@ -52,7 +52,7 @@ func (p PureData) Name() string {
 	return "Pure Data"
 }
 
-// ToString returns a human readable string of the block data
-func (p PureData) ToString() string {
+// String returns a human readable string of the block data
+func (p PureData) String() string {
 	return fmt.Sprintf("%-19s : %d bytes, pause for %d ms.", p.Name(), p.Length, p.Pause)
 }

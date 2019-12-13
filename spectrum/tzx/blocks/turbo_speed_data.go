@@ -63,7 +63,7 @@ func (t TurboSpeedData) Name() string {
 	return "Turbo Speed Data"
 }
 
-// ToString returns a human readable string of the block data
-func (t TurboSpeedData) ToString() string {
+// String returns a human readable string of the block data
+func (t TurboSpeedData) String() string {
 	return fmt.Sprintf("%-19s : %d bytes, pause for %d ms.", t.Name(), t.Length, t.Pause)
 }

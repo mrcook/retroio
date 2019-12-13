@@ -38,7 +38,7 @@ func (b Standard) Name() string {
 	return "Standard Data"
 }
 
-// ToString returns a formatted string for the block
-func (b Standard) ToString() string {
+// String returns a formatted string for the block
+func (b Standard) String() string {
 	return fmt.Sprintf("%-13s: %d bytes", b.Name(), len(b.Data))
 }

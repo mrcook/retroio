@@ -46,12 +46,12 @@ func (s StandardSpeedData) Name() string {
 	return "Standard Speed Data"
 }
 
-// ToString returns a human readable string of the block data
-func (s StandardSpeedData) ToString() string {
+// String returns a human readable string of the block data
+func (s StandardSpeedData) String() string {
 	length := 0 // s.DataBlock.Size() // FIXME: BlockI needs a Size() func
 
 	str := fmt.Sprintf("%-19s: %d bytes, pause for %d ms\n", s.Name(), length, s.Pause)
-	str += fmt.Sprintf("    - %s", s.DataBlock.ToString())
+	str += fmt.Sprintf("    - %s", s.DataBlock)
 
 	return str
 }

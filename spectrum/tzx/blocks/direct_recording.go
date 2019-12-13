@@ -50,7 +50,7 @@ func (d DirectRecording) Name() string {
 	return "Direct Recording"
 }
 
-// ToString returns a human readable string of the block data
-func (d DirectRecording) ToString() string {
+// String returns a human readable string of the block data
+func (d DirectRecording) String() string {
 	return fmt.Sprintf("%-19s : %d T-States, %d bytes", d.Name(), d.TStatesPerSample, d.Length)
 }

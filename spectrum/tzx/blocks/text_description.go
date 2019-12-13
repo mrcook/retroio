@@ -38,7 +38,7 @@ func (t TextDescription) Name() string {
 	return "Text Description"
 }
 
-// ToString returns a human readable string of the block data
-func (t TextDescription) ToString() string {
+// String returns a human readable string of the block data
+func (t TextDescription) String() string {
 	return fmt.Sprintf("%-19s : %s", t.Name(), t.Description)
 }

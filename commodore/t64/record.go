@@ -35,7 +35,7 @@ type Record struct {
 	Filename     [16]byte // C64 filename, in PETASCII, padded with $20
 }
 
-func (r Record) ToString() string {
+func (r Record) String() string {
 	str := ""
 	str += fmt.Sprintf("Filename:      %s\n", r.Filename)
 	str += fmt.Sprintf("Type:          %s: %s\n", r.fileTypeLabel(r.FileType), r.entryTypeLabel(r.Type))

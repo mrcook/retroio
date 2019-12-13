@@ -36,7 +36,7 @@ func (g GlueBlock) Name() string {
 	return "Glue Block"
 }
 
-// ToString returns a human readable string of the block data
-func (g GlueBlock) ToString() string {
+// String returns a human readable string of the block data
+func (g GlueBlock) String() string {
 	return fmt.Sprintf("%s", g.Name())
 }

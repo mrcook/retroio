@@ -46,7 +46,6 @@ type BlockI interface {
 	Read(reader *storage.Reader)
 	Id() uint8
 	Name() string
-	ToString() string
 }
 
 func New(reader *storage.Reader) *TAP {
@@ -154,6 +153,6 @@ func (t TAP) DisplayImageMetadata() {
 	fmt.Println()
 	fmt.Println("DATA BLOCKS:")
 	for i, block := range t.Blocks {
-		fmt.Printf("#%02d %s\n", i+1, block.TapeData.ToString())
+		fmt.Printf("#%02d %s\n", i+1, block.TapeData)
 	}
 }

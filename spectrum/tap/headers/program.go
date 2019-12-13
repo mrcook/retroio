@@ -43,8 +43,8 @@ func (b ProgramData) Name() string {
 	return "BASIC Program"
 }
 
-// ToString returns a formatted string for the header
-func (b ProgramData) ToString() string {
+// String returns a formatted string for the header
+func (b ProgramData) String() string {
 	str := fmt.Sprintf("%s\n", b.Name())
 	str += fmt.Sprintf("    - Filename     : %s\n", b.Filename)
 	str += fmt.Sprintf("    - AutoStartLine: %d", b.AutoStartLine)

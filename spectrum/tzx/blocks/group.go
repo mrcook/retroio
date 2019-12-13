@@ -38,8 +38,8 @@ func (g GroupStart) Name() string {
 	return "Group Start"
 }
 
-// ToString returns a human readable string of the block data
-func (g GroupStart) ToString() string {
+// String returns a human readable string of the block data
+func (g GroupStart) String() string {
 	return fmt.Sprintf("%-19s : %s", g.Name(), g.GroupName)
 }
 
@@ -62,7 +62,7 @@ func (g GroupEnd) Name() string {
 	return "Group End"
 }
 
-// ToString returns a human readable string of the block data
-func (g GroupEnd) ToString() string {
+// String returns a human readable string of the block data
+func (g GroupEnd) String() string {
 	return fmt.Sprintf("%s", g.Name())
 }

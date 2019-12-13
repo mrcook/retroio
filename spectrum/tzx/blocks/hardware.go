@@ -53,8 +53,8 @@ func (h HardwareType) Name() string {
 	return "Hardware"
 }
 
-// ToString returns a human readable string of the block data
-func (h HardwareType) ToString() string {
+// String returns a human readable string of the block data
+func (h HardwareType) String() string {
 	str := fmt.Sprintf("%s:\n", h.Name())
 	for _, m := range h.Machines {
 		str += fmt.Sprintf("- Type: %02X - %s\n", m.Type, hardwareReferenceTypes[m.Type])

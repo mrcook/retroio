@@ -48,10 +48,10 @@ func (t *TAP) Read() error {
 // DisplayImageMetadata prints the tape metadata to the terminal.
 func (t TAP) DisplayImageMetadata() {
 	fmt.Println("HEADER INFORMATION:")
-	fmt.Println(t.ToString())
+	fmt.Println(t)
 }
 
-func (t TAP) ToString() string {
+func (t TAP) String() string {
 	str := ""
 	str += fmt.Sprintf("Signature  %s\n", t.Signature)
 	str += fmt.Sprintf("Version:   $%02x (%s)\n", t.Version, t.tapType(t.Version))

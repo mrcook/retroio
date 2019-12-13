@@ -44,8 +44,8 @@ func (b NumericData) Name() string {
 	return "Numeric Data Array"
 }
 
-// ToString returns a formatted string for the header
-func (b NumericData) ToString() string {
+// String returns a formatted string for the header
+func (b NumericData) String() string {
 	str := fmt.Sprintf("%s\n", b.Name())
 	str += fmt.Sprintf("    - Filename     : %s\n", b.Filename)
 	str += fmt.Sprintf("    - Variable Name: %c", b.VariableName-128)

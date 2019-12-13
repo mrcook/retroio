@@ -74,7 +74,7 @@ func (g GeneralizedData) Name() string {
 	return "Generalized Data"
 }
 
-// ToString returns a human readable string of the block data
-func (g GeneralizedData) ToString() string {
+// String returns a human readable string of the block data
+func (g GeneralizedData) String() string {
 	return fmt.Sprintf("%s", g.Name())
 }

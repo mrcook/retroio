@@ -48,11 +48,11 @@ func (t *T64) Read() error {
 // DisplayImageMetadata prints the tape metadata and record headers to the terminal.
 func (t T64) DisplayImageMetadata() {
 	fmt.Println("HEADER INFORMATION:")
-	fmt.Println(t.Header.ToString())
+	fmt.Println(t.Header)
 
 	for i, r := range t.Records {
 		fmt.Printf("RECORD #%d:\n", i)
-		fmt.Println(r.ToString())
+		fmt.Println(r)
 	}
 
 	for i, r := range t.Data {

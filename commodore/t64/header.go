@@ -12,7 +12,7 @@ type Header struct {
 	Name        [24]byte // Tape container name, padded with $20 (space)
 }
 
-func (h Header) ToString() string {
+func (h Header) String() string {
 	str := ""
 	str += fmt.Sprintf("Name:            %s\n", h.Name)
 	str += fmt.Sprintf("Version:         $%04x\n", h.Version)

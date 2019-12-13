@@ -52,8 +52,8 @@ func (s Select) Name() string {
 	return "Select"
 }
 
-// ToString returns a human readable string of the block data
-func (s Select) ToString() string {
+// String returns a human readable string of the block data
+func (s Select) String() string {
 	str := fmt.Sprintf("%s\n", s.Name())
 	for _, b := range s.Selections {
 		str += fmt.Sprintf("- Offset:      %d\n", b.RelativeOffset)

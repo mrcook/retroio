@@ -35,7 +35,7 @@ func (j JumpTo) Name() string {
 	return "Jump To"
 }
 
-// ToString returns a human readable string of the block data
-func (j JumpTo) ToString() string {
+// String returns a human readable string of the block data
+func (j JumpTo) String() string {
 	return fmt.Sprintf("%-19s : %d", j.Name(), j.Value)
 }

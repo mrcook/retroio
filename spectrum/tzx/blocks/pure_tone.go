@@ -32,7 +32,7 @@ func (p PureTone) Name() string {
 	return "Pure Tone"
 }
 
-// ToString returns a human readable string of the block data
-func (p PureTone) ToString() string {
+// String returns a human readable string of the block data
+func (p PureTone) String() string {
 	return fmt.Sprintf("%-19s : %d T-States, %d pulses", p.Name(), p.Length, p.PulseCount)
 }

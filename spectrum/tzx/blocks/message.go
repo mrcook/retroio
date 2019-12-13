@@ -42,8 +42,8 @@ func (m Message) Name() string {
 	return "Message"
 }
 
-// ToString returns a human readable string of the block data
-func (m Message) ToString() string {
+// String returns a human readable string of the block data
+func (m Message) String() string {
 	str := fmt.Sprintf("%-19s : display for %d seconds\n", m.Name(), m.DisplayTime)
 	str += fmt.Sprintf(" - Message: %s\n", m.Message)
 	return str

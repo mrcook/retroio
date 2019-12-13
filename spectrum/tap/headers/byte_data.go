@@ -47,8 +47,8 @@ func (b ByteData) Name() string {
 	}
 }
 
-// ToString returns a formatted string for the header
-func (b ByteData) ToString() string {
+// String returns a formatted string for the header
+func (b ByteData) String() string {
 	str := fmt.Sprintf("%s\n", b.Name())
 	str += fmt.Sprintf("    - Filename     : %s\n", b.Filename)
 	str += fmt.Sprintf("    - Start Address: %d", b.StartAddress)

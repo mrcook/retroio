@@ -35,7 +35,7 @@ func (s SequenceOfPulses) Name() string {
 	return "Sequence of Pulses"
 }
 
-// ToString returns a human readable string of the block data
-func (s SequenceOfPulses) ToString() string {
+// String returns a human readable string of the block data
+func (s SequenceOfPulses) String() string {
 	return fmt.Sprintf("%-19s : %d pulses", s.Name(), s.Count)
 }

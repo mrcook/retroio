@@ -41,7 +41,7 @@ func (c CustomInfo) Name() string {
 	return "Custom Info"
 }
 
-// ToString returns a human readable string of the block data
-func (c CustomInfo) ToString() string {
+// String returns a human readable string of the block data
+func (c CustomInfo) String() string {
 	return fmt.Sprintf("%-19s : %s - %s", c.Name(), c.Identification, c.Info)
 }

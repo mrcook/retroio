@@ -32,7 +32,7 @@ func (s SetSignalLevel) Name() string {
 	return "Set Signal Level"
 }
 
-// ToString returns a human readable string of the block data
-func (s SetSignalLevel) ToString() string {
+// String returns a human readable string of the block data
+func (s SetSignalLevel) String() string {
 	return fmt.Sprintf("%-19s : signal level: %d", s.Name(), s.SignalLevel)
 }

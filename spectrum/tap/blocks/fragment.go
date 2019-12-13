@@ -34,7 +34,7 @@ func (b Fragment) Name() string {
 	return "Data Fragment"
 }
 
-// ToString returns a formatted string for the block
-func (b Fragment) ToString() string {
+// String returns a formatted string for the block
+func (b Fragment) String() string {
 	return fmt.Sprintf("%-13s: %d bytes", b.Name(), len(b.Data))
 }
