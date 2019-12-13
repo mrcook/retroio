@@ -3,11 +3,12 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"retroio/amstrad/cdt"
 
 	"github.com/spf13/cobra"
 
-	"retroio/spectrum"
+	"retroio/amstrad"
+	"retroio/amstrad/cdt"
+	"retroio/amstrad/dsk"
 	"retroio/storage"
 )
 
@@ -32,24 +33,26 @@ NOTE: this storage format is identical to the ZX Spectrum TZX format.`,
 		defer f.Close()
 		reader := storage.NewReader(f)
 
-		var dsk spectrum.Image
+		var disk amstrad.Image
 		dskType := storageType(amstradFormat, filename)
 
 		switch dskType {
+		case "dsk":
+			disk = dsk.New(reader)
 		case "cdt":
-			dsk = cdt.New(reader)
+			disk = cdt.New(reader)
 		default:
 			fmt.Printf("Unsupported storage format: '%s'", dskType)
 			return
 		}
 
-		if err := dsk.Read(); err != nil {
+		if err := disk.Read(); err != nil {
 			fmt.Println("Storage read error!")
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		dsk.DisplayImageMetadata()
+		disk.DisplayImageMetadata()
 	},
 }
 

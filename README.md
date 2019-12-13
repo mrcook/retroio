@@ -15,7 +15,7 @@ binary data files._
 
 Read only for:
 
-* Amstrad:      **CDT**
+* Amstrad:      **DSK**, **CDT**
 * Commodore 64: **T64**, **TAP**
 * ZX Spectrum:  **TZX**, **TAP**
 
