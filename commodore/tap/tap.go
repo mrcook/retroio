@@ -38,7 +38,19 @@ func New(reader *storage.Reader) *TAP {
 }
 
 func (t *TAP) Read() error {
-	if err := t.readTape(); err != nil {
+	if _, err := t.reader.Read(t.Signature[:]); err != nil {
+		return err
+	}
+	t.Version = t.reader.ReadByte()
+	if _, err := t.reader.Read(t.Unused[:]); err != nil {
+		return err
+	}
+
+	t.DataSize = t.reader.ReadLong()
+
+	// Slurp the data
+	var err error
+	if t.Data, err = ioutil.ReadAll(t.reader); err != nil {
 		return err
 	}
 
@@ -63,27 +75,6 @@ func (t TAP) String() string {
 		str += fmt.Sprintf("WARNING: data size mismatch, found %d bytes, %d difference\n", len(t.Data), dataLenDiff)
 	}
 	return str
-}
-
-// readTape reads the cassette tape header and data.
-func (t *TAP) readTape() error {
-	if _, err := t.reader.Read(t.Signature[:]); err != nil {
-		return err
-	}
-	t.Version = t.reader.ReadByte()
-	if _, err := t.reader.Read(t.Unused[:]); err != nil {
-		return err
-	}
-
-	t.DataSize = t.reader.ReadLong()
-
-	// Slurp the data
-	var err error
-	if t.Data, err = ioutil.ReadAll(t.reader); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (t TAP) tapType(id byte) string {

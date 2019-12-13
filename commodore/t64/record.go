@@ -1,6 +1,12 @@
 package t64
 
-import "fmt"
+import (
+	"encoding/binary"
+	"fmt"
+	"io"
+
+	"retroio/storage"
+)
 
 // File record
 // - C64s filetype
@@ -33,6 +39,25 @@ type Record struct {
 	Offset       uint32   // Offset of file contents start within T64 file
 	Unused2      uint32   // unused value
 	Filename     [16]byte // C64 filename, in PETASCII, padded with $20
+}
+
+// Read the record header data
+func (r *Record) Read(reader *storage.Reader) error {
+	return binary.Read(reader, binary.LittleEndian, r)
+}
+
+// DataRead reads the data for the record
+func (r *Record) DataRead(reader *storage.Reader, dataOffset int) ([]byte, error) {
+	length := int(r.EndAddress - r.StartAddress)
+	data := make([]byte, length)
+	if _, err := io.ReadFull(reader, data); err != nil {
+		if err == io.EOF {
+			return nil, nil
+		} else if err != io.ErrUnexpectedEOF {
+			return nil, err
+		}
+	}
+	return data, nil
 }
 
 func (r Record) String() string {
