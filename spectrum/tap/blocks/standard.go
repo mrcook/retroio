@@ -3,7 +3,6 @@ package blocks
 import (
 	"fmt"
 	"io"
-
 	"retroio/storage"
 )
 
@@ -21,13 +20,12 @@ type Standard struct {
 // It is expected that the tape pointer is at the correct position for reading.
 func (b *Standard) Read(reader *storage.Reader) {
 	b.Length = reader.ReadShort()
+	b.Flag = reader.ReadByte()
 
-	data := make([]byte, b.Length)
-	_, _ = io.ReadFull(reader, data)
+	b.Data = make([]byte, b.Length-2)
+	_, _ = io.ReadFull(reader, b.Data)
 
-	b.Flag = data[0]
-	b.Data = data[1 : len(data)-1]
-	b.Checksum = data[len(data)-1]
+	b.Checksum = reader.ReadByte()
 }
 
 func (b Standard) Id() uint8 {
@@ -36,6 +34,14 @@ func (b Standard) Id() uint8 {
 
 func (b Standard) Name() string {
 	return "Standard Data"
+}
+
+func (b Standard) Filename() string {
+	return ""
+}
+
+func (b Standard) BlockData() []byte {
+	return b.Data
 }
 
 // String returns a formatted string for the block

@@ -34,6 +34,14 @@ func (b Fragment) Name() string {
 	return "Data Fragment"
 }
 
+func (b Fragment) Filename() string {
+	return ""
+}
+
+func (b Fragment) BlockData() []byte {
+	return b.Data
+}
+
 // String returns a formatted string for the block
 func (b Fragment) String() string {
 	return fmt.Sprintf("%-13s: %d bytes", b.Name(), len(b.Data))

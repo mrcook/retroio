@@ -15,6 +15,8 @@ package tap
 import (
 	"fmt"
 	"io"
+	"retroio/spectrum/basic"
+	"strings"
 
 	"github.com/pkg/errors"
 
@@ -45,7 +47,9 @@ type Block struct {
 type BlockI interface {
 	Read(reader *storage.Reader)
 	Id() uint8
+	Filename() string
 	Name() string
+	BlockData() []byte
 }
 
 func New(reader *storage.Reader) *TAP {
@@ -154,5 +158,36 @@ func (t TAP) DisplayImageMetadata() {
 	fmt.Println("DATA BLOCKS:")
 	for i, block := range t.Blocks {
 		fmt.Printf("#%02d %s\n", i+1, block.TapeData)
+	}
+}
+
+// ListBasicPrograms outputs all BASIC programs
+func (t TAP) ListBasicPrograms() {
+	isProgram := false
+	filename := ""
+
+	fmt.Println("BASIC PROGRAMS:")
+	fmt.Println()
+	for i, block := range t.Blocks {
+
+		if isProgram == true {
+			fmt.Printf("BLK#%02d: %s\n", i+1, filename)
+			program, err := basic.Decode(block.TapeData.BlockData())
+			if err != nil {
+				fmt.Printf("    %s\n", err)
+				continue
+			}
+
+			for _, line := range program {
+				fmt.Printf("%s", line)
+			}
+			fmt.Println()
+			fmt.Println()
+
+			isProgram = false
+		} else if block.TapeData.Id() == 0 {
+			filename = strings.Trim(block.TapeData.Filename(), " ")
+			isProgram = true
+		}
 	}
 }

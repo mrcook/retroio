@@ -15,9 +15,21 @@ binary data files._
 
 Read only for:
 
-* Amstrad:      **DSK**, **CDT**
-* Commodore 64: **T64**, **TAP**
-* ZX Spectrum:  **TZX**, **TAP**
+* Amstrad:      `DSK`, `CDT`
+* Commodore 64: `T64`, `TAP`
+* ZX Spectrum:  `TZX`, `TAP`
+
+
+### BASIC Program Listing
+
+It is possible to output the BASIC program listings from the following media:
+
+* ZX Spectrum: `TAP`
+
+Simply add the `--bas` flag when `read`ing the image.
+
+_Please note that decoding is currently experimental and the output may not be
+considered valid BASIC._
 
 
 ## Installation

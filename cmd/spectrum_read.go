@@ -12,7 +12,10 @@ import (
 	"retroio/storage"
 )
 
-var spectrumFormat string
+var (
+	spectrumFormat     string
+	spectrumBasListing bool
+)
 
 var speccyReadCmd = &cobra.Command{
 	Use:                   "read FILE",
@@ -50,11 +53,16 @@ var speccyReadCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		dsk.DisplayImageMetadata()
+		if spectrumBasListing {
+			dsk.ListBasicPrograms()
+		} else {
+			dsk.DisplayImageMetadata()
+		}
 	},
 }
 
 func init() {
 	speccyReadCmd.Flags().StringVarP(&spectrumFormat, "format", "f", "", `Storage format`)
+	speccyReadCmd.Flags().BoolVar(&spectrumBasListing, "bas", false, `BASIC program listing`)
 	spectrumCmd.AddCommand(speccyReadCmd)
 }

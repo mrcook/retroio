@@ -15,7 +15,7 @@ type ByteData struct {
 
 	Flag         uint8    // BYTE      Always 0: byte indicating a standard ROM loading header.
 	DataType     uint8    // BYTE      Always 3: Byte indicating a byte header.
-	Filename     [10]byte // CHAR[10]  Loading name of the program. Filled with spaces (0x20) to 10 characters.
+	ProgramName  [10]byte // CHAR[10]  Loading name of the program. Filled with spaces (0x20) to 10 characters.
 	DataLength   uint16   // WORD      Length of data following the header, in case of a SCREEN$ header = 6912.
 	StartAddress uint16   // WORD      In case of a SCREEN$ header = 16384.
 	UnusedWord   uint16   // WORD      = 32768.
@@ -47,10 +47,18 @@ func (b ByteData) Name() string {
 	}
 }
 
+func (b ByteData) Filename() string {
+	return string(b.ProgramName[:])
+}
+
+func (b ByteData) BlockData() []byte {
+	return []byte{}
+}
+
 // String returns a formatted string for the header
 func (b ByteData) String() string {
 	str := fmt.Sprintf("%s\n", b.Name())
-	str += fmt.Sprintf("    - Filename     : %s\n", b.Filename)
+	str += fmt.Sprintf("    - Filename     : %s\n", b.ProgramName)
 	str += fmt.Sprintf("    - Start Address: %d", b.StartAddress)
 	return str
 }

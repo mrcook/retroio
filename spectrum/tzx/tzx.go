@@ -171,6 +171,11 @@ func (t TZX) DisplayImageMetadata() {
 	fmt.Printf("TZX revision: v%d.%d\n", t.MajorVersion, t.MinorVersion)
 }
 
+// ListBasicPrograms outputs all BASIC programs
+func (t TZX) ListBasicPrograms() {
+	fmt.Println("Not yet implemented")
+}
+
 // Validates the TZX header data.
 func (h header) valid() error {
 	var validationError error
