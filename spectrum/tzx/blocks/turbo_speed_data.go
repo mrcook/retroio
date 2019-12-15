@@ -2,7 +2,6 @@ package blocks
 
 import (
 	"fmt"
-	"io"
 
 	"retroio/spectrum/tap"
 	"retroio/storage"
@@ -50,7 +49,7 @@ func (t *TurboSpeedData) Read(reader *storage.Reader) {
 
 	// Yep, we're discarding the data for the moment
 	data := make([]byte, t.Length)
-	_, _ = io.ReadFull(reader, data)
+	_, _ = reader.Read(data)
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

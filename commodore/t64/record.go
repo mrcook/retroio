@@ -49,14 +49,13 @@ func (r *Record) Read(reader *storage.Reader) error {
 // DataRead reads the data for the record
 func (r *Record) DataRead(reader *storage.Reader, dataOffset int) ([]byte, error) {
 	length := int(r.EndAddress - r.StartAddress)
+
 	data := make([]byte, length)
-	if _, err := io.ReadFull(reader, data); err != nil {
-		if err == io.EOF {
-			return nil, nil
-		} else if err != io.ErrUnexpectedEOF {
-			return nil, err
-		}
+	_, err := reader.Read(data)
+	if err != nil && err != io.EOF {
+		return nil, err
 	}
+
 	return data, nil
 }
 

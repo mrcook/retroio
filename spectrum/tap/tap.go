@@ -15,11 +15,11 @@ package tap
 import (
 	"fmt"
 	"io"
-	"retroio/spectrum/basic"
 	"strings"
 
 	"github.com/pkg/errors"
 
+	"retroio/spectrum/basic"
 	"retroio/spectrum/tap/blocks"
 	"retroio/spectrum/tap/headers"
 	"retroio/storage"

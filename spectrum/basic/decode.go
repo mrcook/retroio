@@ -27,7 +27,10 @@ func Decode(programData []byte) ([]string, error) {
 		}
 
 		data := make([]byte, lineLen)
-		_, _ = io.ReadFull(reader, data)
+		_, err = reader.Read(data)
+		if err != nil && err != io.EOF {
+			return nil, err
+		}
 
 		basicString := decodeBasicBytes(data)
 		line := fmt.Sprintf("%4d %s", lineNum, basicString)

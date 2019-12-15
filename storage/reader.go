@@ -27,7 +27,11 @@ func NewReader(r io.Reader) *Reader {
 }
 
 func (r Reader) Read(p []byte) (int, error) {
-	return r.reader.Read(p)
+	n, err := io.ReadFull(r.reader, p)
+	if n < len(p) {
+		fmt.Printf("Read %d bytes, expected %d\n", n, len(p))
+	}
+	return n, err
 }
 
 // ReadByte reads and returns a single byte.
@@ -36,14 +40,26 @@ func (r Reader) ReadByte() byte {
 	return b
 }
 
+// Buffered returns the number of bytes left in the buffer.
+func (r Reader) Buffered() int {
+	return r.reader.Buffered()
+}
+
+// Size returns the size of the reader.
+func (r Reader) Size() int {
+	return r.reader.Size()
+}
+
 // ReadNextBytes reads a variable length of bytes from the reader.
+// WARNING: if you try reading past the EOF this func will panic.
 func (r Reader) ReadNextBytes(number int) []byte {
 	b := make([]byte, number)
-	_, err := r.reader.Read(b)
-	if err != nil {
-		fmt.Println("ReadNextBytes failed spectacularly!")
-		log.Fatal(err)
+
+	n, err := r.Read(b)
+	if err != nil || n < number {
+		log.Fatal(fmt.Errorf("ReadNextBytes failed spectacularly!\n%s", err))
 	}
+
 	return b
 }
 

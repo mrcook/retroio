@@ -2,7 +2,6 @@ package blocks
 
 import (
 	"fmt"
-	"io"
 
 	"retroio/spectrum/tap"
 	"retroio/storage"
@@ -36,9 +35,8 @@ func (d *DirectRecording) Read(reader *storage.Reader) {
 	length = append(length, 0) // add 4th byte
 	d.Length = reader.BytesToLong(length)
 
-	// Yep, we're discarding the data for the moment
-	data := make([]byte, d.Length)
-	_, _ = io.ReadFull(reader, data)
+	d.Data = make([]byte, d.Length)
+	_, _ = reader.Read(d.Data)
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

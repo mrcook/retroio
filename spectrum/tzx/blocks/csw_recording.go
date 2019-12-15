@@ -2,7 +2,6 @@ package blocks
 
 import (
 	"fmt"
-	"io"
 
 	"retroio/spectrum/tap"
 	"retroio/storage"
@@ -31,9 +30,8 @@ func (c *CswRecording) Read(reader *storage.Reader) {
 	c.CompressionType = reader.ReadByte()
 	c.StoredPulseCount = reader.ReadLong()
 
-	// Yep, we're discarding the data for the moment
-	data := make([]byte, c.Length)
-	_, _ = io.ReadFull(reader, data)
+	c.Data = make([]byte, c.Length)
+	_, _ = reader.Read(c.Data)
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

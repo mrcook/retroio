@@ -17,7 +17,7 @@ package tap
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 
 	"retroio/storage"
 )
@@ -45,12 +45,11 @@ func (t *TAP) Read() error {
 	if _, err := t.reader.Read(t.Unused[:]); err != nil {
 		return err
 	}
-
 	t.DataSize = t.reader.ReadLong()
 
-	// Slurp the data
-	var err error
-	if t.Data, err = ioutil.ReadAll(t.reader); err != nil {
+	t.Data = make([]byte, t.DataSize)
+	_, err := t.reader.Read(t.Data)
+	if err != nil && err != io.EOF {
 		return err
 	}
 

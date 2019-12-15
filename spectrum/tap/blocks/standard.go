@@ -23,7 +23,10 @@ func (b *Standard) Read(reader *storage.Reader) {
 	b.Flag = reader.ReadByte()
 
 	b.Data = make([]byte, b.Length-2)
-	_, _ = io.ReadFull(reader, b.Data)
+	_, err := reader.Read(b.Data)
+	if err != nil && err != io.EOF {
+		return
+	}
 
 	b.Checksum = reader.ReadByte()
 }
