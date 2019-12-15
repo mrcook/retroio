@@ -46,6 +46,10 @@ func (s StandardSpeedData) Name() string {
 	return "Standard Speed Data"
 }
 
+func (s StandardSpeedData) BlockData() tap.BlockI {
+	return s.DataBlock
+}
+
 // String returns a human readable string of the block data
 func (s StandardSpeedData) String() string {
 	length := 0 // s.DataBlock.Size() // FIXME: BlockI needs a Size() func

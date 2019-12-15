@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 
+	"retroio/spectrum/tap"
 	"retroio/storage"
 )
 
@@ -48,6 +49,10 @@ func (d DirectRecording) Id() uint8 {
 // Name of the block as given in the TZX specification.
 func (d DirectRecording) Name() string {
 	return "Direct Recording"
+}
+
+func (d DirectRecording) BlockData() tap.BlockI {
+	return nil
 }
 
 // String returns a human readable string of the block data

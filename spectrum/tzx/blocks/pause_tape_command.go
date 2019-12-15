@@ -3,6 +3,7 @@ package blocks
 import (
 	"fmt"
 
+	"retroio/spectrum/tap"
 	"retroio/storage"
 )
 
@@ -29,6 +30,10 @@ func (p PauseTapeCommand) Id() uint8 {
 // Name of the block as given in the TZX specification.
 func (p PauseTapeCommand) Name() string {
 	return "Pause Tape Command"
+}
+
+func (p PauseTapeCommand) BlockData() tap.BlockI {
+	return nil
 }
 
 // String returns a human readable string of the block data

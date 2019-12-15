@@ -3,6 +3,7 @@ package blocks
 import (
 	"fmt"
 
+	"retroio/spectrum/tap"
 	"retroio/storage"
 )
 
@@ -39,6 +40,9 @@ func (c CallSequence) Id() uint8 {
 func (c CallSequence) Name() string {
 	return "Call Sequence"
 }
+func (c CallSequence) BlockData() tap.BlockI {
+	return nil
+}
 
 // String returns a human readable string of the block data
 func (c CallSequence) String() string {
@@ -68,6 +72,10 @@ func (r ReturnFromSequence) Id() uint8 {
 // Name of the block as given in the TZX specification.
 func (r ReturnFromSequence) Name() string {
 	return "Return from Sequence"
+}
+
+func (r ReturnFromSequence) BlockData() tap.BlockI {
+	return nil
 }
 
 // String returns a human readable string of the block data

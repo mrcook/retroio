@@ -52,6 +52,10 @@ func (p PureData) Name() string {
 	return "Pure Data"
 }
 
+func (p PureData) BlockData() tap.BlockI {
+	return p.DataBlock
+}
+
 // String returns a human readable string of the block data
 func (p PureData) String() string {
 	return fmt.Sprintf("%-19s : %d bytes, pause for %d ms.", p.Name(), p.Length, p.Pause)

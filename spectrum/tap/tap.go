@@ -169,7 +169,6 @@ func (t TAP) ListBasicPrograms() {
 	fmt.Println("BASIC PROGRAMS:")
 	fmt.Println()
 	for i, block := range t.Blocks {
-
 		if isProgram == true {
 			fmt.Printf("BLK#%02d: %s\n", i+1, filename)
 			program, err := basic.Decode(block.TapeData.BlockData())

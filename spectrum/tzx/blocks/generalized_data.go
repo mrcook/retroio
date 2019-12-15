@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"retroio/spectrum/tap"
 	"retroio/storage"
 )
 
@@ -72,6 +73,10 @@ func (g GeneralizedData) Id() uint8 {
 // Name of the block as given in the TZX specification.
 func (g GeneralizedData) Name() string {
 	return "Generalized Data"
+}
+
+func (g GeneralizedData) BlockData() tap.BlockI {
+	return nil
 }
 
 // String returns a human readable string of the block data

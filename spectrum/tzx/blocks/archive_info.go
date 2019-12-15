@@ -3,6 +3,7 @@ package blocks
 import (
 	"fmt"
 
+	"retroio/spectrum/tap"
 	"retroio/storage"
 )
 
@@ -68,6 +69,10 @@ func (a ArchiveInfo) Id() uint8 {
 // Name of the block as given in the TZX specification.
 func (a ArchiveInfo) Name() string {
 	return "Archive Info"
+}
+
+func (a ArchiveInfo) BlockData() tap.BlockI {
+	return nil
 }
 
 // String returns a human readable string of the block data

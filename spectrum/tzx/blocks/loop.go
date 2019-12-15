@@ -3,6 +3,7 @@ package blocks
 import (
 	"fmt"
 
+	"retroio/spectrum/tap"
 	"retroio/storage"
 )
 
@@ -31,6 +32,10 @@ func (l LoopStart) Name() string {
 	return "Loop Start"
 }
 
+func (l LoopStart) BlockData() tap.BlockI {
+	return nil
+}
+
 // String returns a human readable string of the block data
 func (l LoopStart) String() string {
 	return fmt.Sprintf("%-19s : %d times", l.Name(), l.RepetitionCount)
@@ -55,6 +60,10 @@ func (l LoopEnd) Id() uint8 {
 // Name of the block as given in the TZX specification.
 func (l LoopEnd) Name() string {
 	return "Loop End"
+}
+
+func (l LoopEnd) BlockData() tap.BlockI {
+	return nil
 }
 
 // String returns a human readable string of the block data

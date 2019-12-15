@@ -3,6 +3,7 @@ package blocks
 import (
 	"fmt"
 
+	"retroio/spectrum/tap"
 	"retroio/storage"
 )
 
@@ -38,6 +39,10 @@ func (g GroupStart) Name() string {
 	return "Group Start"
 }
 
+func (g GroupStart) BlockData() tap.BlockI {
+	return nil
+}
+
 // String returns a human readable string of the block data
 func (g GroupStart) String() string {
 	return fmt.Sprintf("%-19s : %s", g.Name(), g.GroupName)
@@ -60,6 +65,10 @@ func (g GroupEnd) Id() uint8 {
 // Name of the block as given in the TZX specification.
 func (g GroupEnd) Name() string {
 	return "Group End"
+}
+
+func (g GroupEnd) BlockData() tap.BlockI {
+	return nil
 }
 
 // String returns a human readable string of the block data

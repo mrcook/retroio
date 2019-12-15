@@ -3,6 +3,7 @@ package blocks
 import (
 	"fmt"
 
+	"retroio/spectrum/tap"
 	"retroio/storage"
 )
 
@@ -30,6 +31,10 @@ func (s StopTapeWhen48kMode) Id() uint8 {
 // Name of the block as given in the TZX specification.
 func (s StopTapeWhen48kMode) Name() string {
 	return "Stop Tape when in 48k Mode"
+}
+
+func (s StopTapeWhen48kMode) BlockData() tap.BlockI {
+	return nil
 }
 
 // String returns a human readable string of the block data

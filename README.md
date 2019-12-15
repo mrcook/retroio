@@ -24,12 +24,12 @@ Read only for:
 
 It is possible to output the BASIC program listings from the following media:
 
-* ZX Spectrum: `TAP`
+* ZX Spectrum: `TZX` and `TAP`
 
 Simply add the `--bas` flag when `read`ing the image.
 
 _Please note that decoding is currently experimental and the output may not be
-considered valid BASIC._
+considered valid BASIC, and may even be garbled or missing completely._
 
 
 ## Installation

@@ -54,9 +54,12 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/pkg/errors"
 
+	"retroio/spectrum/basic"
+	"retroio/spectrum/tap"
 	"retroio/storage"
 )
 
@@ -81,6 +84,7 @@ type Block interface {
 	Read(reader *storage.Reader)
 	Id() uint8
 	Name() string
+	BlockData() tap.BlockI
 }
 
 // Header is the first block of data found in all TZX files.
@@ -173,7 +177,42 @@ func (t TZX) DisplayImageMetadata() {
 
 // ListBasicPrograms outputs all BASIC programs
 func (t TZX) ListBasicPrograms() {
-	fmt.Println("Not yet implemented")
+	isProgram := false
+	filename := ""
+
+	listing := ""
+	for i, block := range t.blocks {
+		if block.BlockData() == nil {
+			continue
+		}
+		blk := block.BlockData()
+
+		if isProgram == true {
+			listing += fmt.Sprintf("BLK#%02d: %s\n", i+1, filename)
+
+			program, err := basic.Decode(blk.BlockData())
+			if err != nil {
+				listing += fmt.Sprintf("    %s\n", err)
+				continue
+			}
+
+			for _, line := range program {
+				listing += line
+			}
+			listing += "\n"
+			isProgram = false
+		} else if blk.Id() == 0 && blk.Filename() != "" {
+			filename = strings.Trim(block.BlockData().Filename(), " ")
+			isProgram = true
+		}
+	}
+	if len(listing) > 0 {
+		fmt.Println("BASIC PROGRAMS:")
+		fmt.Println()
+		fmt.Println(listing)
+	} else {
+		fmt.Println("Unable to decode BASIC program")
+	}
 }
 
 // Validates the TZX header data.

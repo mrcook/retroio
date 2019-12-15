@@ -3,6 +3,7 @@ package blocks
 import (
 	"fmt"
 
+	"retroio/spectrum/tap"
 	"retroio/storage"
 )
 
@@ -51,6 +52,10 @@ func (h HardwareType) Id() uint8 {
 // Name of the block as given in the TZX specification.
 func (h HardwareType) Name() string {
 	return "Hardware"
+}
+
+func (h HardwareType) BlockData() tap.BlockI {
+	return nil
 }
 
 // String returns a human readable string of the block data
