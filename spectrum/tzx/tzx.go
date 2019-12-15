@@ -158,9 +158,6 @@ func (t *TZX) readBlocks() error {
 
 // DisplayImageMetadata prints the metadata, archive info, data blocks, etc.
 func (t TZX) DisplayImageMetadata() {
-	fmt.Println("TZX processing complete!")
-	fmt.Println()
-
 	if t.archive != nil {
 		fmt.Println("ARCHIVE INFORMATION:")
 		fmt.Println(t.archive)
@@ -172,7 +169,15 @@ func (t TZX) DisplayImageMetadata() {
 	}
 
 	fmt.Println()
-	fmt.Printf("TZX revision: v%d.%d\n", t.MajorVersion, t.MinorVersion)
+	fmt.Printf("TZX revision: v%d.%d", t.MajorVersion, t.MinorVersion)
+	if t.MinorVersion < supportedMinorVersion {
+		fmt.Printf(
+			" - WARNING! expected v%d.%d, this may lead to unexpected data or errors.",
+			supportedMajorVersion,
+			supportedMinorVersion,
+		)
+	}
+	fmt.Println()
 }
 
 // ListBasicPrograms outputs all BASIC programs
@@ -231,15 +236,6 @@ func (h header) valid() error {
 
 	if h.MajorVersion != supportedMajorVersion {
 		validationError = errors.Wrapf(validationError, "Invalid version, got v%d.%d", h.MajorVersion, h.MinorVersion)
-	} else if h.MinorVersion < supportedMinorVersion {
-		fmt.Printf(
-			"WARNING! Expected TZX v%d.%d but got v%d.%d. This may lead to unexpected data or errors.\n",
-			supportedMajorVersion,
-			supportedMinorVersion,
-			h.MajorVersion,
-			h.MinorVersion,
-		)
-		fmt.Println()
 	}
 
 	return validationError

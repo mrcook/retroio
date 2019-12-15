@@ -153,8 +153,6 @@ func (t *TAP) ReadDataBlock() (BlockI, error) {
 
 // DisplayImageMetadata outputs the metadata of each data block to the terminal.
 func (t TAP) DisplayImageMetadata() {
-	fmt.Println("TAP processing complete!")
-	fmt.Println()
 	fmt.Println("DATA BLOCKS:")
 	for i, block := range t.Blocks {
 		fmt.Printf("#%02d %s\n", i+1, block.TapeData)
