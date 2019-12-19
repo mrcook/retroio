@@ -34,9 +34,9 @@ func (s *Select) Read(reader *storage.Reader) {
 
 	for i := 0; i < int(s.Count); i++ {
 		var selection Selection
-		selection.RelativeOffset = reader.ReadShortToSigned()
+		selection.RelativeOffset = int16(reader.ReadShort())
 		selection.Length = reader.ReadByte()
-		for _, b := range reader.ReadNextBytes(int(selection.Length)) {
+		for _, b := range reader.ReadBytes(int(selection.Length)) {
 			selection.Description = append(selection.Description, b)
 		}
 		s.Selections = append(s.Selections, selection)

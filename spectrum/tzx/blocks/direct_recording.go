@@ -31,7 +31,7 @@ func (d *DirectRecording) Read(reader *storage.Reader) {
 	d.Pause = reader.ReadShort()
 	d.UsedBits = reader.ReadByte()
 
-	length := reader.ReadNextBytes(3)
+	length := reader.ReadBytes(3)
 	length = append(length, 0) // add 4th byte
 	d.Length = reader.BytesToLong(length)
 

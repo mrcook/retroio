@@ -21,13 +21,13 @@ type CustomInfo struct {
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
 func (c *CustomInfo) Read(reader *storage.Reader) {
-	for i, b := range reader.ReadNextBytes(10) {
+	for i, b := range reader.ReadBytes(10) {
 		c.Identification[i] = b
 	}
 
 	c.Length = reader.ReadLong()
 
-	for _, b := range reader.ReadNextBytes(int(c.Length)) {
+	for _, b := range reader.ReadBytes(int(c.Length)) {
 		c.Info = append(c.Info, b)
 	}
 }

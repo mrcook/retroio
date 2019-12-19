@@ -24,7 +24,7 @@ type TextDescription struct {
 func (t *TextDescription) Read(reader *storage.Reader) {
 	t.Length = reader.ReadByte()
 
-	for _, b := range reader.ReadNextBytes(int(t.Length)) {
+	for _, b := range reader.ReadBytes(int(t.Length)) {
 		t.Description = append(t.Description, b)
 	}
 }

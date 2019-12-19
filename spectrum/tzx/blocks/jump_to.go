@@ -23,7 +23,7 @@ type JumpTo struct {
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
 func (j *JumpTo) Read(reader *storage.Reader) {
-	j.Value = reader.ReadShortToSigned()
+	j.Value = int16(reader.ReadShort())
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.

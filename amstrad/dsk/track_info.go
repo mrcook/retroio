@@ -46,11 +46,11 @@ type TrackInformation struct {
 
 // Read the track information header.
 func (t *TrackInformation) Read(reader *storage.Reader) error {
-	copy(t.Identifier[:], reader.ReadNextBytes(13))
-	copy(t.Unused1[:], reader.ReadNextBytes(3))
+	copy(t.Identifier[:], reader.ReadBytes(13))
+	copy(t.Unused1[:], reader.ReadBytes(3))
 	t.Track = reader.ReadByte()
 	t.Side = reader.ReadByte()
-	copy(t.Unused2[:], reader.ReadNextBytes(2))
+	copy(t.Unused2[:], reader.ReadBytes(2))
 	t.SectorSize = reader.ReadByte()
 	t.SectorsCount = reader.ReadByte()
 	t.GapLength = reader.ReadByte()

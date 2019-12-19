@@ -11,9 +11,7 @@ package storage
 import (
 	"bufio"
 	"encoding/binary"
-	"fmt"
 	"io"
-	"log"
 )
 
 // Image reader, using the bufio.Reader to allow for Peeking.
@@ -26,75 +24,56 @@ func NewReader(r io.Reader) *Reader {
 	return &Reader{reader: bufio.NewReader(r)}
 }
 
-func (r Reader) Read(p []byte) (int, error) {
-	n, err := io.ReadFull(r.reader, p)
-	if n < len(p) {
-		fmt.Printf("Read %d bytes, expected %d\n", n, len(p))
+// Read exactly the requested bytes from the reader, and follows the reader interface.
+// It will read either the currently buffered bytes, or perform a io.ReadFull.
+func (r Reader) Read(b []byte) (int, error) {
+	// if the buffer contains enough bytes, use them.
+	if len(b) <= r.reader.Buffered() {
+		return r.reader.Read(b)
 	}
-	return n, err
+
+	return io.ReadFull(r.reader, b)
 }
 
-// ReadByte reads and returns a single byte.
+// ReadByte delegates to the underlying Reader function, and reads a single byte.
+// Errors are discarded so this should only be used when a byte is known to be present.
 func (r Reader) ReadByte() byte {
 	b, _ := r.reader.ReadByte()
 	return b
 }
 
-// Buffered returns the number of bytes left in the buffer.
+// ReadBytes reads a variable length of bytes from the reader.
+// Errors are discarded so this should only be used when a byte is known to be present.
+func (r Reader) ReadBytes(number int) []byte {
+	b := make([]byte, number)
+	_, _ = r.Read(b)
+	return b
+}
+
+// ReadShort reads a value from the reader, converting the little endian ordered bytes to a uint16.
+func (r Reader) ReadShort() uint16 {
+	b := r.ReadBytes(2)
+	return binary.LittleEndian.Uint16(b[:])
+}
+
+// ReadLong reads a value from the reader, converting the little endian ordered bytes to a uint32.
+func (r Reader) ReadLong() uint32 {
+	b := r.ReadBytes(4)
+	return binary.LittleEndian.Uint32(b[:])
+}
+
+// Buffered delegates to the underlying Reader function, returning the number of bytes left in the buffer.
 func (r Reader) Buffered() int {
 	return r.reader.Buffered()
 }
 
-// Size returns the size of the reader.
-func (r Reader) Size() int {
-	return r.reader.Size()
-}
-
-// ReadNextBytes reads a variable length of bytes from the reader.
-// WARNING: if you try reading past the EOF this func will panic.
-func (r Reader) ReadNextBytes(number int) []byte {
-	b := make([]byte, number)
-
-	n, err := r.Read(b)
-	if err != nil || n < number {
-		log.Fatal(fmt.Errorf("ReadNextBytes failed spectacularly!\n%s", err))
-	}
-
-	return b
-}
-
-// ReadLong reads a value from the reader, then converts
-// the little endian ordered bytes to a uint32.
-func (r Reader) ReadLong() uint32 {
-	b := r.ReadNextBytes(4)
-	return binary.LittleEndian.Uint32(b[:])
-}
-
-// ReadShort reads a value from the reader, then converts
-// the little endian ordered bytes to a uint16.
-func (r Reader) ReadShort() uint16 {
-	b := r.ReadNextBytes(2)
-	return binary.LittleEndian.Uint16(b[:])
-}
-
-// ReadShortToSigned reads a value from the reader, then
-// converts to a `signed` int.
-func (r Reader) ReadShortToSigned() int16 {
-	b := r.ReadNextBytes(2)
-	return int16(binary.LittleEndian.Uint16(b[:]))
-}
-
 // Peek returns the next n bytes without advancing the reader.
 func (r Reader) Peek(n int) ([]byte, error) {
-	b, err := r.reader.Peek(n)
-	if err != nil {
-		return nil, err
-	}
-	return b, nil
+	return r.reader.Peek(n)
 }
 
-// PeekShort reads two bytes without advancing the reader, then
-// converts the little endian ordered bytes to an uint16.
+// PeekShort reads two bytes without advancing the reader, converting
+// the little endian ordered bytes to a uint16.
 func (r Reader) PeekShort() (uint16, error) {
 	b, err := r.reader.Peek(2)
 	if err != nil {
@@ -103,12 +82,12 @@ func (r Reader) PeekShort() (uint16, error) {
 	return binary.LittleEndian.Uint16(b[:]), nil
 }
 
-// Discard wraps the bufio.Discard function
+// Discard delegates to the underlying Reader function.
 func (r Reader) Discard(n int) (int, error) {
 	return r.reader.Discard(n)
 }
 
-// BytesToLong converts a slice of 4 little endian ordered bytes.
+// BytesToLong converts a slice of 4 little endian ordered bytes to uint32.
 func (r Reader) BytesToLong(b []byte) uint32 {
 	return binary.LittleEndian.Uint32(b[:])
 }

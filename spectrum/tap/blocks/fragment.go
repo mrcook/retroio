@@ -22,7 +22,7 @@ type Fragment struct {
 func (b *Fragment) Read(reader *storage.Reader) {
 	b.Length = reader.ReadShort()
 	if b.Length > 0 {
-		b.Data = reader.ReadNextBytes(int(b.Length))
+		b.Data = reader.ReadBytes(int(b.Length))
 	}
 }
 

@@ -43,7 +43,7 @@ func (t *TurboSpeedData) Read(reader *storage.Reader) {
 	t.UsedBits = reader.ReadByte()
 	t.Pause = reader.ReadShort()
 
-	length := reader.ReadNextBytes(3)
+	length := reader.ReadBytes(3)
 	length = append(length, 0) // add 4th byte
 	t.Length = reader.BytesToLong(length)
 

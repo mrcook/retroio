@@ -54,7 +54,7 @@ func (a *ArchiveInfo) Read(reader *storage.Reader) {
 		var t Text
 		t.TypeID = reader.ReadByte()
 		t.Length = reader.ReadByte()
-		for _, c := range reader.ReadNextBytes(int(t.Length)) {
+		for _, c := range reader.ReadBytes(int(t.Length)) {
 			t.Characters = append(t.Characters, c)
 		}
 		a.Strings = append(a.Strings, t)

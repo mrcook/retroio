@@ -31,7 +31,7 @@ func (p *PureData) Read(reader *storage.Reader) {
 	p.UsedBits = reader.ReadByte()
 	p.Pause = reader.ReadShort()
 
-	length := reader.ReadNextBytes(3)
+	length := reader.ReadBytes(3)
 	length = append(length, 0) // add 4th byte
 	p.Length = reader.BytesToLong(length)
 

@@ -22,7 +22,7 @@ type GlueBlock struct {
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
 func (g *GlueBlock) Read(reader *storage.Reader) {
-	for i, b := range reader.ReadNextBytes(9) {
+	for i, b := range reader.ReadBytes(9) {
 		g.Value[i] = b
 	}
 }

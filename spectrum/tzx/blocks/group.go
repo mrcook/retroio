@@ -24,7 +24,7 @@ type GroupStart struct {
 func (g *GroupStart) Read(reader *storage.Reader) {
 	g.Length = reader.ReadByte()
 
-	for _, b := range reader.ReadNextBytes(int(g.Length)) {
+	for _, b := range reader.ReadBytes(int(g.Length)) {
 		g.GroupName = append(g.GroupName, b)
 	}
 }

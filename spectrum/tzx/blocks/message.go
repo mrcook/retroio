@@ -28,7 +28,7 @@ func (m *Message) Read(reader *storage.Reader) {
 	m.DisplayTime = reader.ReadByte()
 	m.Length = reader.ReadByte()
 
-	for _, b := range reader.ReadNextBytes(int(m.Length)) {
+	for _, b := range reader.ReadBytes(int(m.Length)) {
 		m.Message = append(m.Message, b)
 	}
 }
