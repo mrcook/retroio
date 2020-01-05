@@ -158,14 +158,20 @@ func (t *TZX) readBlocks() error {
 
 // DisplayImageMetadata prints the metadata, archive info, data blocks, etc.
 func (t TZX) DisplayImageMetadata() {
+	// TODO: update `block`'s to store their index number
+	blockCountOffset := 1 // Block #'s start from 1
+
 	if t.archive != nil {
-		fmt.Println("ARCHIVE INFORMATION:")
+		// Archive counts as a normal block, but it is not stored in blocks slice
+		blockCountOffset += 1
+
+		fmt.Println("ARCHIVE INFORMATION (BLOCK #1):")
 		fmt.Println(t.archive)
 	}
 
 	fmt.Println("DATA BLOCKS:")
 	for i, block := range t.blocks {
-		fmt.Printf("#%02d %s\n", i+1, block)
+		fmt.Printf("#%02d %s\n", i+blockCountOffset, block)
 	}
 
 	fmt.Println()
