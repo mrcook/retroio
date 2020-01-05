@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -16,20 +17,28 @@ import (
 // If you can avoid using this block for this purpose, then do so; it is preferable to use a
 // utility to join the two files and ensure that they are both of the higher version number.
 type GlueBlock struct {
-	Value [9]byte // BYTE[9] Value: { "XTape!",0x1A,MajR,MinR } Just skip these 9 bytes and you will end up on the next ID.
+	BlockID types.BlockType
+	Value   [9]byte // Value: { "XTape!",0x1A,MajR,MinR } Just skip these 9 bytes and you will end up on the next ID.
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (g *GlueBlock) Read(reader *storage.Reader) {
+func (g *GlueBlock) Read(reader *storage.Reader) error {
+	g.BlockID = types.BlockType(reader.ReadByte())
+	if g.BlockID != g.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", g.Id(), g.BlockID)
+	}
+
 	for i, b := range reader.ReadBytes(9) {
 		g.Value[i] = b
 	}
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (g GlueBlock) Id() uint8 {
-	return 0x5a
+func (g GlueBlock) Id() types.BlockType {
+	return types.GlueBlock
 }
 
 // Name of the block as given in the TZX specification.

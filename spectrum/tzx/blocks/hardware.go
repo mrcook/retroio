@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -18,21 +19,27 @@ import (
 // If you are not sure or you haven't tested a tape on some particular machine/hardware
 // combination then do not include it in the list.
 type HardwareType struct {
-	TypeCount uint8          // N BYTE     Number of machines and hardware types for which info is supplied
-	Machines  []HardwareInfo // HWINFO[N]  List of machines and hardware
+	BlockID   types.BlockType
+	TypeCount uint8          // Number of machines and hardware types for which info is supplied
+	Machines  []HardwareInfo // List of machines and hardware
 }
 
 // HardwareInfo (HWINFO)
 // The list of hardware types and IDs is found at the end of this file.
 type HardwareInfo struct {
-	Type        uint8 // BYTE  Hardware type
-	Id          uint8 // BYTE  Hardware ID
-	Information uint8 // BYTE  Hardware information
+	Type        uint8 // Hardware type
+	Id          uint8 // Hardware ID
+	Information uint8 // Hardware information
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (h *HardwareType) Read(reader *storage.Reader) {
+func (h *HardwareType) Read(reader *storage.Reader) error {
+	h.BlockID = types.BlockType(reader.ReadByte())
+	if h.BlockID != h.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", h.Id(), h.BlockID)
+	}
+
 	h.TypeCount = reader.ReadByte()
 
 	for i := 0; i < int(h.TypeCount); i++ {
@@ -42,11 +49,13 @@ func (h *HardwareType) Read(reader *storage.Reader) {
 		m.Information = reader.ReadByte()
 		h.Machines = append(h.Machines, m)
 	}
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (h HardwareType) Id() uint8 {
-	return 0x33
+func (h HardwareType) Id() types.BlockType {
+	return types.HardwareType
 }
 
 // Name of the block as given in the TZX specification.

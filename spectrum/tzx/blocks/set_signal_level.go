@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -12,20 +13,28 @@ import (
 // This block sets the current signal level to the specified value (high or low). It should be used
 // whenever it is necessary to avoid any ambiguities, e.g. with custom loaders which are level-sensitive.
 type SetSignalLevel struct {
-	Length      uint32 // DWORD Block length (without these four bytes)
-	SignalLevel uint8  // BYTE  Signal level (0=low, 1=high)
+	BlockID     types.BlockType
+	Length      uint32 // Block length (without these four bytes)
+	SignalLevel uint8  // Signal level (0=low, 1=high)
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *SetSignalLevel) Read(reader *storage.Reader) {
+func (s *SetSignalLevel) Read(reader *storage.Reader) error {
+	s.BlockID = types.BlockType(reader.ReadByte())
+	if s.BlockID != s.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", s.Id(), s.BlockID)
+	}
+
 	s.Length = reader.ReadLong()
 	s.SignalLevel = reader.ReadByte()
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (s SetSignalLevel) Id() uint8 {
-	return 0x2b
+func (s SetSignalLevel) Id() types.BlockType {
+	return types.SetSignalLevel
 }
 
 // Name of the block as given in the TZX specification.

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -17,18 +18,26 @@ import (
 //   - Jump -1 = 'Go to the previous block'
 // All blocks are included in the block count!
 type JumpTo struct {
-	Value int16 // WORD  Relative jump value
+	BlockID types.BlockType
+	Value   int16 // Relative jump value
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (j *JumpTo) Read(reader *storage.Reader) {
+func (j *JumpTo) Read(reader *storage.Reader) error {
+	j.BlockID = types.BlockType(reader.ReadByte())
+	if j.BlockID != j.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", j.Id(), j.BlockID)
+	}
+
 	j.Value = int16(reader.ReadShort())
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (j JumpTo) Id() uint8 {
-	return 0x23
+func (j JumpTo) Id() types.BlockType {
+	return types.JumpTo
 }
 
 // Name of the block as given in the TZX specification.

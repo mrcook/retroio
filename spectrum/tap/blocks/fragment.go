@@ -13,8 +13,8 @@ import (
 // be produced with machine code programs. They have less than 2 bytes. In some
 // games you really find zero length fragment data blocks.
 type Fragment struct {
-	Length uint16 // WORD   Length of the data in this block: 0 or 1 byte.
-	Data   []byte // BYTE[] The essential data (may be empty)
+	Length uint16 // Length of the data in this block: 0 or 1 byte.
+	Data   []byte // The essential data (may be empty)
 }
 
 // Read block data - reads 1 byte unless fragment size is zero length.

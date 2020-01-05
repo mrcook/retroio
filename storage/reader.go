@@ -72,6 +72,15 @@ func (r Reader) Peek(n int) ([]byte, error) {
 	return r.reader.Peek(n)
 }
 
+// PeekByte reads a byte without advancing the reader.
+func (r Reader) PeekByte() (uint8, error) {
+	b, err := r.reader.Peek(1)
+	if err != nil {
+		return 0, err
+	}
+	return b[0], nil
+}
+
 // PeekShort reads two bytes without advancing the reader, converting
 // the little endian ordered bytes to a uint16.
 func (r Reader) PeekShort() (uint16, error) {

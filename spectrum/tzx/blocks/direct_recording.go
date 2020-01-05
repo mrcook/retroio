@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -17,16 +18,22 @@ import (
 // if you can, don't use other sampling frequencies.
 // Please use this block only if you cannot use any other block.
 type DirectRecording struct {
-	TStatesPerSample uint16  // WORD      Number of T-states per sample (bit of data)
-	Pause            uint16  // WORD      Pause after this block in milliseconds (ms.)
-	UsedBits         uint8   // BYTE      Used bits (samples) in last byte of data (1-8) (e.g. if this is 2, only first two samples of the last byte will be played)
-	Length           uint32  // N BYTE[3] Length of samples' data
-	Data             []uint8 // BYTE[N]   Samples data. Each bit represents a state on the EAR port (i.e. one sample). MSb is played first.
+	BlockID          types.BlockType
+	TStatesPerSample uint16  // Number of T-states per sample (bit of data)
+	Pause            uint16  // Pause after this block in milliseconds (ms.)
+	UsedBits         uint8   // Used bits (samples) in last byte of data (1-8) (e.g. if this is 2, only first two samples of the last byte will be played)
+	Length           uint32  // Length of samples' data
+	Data             []uint8 // Samples data. Each bit represents a state on the EAR port (i.e. one sample). MSb is played first.
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (d *DirectRecording) Read(reader *storage.Reader) {
+func (d *DirectRecording) Read(reader *storage.Reader) error {
+	d.BlockID = types.BlockType(reader.ReadByte())
+	if d.BlockID != d.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", d.Id(), d.BlockID)
+	}
+
 	d.TStatesPerSample = reader.ReadShort()
 	d.Pause = reader.ReadShort()
 	d.UsedBits = reader.ReadByte()
@@ -36,12 +43,16 @@ func (d *DirectRecording) Read(reader *storage.Reader) {
 	d.Length = reader.BytesToLong(length)
 
 	d.Data = make([]byte, d.Length)
-	_, _ = reader.Read(d.Data)
+	if _, err := reader.Read(d.Data); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (d DirectRecording) Id() uint8 {
-	return 0x15
+func (d DirectRecording) Id() types.BlockType {
+	return types.DirectRecording
 }
 
 // Name of the block as given in the TZX specification.

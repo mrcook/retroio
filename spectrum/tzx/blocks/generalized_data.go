@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -16,14 +17,15 @@ import (
 // from the others. In this way we can have a situation where bit 0 is represented with 4 pulses and
 // bit 1 with 8 pulses.
 type GeneralizedData struct {
-	Length       uint32     // DWORD Block length (without these four bytes)
-	Pause        uint16     // WORD  Pause after this block (ms)
-	TOTP         uint32     // DWORD Total number of symbols in pilot/sync block (can be 0)
-	NPP          uint8      // BYTE  Maximum number of pulses per pilot/sync symbol
-	ASP          uint8      // BYTE  Number of pilot/sync symbols in the alphabet table (0=256)
-	TOTD         uint32     // DWORD Total number of symbols in data stream (can be 0)
-	NPD          uint8      // BYTE  Maximum number of pulses per data symbol
-	ASD          uint8      // BYTE  Number of data symbols in the alphabet table (0=256)
+	BlockID      types.BlockType
+	Length       uint32     // Block length (without these four bytes)
+	Pause        uint16     // Pause after this block (ms)
+	TOTP         uint32     // Total number of symbols in pilot/sync block (can be 0)
+	NPP          uint8      // Maximum number of pulses per pilot/sync symbol
+	ASP          uint8      // Number of pilot/sync symbols in the alphabet table (0=256)
+	TOTD         uint32     // Total number of symbols in data stream (can be 0)
+	NPD          uint8      // Maximum number of pulses per data symbol
+	ASD          uint8      // Number of data symbols in the alphabet table (0=256)
 	PilotSymbols []Symbol   // 0x12  SYMDEF[ASP] Pilot and sync symbols definition table: this field is present only if TOTP>0
 	PilotStreams []PilotRLE // 0x12+ (2*NPP+1)*ASP - PRLE[TOTP]  Pilot and sync data stream: this field is present only if TOTP>0
 	DataSymbols  []Symbol   // 0x12+ (TOTP>0)*((2*NPP+1)*ASP)+TOTP*3  - SYMDEF[ASD] Data symbols definition table: this field is present only if TOTD>0
@@ -39,7 +41,7 @@ type GeneralizedData struct {
 // pulse lengths: this loader would have an alphabet of four symbols, each associated to a specific
 // sequence of pulses (wave).
 type Symbol struct {
-	Flags uint8 // BYTE Symbol flags:
+	Flags uint8 // Symbol flags:
 	//                    b0-b1: starting symbol polarity
 	//                    00:    opposite to the current level (make an edge, as usual) - default
 	//                    01:    same as the current level (no edge - prolongs the previous pulse)
@@ -55,19 +57,21 @@ type Symbol struct {
 // NB = ceiling(Log2(ASD)). Thus the length of the whole data stream in bits is NB*TOTD, or in
 // bytes DS=ceil(NB*TOTD/8).
 type PilotRLE struct {
-	Symbol          uint8  // BYTE  Symbol to be represented
-	RepetitionCount uint16 // WORD  Number of repetitions
+	Symbol          uint8  // Symbol to be represented
+	RepetitionCount uint16 // Number of repetitions
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (g *GeneralizedData) Read(reader *storage.Reader) {
+func (g *GeneralizedData) Read(reader *storage.Reader) error {
 	log.Fatal("GeneralizedData is not currently supported - unable to continue.")
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (g GeneralizedData) Id() uint8 {
-	return 0x19
+func (g GeneralizedData) Id() types.BlockType {
+	return types.GeneralizedData
 }
 
 // Name of the block as given in the TZX specification.

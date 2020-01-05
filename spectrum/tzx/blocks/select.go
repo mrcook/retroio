@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -15,20 +16,26 @@ import (
 // multi-load. Of course, to make some use of it the emulator/utility has to show a menu with the
 // selections when it encounters such a block. All offsets are relative signed words.
 type Select struct {
-	Length     uint16      // WORD  Length of the whole block (without these two bytes)
-	Count      uint8       // N BYTE  Number of selections
-	Selections []Selection // SELECT[N] List of selections
+	BlockID    types.BlockType
+	Length     uint16      // Length of the whole block (without these two bytes)
+	Count      uint8       // Number of selections
+	Selections []Selection // List of selections
 }
 
 type Selection struct {
-	RelativeOffset int16   // WORD  Relative Offset as `signed` value
-	Length         uint8   // L BYTE  Length of description text
-	Description    []uint8 // CHAR[L] Description text (please use single line and max. 30 chars)
+	RelativeOffset int16   // Relative Offset as `signed` value
+	Length         uint8   // Length of description text
+	Description    []uint8 // Description text (please use single line and max. 30 chars)
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *Select) Read(reader *storage.Reader) {
+func (s *Select) Read(reader *storage.Reader) error {
+	s.BlockID = types.BlockType(reader.ReadByte())
+	if s.BlockID != s.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", s.Id(), s.BlockID)
+	}
+
 	s.Length = reader.ReadShort()
 	s.Count = reader.ReadByte()
 
@@ -41,11 +48,13 @@ func (s *Select) Read(reader *storage.Reader) {
 		}
 		s.Selections = append(s.Selections, selection)
 	}
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (s Select) Id() uint8 {
-	return 0x28
+func (s Select) Id() types.BlockType {
+	return types.Select
 }
 
 // Name of the block as given in the TZX specification.

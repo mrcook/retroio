@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -15,23 +16,31 @@ import (
 // (example 'Bleepload Block 1').
 // For each group start block, there must be a group end block. Nesting of groups is not allowed.
 type GroupStart struct {
-	Length    uint8  // L BYTE  Length of the group name string
-	GroupName []byte // CHAR[L] Group name in ASCII format (please keep it under 30 characters long)
+	BlockID   types.BlockType
+	Length    uint8  // Length of the group name string
+	GroupName []byte // Group name in ASCII format (please keep it under 30 characters long)
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (g *GroupStart) Read(reader *storage.Reader) {
+func (g *GroupStart) Read(reader *storage.Reader) error {
+	g.BlockID = types.BlockType(reader.ReadByte())
+	if g.BlockID != g.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", g.Id(), g.BlockID)
+	}
+
 	g.Length = reader.ReadByte()
 
 	for _, b := range reader.ReadBytes(int(g.Length)) {
 		g.GroupName = append(g.GroupName, b)
 	}
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (g GroupStart) Id() uint8 {
-	return 0x21
+func (g GroupStart) Id() types.BlockType {
+	return types.GroupStart
 }
 
 // Name of the block as given in the TZX specification.
@@ -51,15 +60,23 @@ func (g GroupStart) String() string {
 // GroupEnd
 // ID: 22h (34d)
 // This indicates the end of a group. This block has no body.
-type GroupEnd struct{}
+type GroupEnd struct {
+	BlockID types.BlockType
+}
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (g *GroupEnd) Read(reader *storage.Reader) {}
+func (g *GroupEnd) Read(reader *storage.Reader) error {
+	g.BlockID = types.BlockType(reader.ReadByte())
+	if g.BlockID != g.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", g.Id(), g.BlockID)
+	}
+	return nil
+}
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (g GroupEnd) Id() uint8 {
-	return 0x22
+func (g GroupEnd) Id() types.BlockType {
+	return types.GroupEnd
 }
 
 // Name of the block as given in the TZX specification.

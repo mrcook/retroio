@@ -60,6 +60,7 @@ import (
 
 	"retroio/spectrum/basic"
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -81,8 +82,8 @@ type TZX struct {
 
 // Block is an interface for Tape data blocks
 type Block interface {
-	Read(reader *storage.Reader)
-	Id() uint8
+	Read(reader *storage.Reader) error
+	Id() types.BlockType
 	Name() string
 	BlockData() tap.BlockI
 }
@@ -133,21 +134,24 @@ func (t *TZX) readHeader() error {
 // readBlocks processes each TZX block on the tape.
 func (t *TZX) readBlocks() error {
 	for {
-		_, err := t.reader.Peek(1)
-		if err != nil && err == io.EOF {
-			break // no problems, we're done!
-		} else if err != nil {
+		blockID, err := t.reader.PeekByte()
+		if err != nil {
+			if err == io.EOF {
+				break // no problems, we're done!
+			}
 			return err
 		}
-		blockID := t.reader.ReadByte()
 
 		block, err := newFromBlockID(blockID)
 		if err != nil {
 			return err
 		}
-		block.Read(t.reader)
 
-		if block.Id() == 0x32 {
+		if err := block.Read(t.reader); err != nil {
+			return errors.Wrap(err, "error reading TZX block")
+		}
+
+		if block.Id() == types.ArchiveInfo {
 			t.archive = block
 		} else {
 			t.blocks = append(t.blocks, block)

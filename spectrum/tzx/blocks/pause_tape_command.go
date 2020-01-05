@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -13,18 +14,26 @@ import (
 // value is 0 then the emulator or utility should (in effect) STOP THE TAPE, i.e. should not
 // continue loading until the user or emulator requests it.
 type PauseTapeCommand struct {
-	Pause uint16 // WORD  Pause duration (ms.)
+	BlockID types.BlockType
+	Pause   uint16 // Pause duration (ms.)
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (p *PauseTapeCommand) Read(reader *storage.Reader) {
+func (p *PauseTapeCommand) Read(reader *storage.Reader) error {
+	p.BlockID = types.BlockType(reader.ReadByte())
+	if p.BlockID != p.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", p.Id(), p.BlockID)
+	}
+
 	p.Pause = reader.ReadShort()
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (p PauseTapeCommand) Id() uint8 {
-	return 0x20
+func (p PauseTapeCommand) Id() types.BlockType {
+	return types.PauseTapeCommand
 }
 
 // Name of the block as given in the TZX specification.

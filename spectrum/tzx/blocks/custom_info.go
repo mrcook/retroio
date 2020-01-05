@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -13,14 +14,20 @@ import (
 // information written by a utility, extra settings required by a particular emulator, or even
 // poke data.
 type CustomInfo struct {
-	Identification [10]byte // CHAR[10]  Identification string (in ASCII)
-	Length         uint32   // L DWORD   Length of the custom info
-	Info           []uint8  // BYTE[L]   Custom info
+	BlockID        types.BlockType
+	Identification [10]byte // Identification string (in ASCII)
+	Length         uint32   // Length of the custom info
+	Info           []uint8  // Custom info
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (c *CustomInfo) Read(reader *storage.Reader) {
+func (c *CustomInfo) Read(reader *storage.Reader) error {
+	c.BlockID = types.BlockType(reader.ReadByte())
+	if c.BlockID != c.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", c.Id(), c.BlockID)
+	}
+
 	for i, b := range reader.ReadBytes(10) {
 		c.Identification[i] = b
 	}
@@ -30,11 +37,13 @@ func (c *CustomInfo) Read(reader *storage.Reader) {
 	for _, b := range reader.ReadBytes(int(c.Length)) {
 		c.Info = append(c.Info, b)
 	}
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (c CustomInfo) Id() uint8 {
-	return 0x35
+func (c CustomInfo) Id() types.BlockType {
+	return types.CustomInfo
 }
 
 // Name of the block as given in the TZX specification.

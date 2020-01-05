@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -17,25 +18,33 @@ import (
 //   - use single 0x0D (13 decimal) to separate lines;
 //   - stick to a maximum of 8 lines.
 type Message struct {
-	DisplayTime uint8  // BYTE  Time (in seconds) for which the message should be displayed
-	Length      uint8  // N BYTE  Length of the text message
-	Message     []byte // CHAR[N] Message that should be displayed in ASCII format
+	BlockID     types.BlockType
+	DisplayTime uint8  // Time (in seconds) for which the message should be displayed
+	Length      uint8  // Length of the text message
+	Message     []byte // Message that should be displayed in ASCII format
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (m *Message) Read(reader *storage.Reader) {
+func (m *Message) Read(reader *storage.Reader) error {
+	m.BlockID = types.BlockType(reader.ReadByte())
+	if m.BlockID != m.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", m.Id(), m.BlockID)
+	}
+
 	m.DisplayTime = reader.ReadByte()
 	m.Length = reader.ReadByte()
 
 	for _, b := range reader.ReadBytes(int(m.Length)) {
 		m.Message = append(m.Message, b)
 	}
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (m Message) Id() uint8 {
-	return 0x31
+func (m Message) Id() types.BlockType {
+	return types.Message
 }
 
 // Name of the block as given in the TZX specification.

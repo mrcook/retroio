@@ -13,13 +13,13 @@ import (
 type ByteData struct {
 	Length uint16 // Length of the data in this block
 
-	Flag         uint8    // BYTE      Always 0: byte indicating a standard ROM loading header.
-	DataType     uint8    // BYTE      Always 3: Byte indicating a byte header.
-	ProgramName  [10]byte // CHAR[10]  Loading name of the program. Filled with spaces (0x20) to 10 characters.
-	DataLength   uint16   // WORD      Length of data following the header, in case of a SCREEN$ header = 6912.
-	StartAddress uint16   // WORD      In case of a SCREEN$ header = 16384.
-	UnusedWord   uint16   // WORD      = 32768.
-	Checksum     uint8    // BYTE      Simply all bytes XORed (including flag byte).
+	Flag         uint8    // Always 0: byte indicating a standard ROM loading header.
+	DataType     uint8    // Always 3: Byte indicating a byte header.
+	ProgramName  [10]byte // Loading name of the program. Filled with spaces (0x20) to 10 characters.
+	DataLength   uint16   // Length of data following the header, in case of a SCREEN$ header = 6912.
+	StartAddress uint16   // In case of a SCREEN$ header = 16384.
+	UnusedWord   uint16   // 32768.
+	Checksum     uint8    // Simply all bytes XORed (including flag byte).
 }
 
 // Read the tape and extract the data.

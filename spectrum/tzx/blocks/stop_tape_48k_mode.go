@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -14,18 +15,26 @@ import (
 // but load the entire tape at once if in 128K mode.
 // This block has no body of its own, but follows the extension rule.
 type StopTapeWhen48kMode struct {
-	Length uint32 // DWORD Length of the block without these four bytes (0)
+	BlockID types.BlockType
+	Length  uint32 // Length of the block without these four bytes (0)
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (s *StopTapeWhen48kMode) Read(reader *storage.Reader) {
+func (s *StopTapeWhen48kMode) Read(reader *storage.Reader) error {
+	s.BlockID = types.BlockType(reader.ReadByte())
+	if s.BlockID != s.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", s.Id(), s.BlockID)
+	}
+
 	s.Length = reader.ReadLong()
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (s StopTapeWhen48kMode) Id() uint8 {
-	return 0x2a
+func (s StopTapeWhen48kMode) Id() types.BlockType {
+	return types.StopTapeWhen48kMode
 }
 
 // Name of the block as given in the TZX specification.

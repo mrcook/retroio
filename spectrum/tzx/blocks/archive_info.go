@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -19,15 +20,16 @@ import (
 // beginning of it.
 // If all texts on the tape are in English language then you don't have to supply the 'Language' field.
 type ArchiveInfo struct {
-	Length      uint16 // WORD  Length of the whole block (without these two bytes)
-	StringCount uint8  // N BYTE  Number of text strings
-	Strings     []Text // TEXT[N] List of text strings
+	BlockID     types.BlockType
+	Length      uint16 // Length of the whole block (without these two bytes)
+	StringCount uint8  // Number of text strings
+	Strings     []Text // List of text strings
 }
 
 type Text struct {
-	TypeID     uint8  // BYTE  Text identification byte
-	Length     uint8  // L BYTE  Length of text string
-	Characters []byte // CHAR[L] Text string in ASCII format
+	TypeID     uint8  // Text identification byte
+	Length     uint8  // Length of text string
+	Characters []byte // Text string in ASCII format
 }
 
 // Headings for the Text ID's.
@@ -46,7 +48,12 @@ var headings = map[uint8]string{
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (a *ArchiveInfo) Read(reader *storage.Reader) {
+func (a *ArchiveInfo) Read(reader *storage.Reader) error {
+	a.BlockID = types.BlockType(reader.ReadByte())
+	if a.BlockID == a.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", a.Id(), a.BlockID)
+	}
+
 	a.Length = reader.ReadShort()
 	a.StringCount = reader.ReadByte()
 
@@ -59,11 +66,13 @@ func (a *ArchiveInfo) Read(reader *storage.Reader) {
 		}
 		a.Strings = append(a.Strings, t)
 	}
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (a ArchiveInfo) Id() uint8 {
-	return 0x32
+func (a ArchiveInfo) Id() types.BlockType {
+	return types.ArchiveInfo
 }
 
 // Name of the block as given in the TZX specification.

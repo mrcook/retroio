@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"retroio/spectrum/tap"
+	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
 )
 
@@ -17,23 +18,31 @@ import (
 // you can add some blocks in the beginning of the file without disturbing the call values. Please
 // take a look at 'Jump To Block' for reference on the values.
 type CallSequence struct {
-	Count  uint16   // N WORD  Number of calls to be made
-	Blocks []uint16 // WORD[N] Array of call block numbers (relative-signed offsets)
+	BlockID types.BlockType
+	Count   uint16   // Number of calls to be made
+	Blocks  []uint16 // Array of call block numbers (relative-signed offsets)
 }
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (c *CallSequence) Read(reader *storage.Reader) {
+func (c *CallSequence) Read(reader *storage.Reader) error {
+	c.BlockID = types.BlockType(reader.ReadByte())
+	if c.BlockID != c.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", c.Id(), c.BlockID)
+	}
+
 	c.Count = reader.ReadShort()
 
 	for i := 0; i < int(c.Count); i++ {
 		c.Blocks = append(c.Blocks, reader.ReadShort())
 	}
+
+	return nil
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (c CallSequence) Id() uint8 {
-	return 0x26
+func (c CallSequence) Id() types.BlockType {
+	return types.CallSequence
 }
 
 // Name of the block as given in the TZX specification.
@@ -58,15 +67,23 @@ func (c CallSequence) String() string {
 // This block indicates the end of the Called Sequence. The next block played will be the block after
 // the last CALL block (or the next Call, if the Call block had multiple calls).
 // This block has no body.
-type ReturnFromSequence struct{}
+type ReturnFromSequence struct {
+	BlockID types.BlockType
+}
 
 // Read the tape and extract the data.
 // It is expected that the tape pointer is at the correct position for reading.
-func (r ReturnFromSequence) Read(reader *storage.Reader) {}
+func (r ReturnFromSequence) Read(reader *storage.Reader) error {
+	r.BlockID = types.BlockType(reader.ReadByte())
+	if r.BlockID != r.Id() {
+		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", r.Id(), r.BlockID)
+	}
+	return nil
+}
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
-func (r ReturnFromSequence) Id() uint8 {
-	return 0x27
+func (r ReturnFromSequence) Id() types.BlockType {
+	return types.ReturnFromSequence
 }
 
 // Name of the block as given in the TZX specification.
