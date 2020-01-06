@@ -50,7 +50,7 @@ var headings = map[uint8]string{
 // It is expected that the tape pointer is at the correct position for reading.
 func (a *ArchiveInfo) Read(reader *storage.Reader) error {
 	a.BlockID = types.BlockType(reader.ReadByte())
-	if a.BlockID == a.Id() {
+	if a.BlockID != a.Id() {
 		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", a.Id(), a.BlockID)
 	}
 
