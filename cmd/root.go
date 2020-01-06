@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019 Michael R. Cook. All rights reserved.
+// Copyright (c) 2018-2020 Michael R. Cook. All rights reserved.
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.se.
 package cmd
@@ -15,7 +15,7 @@ import (
 // rootCmd represents the base command when called without any sub commands
 var rootCmd = &cobra.Command{
 	Use:     "rio",
-	Version: "0.8.5",
+	Version: "0.8.6",
 	Short:   "CLI utility for reading emulator disk and tape images",
 	Long: `RetroIO (rio) is a command line utility for reading emulator storage media
 (disks and cassette tape images) of home computers from the 1980s.`,

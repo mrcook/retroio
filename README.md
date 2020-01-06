@@ -80,7 +80,7 @@ TZX revision: 1.10
 
 ## LICENSE
 
-Copyright (c) 2018-2019 Michael R. Cook. All rights reserved.
+Copyright (c) 2018-2020 Michael R. Cook. All rights reserved.
 
 This work is licensed under the terms of the MIT license.
 For a copy, see <https://opensource.org/licenses/MIT>.

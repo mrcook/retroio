@@ -85,16 +85,22 @@ func (a ArchiveInfo) BlockData() tap.Block {
 }
 
 // String returns a human readable string of the block data
+// Each character is first converted to a Rune so that Latin characters are preserved.
 func (a ArchiveInfo) String() string {
 	str := ""
 	for _, b := range a.Strings {
-		// replace newline with comma
-		for i := range b.Characters {
-			if b.Characters[i] == 0x0a || b.Characters[i] == 0x0d {
-				b.Characters[i] = 0x2c // 44d
+		var runes []rune
+
+		for _, c := range b.Characters {
+			if c == 0x0a || c == 0x0d {
+				// replace newline with comma
+				runes = append(runes, rune(0x2c)) // 44d
+			} else {
+				runes = append(runes, rune(c))
 			}
 		}
-		str += fmt.Sprintf("  %-10s: %s\n", headings[b.TypeID], b.Characters)
+
+		str += fmt.Sprintf("  %-10s: %s\n", headings[b.TypeID], string(runes))
 	}
 
 	return str
