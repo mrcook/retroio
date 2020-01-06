@@ -29,7 +29,7 @@ import (
 type TAP struct {
 	reader *storage.Reader
 
-	Blocks []Block
+	Blocks []TapeBlock
 }
 
 // A Block as stored on tape may be a header or any data from the ZX Spectrum.
@@ -38,13 +38,13 @@ type TAP struct {
 // Blocks must have at least 2 bytes to build up a valid tape data block
 // as each block should be bookended by `flag` and `checksum` bytes.
 // Shorter data blocks (0 or 1 byte long) are so-called _fragmented_ ones.
-type Block struct {
+type TapeBlock struct {
 	Length   uint16
-	TapeData BlockI
+	TapeData Block
 }
 
 // Block is an interface for TAP header/data block
-type BlockI interface {
+type Block interface {
 	Read(reader *storage.Reader)
 	Id() uint8
 	Filename() string
@@ -72,7 +72,7 @@ func (t *TAP) Read() error {
 			return err
 		}
 
-		block := Block{Length: blockLength}
+		block := TapeBlock{Length: blockLength}
 
 		if block.Length == 19 && blockCanBeHeader {
 			block.TapeData, err = t.ReadHeaderBlock()
@@ -95,7 +95,7 @@ func (t *TAP) Read() error {
 }
 
 // ReadHeaderBlock reads the different types of 19-byte header blocks.
-func (t *TAP) ReadHeaderBlock() (BlockI, error) {
+func (t *TAP) ReadHeaderBlock() (Block, error) {
 	// Look up the Flag and DataType bytes, ignoring the 2-byte block Length
 	blockBytes, err := t.reader.Peek(4)
 	if err != nil {
@@ -109,7 +109,7 @@ func (t *TAP) ReadHeaderBlock() (BlockI, error) {
 		return nil, errors.New(fmt.Sprintf("expected header FLAG byte to be 0, got '%d'", flag))
 	}
 
-	var header BlockI
+	var header Block
 
 	switch dataType {
 	case 0:
@@ -130,14 +130,14 @@ func (t *TAP) ReadHeaderBlock() (BlockI, error) {
 }
 
 // ReadDataBlock reads a fragment or standard data block.
-func (t *TAP) ReadDataBlock() (BlockI, error) {
+func (t *TAP) ReadDataBlock() (Block, error) {
 	// Lookup the length of the block to know what type of block it is.
 	length, err := t.reader.PeekShort()
 	if err != nil {
 		return nil, err
 	}
 
-	var block BlockI
+	var block Block
 
 	// Fragments are either 0 or 1 bytes long
 	if length < 2 {

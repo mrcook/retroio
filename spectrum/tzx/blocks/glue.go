@@ -46,7 +46,7 @@ func (g GlueBlock) Name() string {
 	return "Glue Block"
 }
 
-func (g GlueBlock) BlockData() tap.BlockI {
+func (g GlueBlock) BlockData() tap.Block {
 	return nil
 }
 

@@ -42,7 +42,7 @@ func (s StopTapeWhen48kMode) Name() string {
 	return "Stop Tape when in 48k Mode"
 }
 
-func (s StopTapeWhen48kMode) BlockData() tap.BlockI {
+func (s StopTapeWhen48kMode) BlockData() tap.Block {
 	return nil
 }
 

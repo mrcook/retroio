@@ -41,7 +41,7 @@ func (l LoopStart) Name() string {
 	return "Loop Start"
 }
 
-func (l LoopStart) BlockData() tap.BlockI {
+func (l LoopStart) BlockData() tap.Block {
 	return nil
 }
 
@@ -79,7 +79,7 @@ func (l LoopEnd) Name() string {
 	return "Loop End"
 }
 
-func (l LoopEnd) BlockData() tap.BlockI {
+func (l LoopEnd) BlockData() tap.Block {
 	return nil
 }
 

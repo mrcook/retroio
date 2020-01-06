@@ -16,21 +16,18 @@ import (
 // schemes) then use the next three blocks to describe it.
 type TurboSpeedData struct {
 	BlockID         types.BlockType
-	PilotPulse      uint16 // Length of PILOT pulse {2168}
-	SyncFirstPulse  uint16 // Length of SYNC first pulse {667}
-	SyncSecondPulse uint16 // Length of SYNC second pulse {735}
-	ZeroBitPulse    uint16 // Length of ZERO bit pulse {855}
-	OneBitPulse     uint16 // Length of ONE bit pulse {1710}
-	PilotTone       uint16 // Length of PILOT tone (number of pulses) {8063 header (flag<128), 3223 data (flag>=128)}
-	UsedBits        uint8  // Used bits in the last byte (other bits should be 0) {8} (e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)
-	Pause           uint16 // Pause after this block (ms.) {1000}
+	PilotPulse      uint16   // Length of PILOT pulse {2168}
+	SyncFirstPulse  uint16   // Length of SYNC first pulse {667}
+	SyncSecondPulse uint16   // Length of SYNC second pulse {735}
+	ZeroBitPulse    uint16   // Length of ZERO bit pulse {855}
+	OneBitPulse     uint16   // Length of ONE bit pulse {1710}
+	PilotTone       uint16   // Length of PILOT tone (number of pulses) {8063 header (flag<128), 3223 data (flag>=128)}
+	UsedBits        uint8    // Used bits in the last byte (other bits should be 0) {8} (e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)
+	Pause           uint16   // Pause after this block (ms.) {1000}
+	Length          [3]uint8 // Length of data that follows.
+	DataBlock       []uint8  // Data as in .TAP files
 
-	Length uint32 // Length of data that follows. NOTE the use of a DWORD for the property type
-
-	// A single .TAP DataBlock consisting of:
-	//   WORD    Length of data that follows
-	//   BYTE[N] Data as in .TAP files
-	DataBlock tap.BlockI
+	displayLength uint32
 }
 
 // Read the tape and extract the data.
@@ -50,17 +47,14 @@ func (t *TurboSpeedData) Read(reader *storage.Reader) error {
 	t.UsedBits = reader.ReadByte()
 	t.Pause = reader.ReadShort()
 
-	length := reader.ReadBytes(3)
-	length = append(length, 0) // add 4th byte
-	t.Length = reader.BytesToLong(length)
+	copy(t.Length[:], reader.ReadBytes(3))
 
-	// Yep, we're discarding the data for the moment
-	data := make([]byte, t.Length)
-	if _, err := reader.Read(data); err != nil {
-		return err
-	}
+	t.displayLength = reader.Bytes3ToLong(t.Length)
 
-	return nil
+	// TODO: read this as TAP data.
+	t.DataBlock = make([]byte, t.displayLength)
+	_, err := reader.Read(t.DataBlock)
+	return err
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -73,11 +67,11 @@ func (t TurboSpeedData) Name() string {
 	return "Turbo Speed Data"
 }
 
-func (t TurboSpeedData) BlockData() tap.BlockI {
-	return t.DataBlock
+func (t TurboSpeedData) BlockData() tap.Block {
+	return nil
 }
 
 // String returns a human readable string of the block data
 func (t TurboSpeedData) String() string {
-	return fmt.Sprintf("%-19s : %d bytes, pause for %d ms.", t.Name(), t.Length, t.Pause)
+	return fmt.Sprintf("%-19s : %d bytes, pause for %d ms.", t.Name(), t.displayLength, t.Pause)
 }

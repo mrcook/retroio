@@ -3,6 +3,8 @@ package blocks
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
+
 	"retroio/spectrum/tap"
 	"retroio/spectrum/tzx/blocks/types"
 	"retroio/storage"
@@ -21,7 +23,9 @@ type StandardSpeedData struct {
 	// A single .TAP DataBlock consisting of:
 	//   WORD    Length of data that follows
 	//   BYTE[N] Data as in .TAP files
-	DataBlock tap.BlockI
+	DataBlock tap.Block
+
+	displayLength uint16
 }
 
 // Read the tape and extract the data.
@@ -34,13 +38,22 @@ func (s *StandardSpeedData) Read(reader *storage.Reader) error {
 
 	s.Pause = reader.ReadShort()
 
-	t := tap.New(reader)
-	length, _ := reader.PeekShort()
-	if length == 19 {
-		s.DataBlock, _ = t.ReadHeaderBlock()
-	} else {
-		s.DataBlock, _ = t.ReadDataBlock()
+	// Read in the TAP data
+	var err error
+	tapReader := tap.New(reader)
+	length, err := reader.PeekShort()
+	if err == nil {
+		if length == 19 {
+			s.DataBlock, err = tapReader.ReadHeaderBlock()
+		} else {
+			s.DataBlock, err = tapReader.ReadDataBlock()
+		}
 	}
+	if err != nil {
+		return errors.Wrap(err, "unable to read TAP data for StandardSpeedData")
+	}
+
+	s.displayLength = length
 
 	return nil
 }
@@ -55,15 +68,13 @@ func (s StandardSpeedData) Name() string {
 	return "Standard Speed Data"
 }
 
-func (s StandardSpeedData) BlockData() tap.BlockI {
+func (s StandardSpeedData) BlockData() tap.Block {
 	return s.DataBlock
 }
 
 // String returns a human readable string of the block data
 func (s StandardSpeedData) String() string {
-	length := 0 // s.DataBlock.Size() // FIXME: BlockI needs a Size() func
-
-	str := fmt.Sprintf("%-19s: %d bytes, pause for %d ms\n", s.Name(), length, s.Pause)
+	str := fmt.Sprintf("%-19s: %d bytes, pause for %d ms\n", s.Name(), s.displayLength, s.Pause)
 	str += fmt.Sprintf("    - %s", s.DataBlock)
 
 	return str

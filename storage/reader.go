@@ -100,3 +100,9 @@ func (r Reader) Discard(n int) (int, error) {
 func (r Reader) BytesToLong(b []byte) uint32 {
 	return binary.LittleEndian.Uint32(b[:])
 }
+
+// Bytes3ToLong converts a slice of 3 little endian ordered bytes to uint32.
+func (r Reader) Bytes3ToLong(b [3]byte) uint32 {
+	l := append(b[:], 0) // add 4th byte
+	return binary.LittleEndian.Uint32(l[:])
+}

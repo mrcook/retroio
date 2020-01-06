@@ -80,7 +80,7 @@ func (a ArchiveInfo) Name() string {
 	return "Archive Info"
 }
 
-func (a ArchiveInfo) BlockData() tap.BlockI {
+func (a ArchiveInfo) BlockData() tap.Block {
 	return nil
 }
 

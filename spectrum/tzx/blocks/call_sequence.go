@@ -49,7 +49,7 @@ func (c CallSequence) Id() types.BlockType {
 func (c CallSequence) Name() string {
 	return "Call Sequence"
 }
-func (c CallSequence) BlockData() tap.BlockI {
+func (c CallSequence) BlockData() tap.Block {
 	return nil
 }
 
@@ -91,7 +91,7 @@ func (r ReturnFromSequence) Name() string {
 	return "Return from Sequence"
 }
 
-func (r ReturnFromSequence) BlockData() tap.BlockI {
+func (r ReturnFromSequence) BlockData() tap.Block {
 	return nil
 }
 

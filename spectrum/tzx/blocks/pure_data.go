@@ -13,17 +13,14 @@ import (
 // This is the same as in the turbo loading data block, except that it has no pilot or sync pulses.
 type PureData struct {
 	BlockID      types.BlockType
-	ZeroBitPulse uint16 // Length of ZERO bit pulse
-	OneBitPulse  uint16 // Length of ONE bit pulse
-	UsedBits     uint8  // Used bits in last byte (other bits should be 0) (e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)
-	Pause        uint16 // Pause after this block (ms.)
+	ZeroBitPulse uint16   // Length of ZERO bit pulse
+	OneBitPulse  uint16   // Length of ONE bit pulse
+	UsedBits     uint8    // Used bits in last byte (other bits should be 0) (e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, where MSb is the leftmost bit, LSb is the rightmost bit)
+	Pause        uint16   // Pause after this block (ms.)
+	Length       [3]uint8 // Length of data that follows.
+	DataBlock    []uint8  // Data as in .TAP files
 
-	Length uint32 // Length of data that follows. NOTE the use of a DWORD for the property type
-
-	// A single .TAP DataBlock consisting of:
-	//   WORD    Length of data that follows
-	//   BYTE[N] Data as in .TAP files
-	DataBlock tap.BlockI
+	displayLength uint32
 }
 
 // Read the tape and extract the data.
@@ -38,18 +35,14 @@ func (p *PureData) Read(reader *storage.Reader) error {
 	p.ZeroBitPulse = reader.ReadShort()
 	p.UsedBits = reader.ReadByte()
 	p.Pause = reader.ReadShort()
+	copy(p.Length[:], reader.ReadBytes(3))
 
-	length := reader.ReadBytes(3)
-	length = append(length, 0) // add 4th byte
-	p.Length = reader.BytesToLong(length)
+	p.displayLength = reader.Bytes3ToLong(p.Length)
 
-	// Yep, we're discarding the data for the moment
-	data := make([]byte, p.Length)
-	if _, err := reader.Read(data); err != nil {
-		return err
-	}
-
-	return nil
+	// TODO: read this as TAP data.
+	p.DataBlock = make([]byte, p.displayLength)
+	_, err := reader.Read(p.DataBlock)
+	return err
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -62,11 +55,11 @@ func (p PureData) Name() string {
 	return "Pure Data"
 }
 
-func (p PureData) BlockData() tap.BlockI {
-	return p.DataBlock
+func (p PureData) BlockData() tap.Block {
+	return nil
 }
 
 // String returns a human readable string of the block data
 func (p PureData) String() string {
-	return fmt.Sprintf("%-19s : %d bytes, pause for %d ms.", p.Name(), p.Length, p.Pause)
+	return fmt.Sprintf("%-19s : %d bytes, pause for %d ms.", p.Name(), p.displayLength, p.Pause)
 }

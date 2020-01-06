@@ -48,7 +48,7 @@ func (g GroupStart) Name() string {
 	return "Group Start"
 }
 
-func (g GroupStart) BlockData() tap.BlockI {
+func (g GroupStart) BlockData() tap.Block {
 	return nil
 }
 
@@ -84,7 +84,7 @@ func (g GroupEnd) Name() string {
 	return "Group End"
 }
 
-func (g GroupEnd) BlockData() tap.BlockI {
+func (g GroupEnd) BlockData() tap.Block {
 	return nil
 }
 

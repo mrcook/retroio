@@ -63,7 +63,7 @@ func (h HardwareType) Name() string {
 	return "Hardware"
 }
 
-func (h HardwareType) BlockData() tap.BlockI {
+func (h HardwareType) BlockData() tap.Block {
 	return nil
 }
 

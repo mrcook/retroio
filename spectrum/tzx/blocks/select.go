@@ -62,7 +62,7 @@ func (s Select) Name() string {
 	return "Select"
 }
 
-func (s Select) BlockData() tap.BlockI {
+func (s Select) BlockData() tap.Block {
 	return nil
 }
 

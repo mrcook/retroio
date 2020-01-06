@@ -51,7 +51,7 @@ func (c CustomInfo) Name() string {
 	return "Custom Info"
 }
 
-func (c CustomInfo) BlockData() tap.BlockI {
+func (c CustomInfo) BlockData() tap.Block {
 	return nil
 }
 

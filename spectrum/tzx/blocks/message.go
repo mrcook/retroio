@@ -52,7 +52,7 @@ func (m Message) Name() string {
 	return "Message"
 }
 
-func (m Message) BlockData() tap.BlockI {
+func (m Message) BlockData() tap.Block {
 	return nil
 }
 

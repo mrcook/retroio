@@ -41,7 +41,7 @@ func (p PauseTapeCommand) Name() string {
 	return "Pause Tape Command"
 }
 
-func (p PauseTapeCommand) BlockData() tap.BlockI {
+func (p PauseTapeCommand) BlockData() tap.Block {
 	return nil
 }
 

@@ -19,11 +19,13 @@ import (
 // Please use this block only if you cannot use any other block.
 type DirectRecording struct {
 	BlockID          types.BlockType
-	TStatesPerSample uint16  // Number of T-states per sample (bit of data)
-	Pause            uint16  // Pause after this block in milliseconds (ms.)
-	UsedBits         uint8   // Used bits (samples) in last byte of data (1-8) (e.g. if this is 2, only first two samples of the last byte will be played)
-	Length           uint32  // Length of samples' data
-	Data             []uint8 // Samples data. Each bit represents a state on the EAR port (i.e. one sample). MSb is played first.
+	TStatesPerSample uint16   // Number of T-states per sample (bit of data)
+	Pause            uint16   // Pause after this block in milliseconds (ms.)
+	UsedBits         uint8    // Used bits (samples) in last byte of data (1-8) (e.g. if this is 2, only first two samples of the last byte will be played)
+	Length           [3]uint8 // Length of data that follows.
+	Data             []uint8  // Samples data. Each bit represents a state on the EAR port (i.e. one sample). MSb is played first.
+
+	displayLength uint32
 }
 
 // Read the tape and extract the data.
@@ -38,16 +40,14 @@ func (d *DirectRecording) Read(reader *storage.Reader) error {
 	d.Pause = reader.ReadShort()
 	d.UsedBits = reader.ReadByte()
 
-	length := reader.ReadBytes(3)
-	length = append(length, 0) // add 4th byte
-	d.Length = reader.BytesToLong(length)
+	copy(d.Length[:], reader.ReadBytes(3))
 
-	d.Data = make([]byte, d.Length)
-	if _, err := reader.Read(d.Data); err != nil {
-		return err
-	}
+	d.displayLength = reader.Bytes3ToLong(d.Length)
 
-	return nil
+	// TODO: read this as TAP data.
+	d.Data = make([]byte, d.displayLength)
+	_, err := reader.Read(d.Data)
+	return err
 }
 
 // Id of the block as given in the TZX specification, written as a hexadecimal number.
@@ -60,11 +60,11 @@ func (d DirectRecording) Name() string {
 	return "Direct Recording"
 }
 
-func (d DirectRecording) BlockData() tap.BlockI {
+func (d DirectRecording) BlockData() tap.Block {
 	return nil
 }
 
 // String returns a human readable string of the block data
 func (d DirectRecording) String() string {
-	return fmt.Sprintf("%-19s : %d T-States, %d bytes", d.Name(), d.TStatesPerSample, d.Length)
+	return fmt.Sprintf("%-19s : %d T-States, %d bytes", d.Name(), d.TStatesPerSample, d.displayLength)
 }

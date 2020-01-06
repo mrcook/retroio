@@ -45,7 +45,7 @@ func (j JumpTo) Name() string {
 	return "Jump To"
 }
 
-func (j JumpTo) BlockData() tap.BlockI {
+func (j JumpTo) BlockData() tap.Block {
 	return nil
 }
 

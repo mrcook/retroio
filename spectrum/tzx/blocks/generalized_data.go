@@ -79,7 +79,7 @@ func (g GeneralizedData) Name() string {
 	return "Generalized Data"
 }
 
-func (g GeneralizedData) BlockData() tap.BlockI {
+func (g GeneralizedData) BlockData() tap.Block {
 	return nil
 }
 

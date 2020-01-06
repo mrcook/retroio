@@ -42,7 +42,7 @@ func (s SetSignalLevel) Name() string {
 	return "Set Signal Level"
 }
 
-func (s SetSignalLevel) BlockData() tap.BlockI {
+func (s SetSignalLevel) BlockData() tap.Block {
 	return nil
 }
 

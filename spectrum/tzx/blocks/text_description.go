@@ -48,7 +48,7 @@ func (t TextDescription) Name() string {
 	return "Text Description"
 }
 
-func (t TextDescription) BlockData() tap.BlockI {
+func (t TextDescription) BlockData() tap.Block {
 	return nil
 }
 

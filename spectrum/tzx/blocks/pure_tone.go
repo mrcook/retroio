@@ -42,11 +42,11 @@ func (p PureTone) Name() string {
 	return "Pure Tone"
 }
 
-func (p PureTone) BlockData() tap.BlockI {
+func (p PureTone) BlockData() tap.Block {
 	return nil
 }
 
 // String returns a human readable string of the block data
 func (p PureTone) String() string {
-	return fmt.Sprintf("%-19s : %d T-States, %d pulses", p.Name(), p.Length, p.PulseCount)
+	return fmt.Sprintf("%-19s : %d pulses of %d T-States", p.Name(), p.PulseCount, p.Length)
 }

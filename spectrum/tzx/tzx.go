@@ -85,7 +85,7 @@ type Block interface {
 	Read(reader *storage.Reader) error
 	Id() types.BlockType
 	Name() string
-	BlockData() tap.BlockI
+	BlockData() tap.Block
 }
 
 // Header is the first block of data found in all TZX files.
@@ -195,6 +195,13 @@ func (t TZX) ListBasicPrograms() {
 	isProgram := false
 	filename := ""
 
+	// TODO: update `block`'s to store their index number
+	// Archive counts as a normal block, but it is not stored in blocks slice
+	blockCountOffset := 1 // Block #'s start from 1
+	if t.archive != nil {
+		blockCountOffset += 1
+	}
+
 	listing := ""
 	for i, block := range t.blocks {
 		if block.BlockData() == nil {
@@ -203,7 +210,7 @@ func (t TZX) ListBasicPrograms() {
 		blk := block.BlockData()
 
 		if isProgram == true {
-			listing += fmt.Sprintf("BLK#%02d: %s\n", i+1, filename)
+			listing += fmt.Sprintf("BLK#%02d: %s\n", i+blockCountOffset, filename)
 
 			program, err := basic.Decode(blk.BlockData())
 			if err != nil {

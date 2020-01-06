@@ -55,7 +55,7 @@ func (c CswRecording) Name() string {
 	return "CSW Recording"
 }
 
-func (c CswRecording) BlockData() tap.BlockI {
+func (c CswRecording) BlockData() tap.Block {
 	return nil
 }
 

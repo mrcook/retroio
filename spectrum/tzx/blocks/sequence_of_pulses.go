@@ -45,7 +45,7 @@ func (s SequenceOfPulses) Name() string {
 	return "Sequence of Pulses"
 }
 
-func (s SequenceOfPulses) BlockData() tap.BlockI {
+func (s SequenceOfPulses) BlockData() tap.Block {
 	return nil
 }
 
