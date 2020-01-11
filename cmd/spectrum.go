@@ -4,6 +4,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	spectrumMediaType  string
+	spectrumBasListing bool
+)
+
 // spectrumCmd represents the spectrum command
 var spectrumCmd = &cobra.Command{
 	Use:     "spectrum",

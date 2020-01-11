@@ -56,8 +56,8 @@ func (t *TAP) Read() error {
 	return nil
 }
 
-// DisplayImageMetadata prints the tape metadata to the terminal.
-func (t TAP) DisplayImageMetadata() {
+// DisplayGeometry prints the tape metadata to the terminal.
+func (t TAP) DisplayGeometry() {
 	fmt.Println("HEADER INFORMATION:")
 	fmt.Println(t)
 }

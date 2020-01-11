@@ -12,14 +12,15 @@ import (
 	"retroio/storage"
 )
 
-var amstradFormat string
+var amstradMediaType string
 
-var amstradReadCmd = &cobra.Command{
-	Use:   "read FILE",
-	Short: "Read an Amstrad file",
-	Long: `Read all header and data blocks from a CDT file.
+var amstradGeometryCmd = &cobra.Command{
+	Use:   "geometry FILE",
+	Short: "Read the Amstrad disk and tape geometry",
+	Long: `Read the geometry - headers and data tracks/sectors/blocks - from an Amstrad
+emulator disk or tape file.
 
-NOTE: this storage format is identical to the ZX Spectrum TZX format.`,
+NOTE: the CDT geometry is identical to that of the ZX Spectrum TZX format.`,
 	Args:                  cobra.ExactArgs(1),
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -34,7 +35,7 @@ NOTE: this storage format is identical to the ZX Spectrum TZX format.`,
 		reader := storage.NewReader(f)
 
 		var disk amstrad.Image
-		dskType := storageType(amstradFormat, filename)
+		dskType := mediaType(amstradMediaType, filename)
 
 		switch dskType {
 		case "dsk":
@@ -42,7 +43,7 @@ NOTE: this storage format is identical to the ZX Spectrum TZX format.`,
 		case "cdt":
 			disk = cdt.New(reader)
 		default:
-			fmt.Printf("Unsupported storage format: '%s'", dskType)
+			fmt.Printf("Unsupported media type: '%s'", dskType)
 			return
 		}
 
@@ -52,11 +53,11 @@ NOTE: this storage format is identical to the ZX Spectrum TZX format.`,
 			os.Exit(1)
 		}
 
-		disk.DisplayImageMetadata()
+		disk.DisplayGeometry()
 	},
 }
 
 func init() {
-	amstradReadCmd.Flags().StringVarP(&amstradFormat, "format", "f", "", `Storage format`)
-	amstradCmd.AddCommand(amstradReadCmd)
+	amstradGeometryCmd.Flags().StringVarP(&amstradMediaType, "media", "m", "", `Media type, default: file extension`)
+	amstradCmd.AddCommand(amstradGeometryCmd)
 }

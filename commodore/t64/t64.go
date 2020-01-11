@@ -58,8 +58,8 @@ func (t *T64) Read() error {
 	return nil
 }
 
-// DisplayImageMetadata prints the tape metadata and record headers to the terminal.
-func (t T64) DisplayImageMetadata() {
+// DisplayGeometry prints the tape metadata and record headers to the terminal.
+func (t T64) DisplayGeometry() {
 	fmt.Println("HEADER INFORMATION:")
 	fmt.Println(t.Header)
 

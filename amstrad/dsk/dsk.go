@@ -95,8 +95,8 @@ func (d *DSK) Read() error {
 	return nil
 }
 
-// DisplayImageMetadata prints the disk, track and sector metadata to the terminal.
-func (d DSK) DisplayImageMetadata() {
+// DisplayGeometry prints the disk, track and sector metadata to the terminal.
+func (d DSK) DisplayGeometry() {
 	fmt.Println("DISK INFORMATION:")
 	fmt.Println(d.Info)
 

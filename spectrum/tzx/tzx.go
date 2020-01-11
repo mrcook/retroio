@@ -160,8 +160,8 @@ func (t *TZX) readBlocks() error {
 	return nil
 }
 
-// DisplayImageMetadata prints the metadata, archive info, data blocks, etc.
-func (t TZX) DisplayImageMetadata() {
+// DisplayGeometry prints the metadata, archive info, data blocks, etc.
+func (t TZX) DisplayGeometry() {
 	// TODO: update `block`'s to store their index number
 	blockCountOffset := 1 // Block #'s start from 1
 
@@ -190,8 +190,8 @@ func (t TZX) DisplayImageMetadata() {
 	fmt.Println()
 }
 
-// ListBasicPrograms outputs all BASIC programs
-func (t TZX) ListBasicPrograms() {
+// DisplayBASIC outputs all BASIC programs
+func (t TZX) DisplayBASIC() {
 	isProgram := false
 	filename := ""
 

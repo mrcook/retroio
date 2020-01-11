@@ -12,10 +12,11 @@ import (
 	"retroio/storage"
 )
 
-var speccyReadCmd = &cobra.Command{
-	Use:                   "read FILE",
-	Short:                 "Read a ZX Spectrum tape file",
-	Long:                  `Read the contents of a ZX Spectrum emulator TAP or TZX tape file.`,
+var speccyGeometryCmd = &cobra.Command{
+	Use:   "geometry FILE",
+	Short: "Read the ZX Spectrum tape geometry",
+	Long: `Read the geometry - headers and data tracks/sectors/blocks - from a
+ZX Spectrum emulator TZX or TAP file.`,
 	Args:                  cobra.ExactArgs(1),
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -48,17 +49,11 @@ var speccyReadCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if spectrumBasListing {
-			dsk.DisplayBASIC()
-		} else {
-			cmd.Help()
-			fmt.Println("\nPlease select '--bas' for BASIC program listing.")
-		}
+		dsk.DisplayGeometry()
 	},
 }
 
 func init() {
-	speccyReadCmd.Flags().StringVarP(&spectrumMediaType, "media", "m", "", `Media type, default: file extension`)
-	speccyReadCmd.Flags().BoolVar(&spectrumBasListing, "bas", false, `BASIC program listing`)
-	spectrumCmd.AddCommand(speccyReadCmd)
+	speccyGeometryCmd.Flags().StringVarP(&spectrumMediaType, "media", "m", "", `Media type, default: file extension`)
+	spectrumCmd.AddCommand(speccyGeometryCmd)
 }

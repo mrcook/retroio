@@ -12,12 +12,13 @@ import (
 	"retroio/storage"
 )
 
-var commodoreFormat string
+var commodoreMediaType string
 
-var c64ReadCmd = &cobra.Command{
-	Use:                   "read FILE",
-	Short:                 "Read a T64 file",
-	Long:                  `Read all headers, directories, and data from a T64 image`,
+var commodoreGeometryCmd = &cobra.Command{
+	Use:   "geometry FILE",
+	Short: "Read the Commodore tape file geometry",
+	Long: `Read the geometry - headers and data blocks - from a Commodore emulator TAP
+or T64 tape file.`,
 	Args:                  cobra.ExactArgs(1),
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -32,7 +33,7 @@ var c64ReadCmd = &cobra.Command{
 		reader := storage.NewReader(f)
 
 		var dsk commodore.Image
-		dskType := storageType(commodoreFormat, filename)
+		dskType := mediaType(commodoreMediaType, filename)
 
 		switch dskType {
 		case "t64":
@@ -40,7 +41,7 @@ var c64ReadCmd = &cobra.Command{
 		case "tap":
 			dsk = tap.New(reader)
 		default:
-			fmt.Printf("Unsupported storage format: '%s'", dskType)
+			fmt.Printf("Unsupported media type: '%s'", dskType)
 			return
 		}
 
@@ -50,11 +51,11 @@ var c64ReadCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		dsk.DisplayImageMetadata()
+		dsk.DisplayGeometry()
 	},
 }
 
 func init() {
-	c64ReadCmd.Flags().StringVarP(&commodoreFormat, "format", "f", "", `Storage format`)
-	commodoreCmd.AddCommand(c64ReadCmd)
+	commodoreGeometryCmd.Flags().StringVarP(&commodoreMediaType, "media", "m", "", `Media type, default: file extension`)
+	commodoreCmd.AddCommand(commodoreGeometryCmd)
 }

@@ -151,16 +151,16 @@ func (t *TAP) ReadDataBlock() (Block, error) {
 	return block, nil
 }
 
-// DisplayImageMetadata outputs the metadata of each data block to the terminal.
-func (t TAP) DisplayImageMetadata() {
+// DisplayGeometry outputs the metadata of each data block to the terminal.
+func (t TAP) DisplayGeometry() {
 	fmt.Println("DATA BLOCKS:")
 	for i, block := range t.Blocks {
 		fmt.Printf("#%02d %s\n", i+1, block.TapeData)
 	}
 }
 
-// ListBasicPrograms outputs all BASIC programs
-func (t TAP) ListBasicPrograms() {
+// DisplayBASIC outputs all BASIC programs
+func (t TAP) DisplayBASIC() {
 	isProgram := false
 	filename := ""
 

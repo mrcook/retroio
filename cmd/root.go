@@ -15,7 +15,7 @@ import (
 // rootCmd represents the base command when called without any sub commands
 var rootCmd = &cobra.Command{
 	Use:     "rio",
-	Version: "0.8.6",
+	Version: "0.9.0",
 	Short:   "CLI utility for reading emulator disk and tape images",
 	Long: `RetroIO (rio) is a command line utility for reading emulator storage media
 (disks and cassette tape images) of home computers from the 1980s.`,
@@ -36,9 +36,9 @@ func Execute() {
 	}
 }
 
-func storageType(format, filename string) string {
-	if format == "" {
-		format = path.Ext(filename)
+func mediaType(media, filename string) string {
+	if media == "" {
+		media = path.Ext(filename)
 	}
-	return strings.TrimPrefix(strings.ToLower(format), ".")
+	return strings.TrimPrefix(strings.ToLower(media), ".")
 }

@@ -6,27 +6,31 @@ the 1980s.
 
 One example would be `tzx` tapes from the ZX Spectrum 8-bit home computer.
 
-_Why? Well, I wrote this program in part to better understand how tape data
-is loaded in to a ZX Spectrum, but also as an experiment in working with
-binary data files._
+
+## Supported Media and Functionality
+
+Current functionality is limited in scope to the following features:
 
 
-## Supported Storage Media
-
-Read only for:
+### Read Media Geometry
 
 * Amstrad:      `DSK`, `CDT`
 * Commodore 64: `T64`, `TAP`
 * ZX Spectrum:  `TZX`, `TAP`
 
+The `geometry` command will read and display core information about the layout
+of the media. This can be disk track and sector details, or the header and
+block information from a cassette tape.
 
-### BASIC Program Listing
 
-It is possible to output the BASIC program listings from the following media:
+### Read Media
 
 * ZX Spectrum: `TZX` and `TAP`
 
-Simply add the `--bas` flag when `read`ing the image.
+The `read` command will read data contained on the media.
+
+At present only listing of BASIC programs is supported. Simply add the `--bas`
+flag when `read`ing the media image.
 
 _Please note that decoding is currently experimental and the output may not be
 considered valid BASIC, and may even be garbled or missing completely._
@@ -44,12 +48,12 @@ To install the app after manually cloning the repository you must first change t
 
 ## Usage
 
-    $ rio spectrum read /path/to/tape.tzx
+    $ rio spectrum geometry /path/to/tape.tzx
 
-The media metadata and block information will be printed to the terminal.
+Reads the media geometry and prints the details to the terminal.
 
-The program will select the correct _format_ based on the file extension,
-however this can be overridden with the `--format` flag.
+The program will select the correct media type for the requested system, based
+on the file extension, however this can be overridden with the `--media` flag.
 
 
 ### Example output
