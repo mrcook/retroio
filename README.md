@@ -7,29 +7,35 @@ the 1980s.
 One example would be `tzx` tapes from the ZX Spectrum 8-bit home computer.
 
 
-## Supported Media and Functionality
-
-Current functionality is limited in scope to the following features:
+## Supported Media and Commands
 
 
-### Read Media Geometry
+### Geometry Command
 
 * Amstrad:      `DSK`, `CDT`
 * Commodore 64: `T64`, `TAP`
 * ZX Spectrum:  `TZX`, `TAP`
 
-The `geometry` command will read and display core information about the layout
+The `geometry` command will read and display core metadata about the layout
 of the media. This can be disk track and sector details, or the header and
 block information from a cassette tape.
 
 
-### Read Media
+### Directory Command
+
+* Amstrad:      `DSK`
+
+The `dir` command reads a disk and prints the directory listing to the terminal.
+Any hidden files will also be displayed.
+
+
+### Read Command
 
 * ZX Spectrum: `TZX` and `TAP`
 
 The `read` command will read data contained on the media.
 
-At present only listing of BASIC programs is supported. Simply add the `--bas`
+At present only printing of `BASIC` programs is supported. Simply add the `--bas`
 flag when `read`ing the media image.
 
 _Please note that decoding is currently experimental and the output may not be

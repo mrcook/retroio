@@ -7,6 +7,8 @@
 package cdt
 
 import (
+	"fmt"
+
 	"retroio/spectrum/tzx"
 	"retroio/storage"
 )
@@ -17,4 +19,8 @@ type CDT struct {
 
 func New(reader *storage.Reader) *CDT {
 	return &CDT{tzx.New(reader)}
+}
+
+func (d CDT) CommandDir() {
+	fmt.Println("directory listing unsupported for tapes")
 }

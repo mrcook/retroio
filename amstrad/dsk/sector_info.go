@@ -11,6 +11,14 @@ import (
 
 const sectorInformationBlockSize = 8 // bytes
 
+// sectorSizeMap maps the track/sector size enum byte to its size in bytes value.
+var sectorSizeMap = map[uint8]uint16{
+	0: 128,
+	1: 256,
+	2: 512,
+	3: 1024,
+}
+
 // Sector information block
 //
 // * For 8k Sectors (N="6"), only 1800h bytes is stored.
@@ -18,7 +26,7 @@ type SectorInformation struct {
 	Track  uint8  // C   Cylinder Number is the current/selected track number: 0 through 76.
 	Side   uint8  // H   Head Address is the head number: 0 or 1
 	ID     uint8  // R   Record / sector number
-	Size   uint8  // N   Number of data bytes written to sector
+	Size   uint8  // N   Number of data bytes written to sector (enum 0-3)
 	ST1    uint8  // ST1 Error Status Register 1
 	ST2    uint8  // ST2 Error Status Register 2
 	Unused uint16 // not used (0)
@@ -29,42 +37,31 @@ func (s *SectorInformation) Read(reader *storage.Reader) error {
 	return binary.Read(reader, binary.LittleEndian, s)
 }
 
-// DataRead reads the data from the disk
-func (s *SectorInformation) DataRead(reader *storage.Reader) ([]byte, error) {
+// dataRead reads the data from the disk
+func (s *SectorInformation) dataRead(reader *storage.Reader) ([]byte, error) {
 	if s.Size > 3 {
 		return nil, fmt.Errorf("unknown sector size value 0x%02X", s.Size)
 	}
 
-	data := make([]byte, s.SectorByteSize())
+	sectorSize, ok := sectorSizeMap[s.Size]
+	if !ok {
+		return nil, fmt.Errorf("invalid sector size byte")
+	}
+
+	data := make([]byte, sectorSize)
 	err := binary.Read(reader, binary.LittleEndian, data)
 
 	return data, err
 }
 
-// SectorByteSize calculates how many bytes the sector size is.
-func (s SectorInformation) SectorByteSize() int {
-	bytes := 0
-	switch s.Size {
-	case 0:
-		bytes = 128
-	case 1:
-		bytes = 256
-	case 2:
-		bytes = 512
-	case 3:
-		bytes = 1024
-	default:
-		return -1
-	}
-	return bytes
-}
-
 func (s SectorInformation) String() string {
+	sectorSize, _ := sectorSizeMap[s.Size]
+
 	str := ""
 	str += fmt.Sprintf("ID:    %d\n", s.ID)
 	str += fmt.Sprintf("Side:  %d\n", s.Side)
 	str += fmt.Sprintf("Track: %d\n", s.Track)
-	str += fmt.Sprintf("Size:  %d (%d bytes)\n", s.Size, s.SectorByteSize())
+	str += fmt.Sprintf("Size:  %d (%d bytes)\n", s.Size, sectorSize)
 	str += fmt.Sprintf("ST1:   0x%02X: %s\n", s.ST1, s.st1Label())
 	str += fmt.Sprintf("ST2:   0x%02X: %s\n", s.ST2, s.st2Label())
 	return str

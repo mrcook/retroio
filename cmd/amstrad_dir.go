@@ -7,20 +7,15 @@ import (
 	"github.com/spf13/cobra"
 
 	"retroio/amstrad"
-	"retroio/amstrad/cdt"
 	"retroio/amstrad/dsk"
 	"retroio/storage"
 )
 
-var amstradMediaType string
-
-var amstradGeometryCmd = &cobra.Command{
-	Use:   "geometry FILE",
-	Short: "Read the Amstrad disk and tape geometry",
-	Long: `Read the geometry - headers and data tracks/sectors/blocks - from an Amstrad
-emulator disk or tape file.
-
-NOTE: the CDT geometry is identical to that of the ZX Spectrum TZX format.`,
+var amstradCommandDir = &cobra.Command{
+	Use:                   "dir FILE",
+	Aliases:               []string{"cat"},
+	Short:                 "Displays the directory of a DSK image",
+	Long:                  `Reads and displays the directory listing found on an Amstrad emulator DSK image file.`,
 	Args:                  cobra.ExactArgs(1),
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -40,8 +35,6 @@ NOTE: the CDT geometry is identical to that of the ZX Spectrum TZX format.`,
 		switch dskType {
 		case "dsk":
 			disk = dsk.New(reader)
-		case "cdt":
-			disk = cdt.New(reader)
 		default:
 			fmt.Printf("Unsupported media type: '%s'", dskType)
 			return
@@ -53,11 +46,11 @@ NOTE: the CDT geometry is identical to that of the ZX Spectrum TZX format.`,
 			os.Exit(1)
 		}
 
-		disk.DisplayGeometry()
+		disk.CommandDir()
 	},
 }
 
 func init() {
-	amstradGeometryCmd.Flags().StringVarP(&amstradMediaType, "media", "m", "", `Media type, default: file extension`)
-	amstradCmd.AddCommand(amstradGeometryCmd)
+	amstradCommandDir.Flags().StringVarP(&amstradMediaType, "media", "m", "", `Media type, default: file extension`)
+	amstradCmd.AddCommand(amstradCommandDir)
 }

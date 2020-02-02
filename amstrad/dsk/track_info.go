@@ -21,8 +21,8 @@ import (
 )
 
 const (
-	trackInformationBlockSize = 24
-	sectorDataStartAddress    = 0x0100
+	trackInformationHeaderSize = 24
+	sectorDataStartAddress     = 0x0100 // 256-bytes
 )
 
 // Track information block
@@ -37,13 +37,13 @@ type TrackInformation struct {
 	Track        uint8    // track number
 	Side         uint8    // side number
 	Unused2      [2]byte  // unused
-	SectorSize   uint8    // sector size
+	SectorSize   uint8    // sector size (enum 0-3)
 	SectorsCount uint8    // number of sectors
 	GapLength    uint8    // GAP#3 length
 	FillerByte   uint8    // filler byte
 
-	Sectors []SectorInformation // Sector Information List
-	Data    [][]byte            // Sector data, starting at 0x0100 from start of Track
+	Sectors    []SectorInformation // Sector Information List
+	SectorData [][]byte            // Sector data, starting at 0x0100 from start of Track
 }
 
 // Read the track information header.
@@ -59,10 +59,6 @@ func (t *TrackInformation) Read(reader *storage.Reader) error {
 	t.FillerByte = reader.ReadByte()
 
 	if err := t.readSectorInformationBlocks(reader); err != nil {
-		return err
-	}
-
-	if err := t.setBufferToDataAddress(reader); err != nil {
 		return err
 	}
 
@@ -84,9 +80,24 @@ func (t *TrackInformation) readSectorInformationBlocks(reader *storage.Reader) e
 	return nil
 }
 
+func (t *TrackInformation) readSectorData(reader *storage.Reader) error {
+	if err := t.setBufferToDataAddress(reader); err != nil {
+		return err
+	}
+
+	for i, s := range t.Sectors {
+		data, err := s.dataRead(reader)
+		if err != nil {
+			return errors.Wrapf(err, "error reading sector #%d", i)
+		}
+		t.SectorData = append(t.SectorData, data)
+	}
+	return nil
+}
+
 func (t TrackInformation) setBufferToDataAddress(reader *storage.Reader) error {
 	blockSize := int(t.SectorsCount) * sectorInformationBlockSize
-	usedBytes := trackInformationBlockSize + blockSize
+	usedBytes := trackInformationHeaderSize + blockSize
 
 	_, err := reader.Discard(sectorDataStartAddress - usedBytes)
 	if err != nil {
@@ -96,28 +107,14 @@ func (t TrackInformation) setBufferToDataAddress(reader *storage.Reader) error {
 	return nil
 }
 
-func (t *TrackInformation) readSectorData(reader *storage.Reader) error {
-	for i, s := range t.Sectors {
-		data, err := s.DataRead(reader)
-		if err != nil {
-			return errors.Wrapf(err, "error reading sector #%d", i)
-		}
-		t.Data = append(t.Data, data)
-	}
-	return nil
-}
-
 func (t TrackInformation) String() string {
-	sectorByteSize := -1
-	if len(t.Sectors) > 0 {
-		sectorByteSize = t.Sectors[0].SectorByteSize()
-	}
+	sectorSize, _ := sectorSizeMap[t.SectorSize]
 
 	str := ""
 	str += fmt.Sprintf("Identifier:   %s\n", reformatIdentifier(t.Identifier[:]))
 	str += fmt.Sprintf("Side:         %d\n", t.Side)
 	str += fmt.Sprintf("Track:        %d\n", t.Track)
-	str += fmt.Sprintf("Sector Size:  %d (%d bytes)\n", t.SectorSize, sectorByteSize)
+	str += fmt.Sprintf("Sector Size:  %d (%d bytes)\n", t.SectorSize, sectorSize)
 	str += fmt.Sprintf("Sector Count: %d\n", t.SectorsCount)
 	return str
 }

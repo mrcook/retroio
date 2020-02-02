@@ -10,6 +10,7 @@ import (
 
 	"github.com/pkg/errors"
 
+	"retroio/amstrad/dsk/amsdos/cat"
 	"retroio/storage"
 )
 
@@ -31,6 +32,8 @@ type DSK struct {
 
 	Info   DiskInformation
 	Tracks []TrackInformation
+
+	AmsDos AmsDos
 }
 
 func New(reader *storage.Reader) *DSK {
@@ -51,6 +54,12 @@ func (d *DSK) Read() error {
 		d.Tracks = append(d.Tracks, track)
 	}
 
+	// Read the contents of the disk as AMSDOS format
+	d.AmsDos = AmsDos{}
+	if err := d.AmsDos.Read(d); err != nil {
+		return errors.Wrap(err, "AMSDOS read error")
+	}
+
 	return nil
 }
 
@@ -60,19 +69,64 @@ func (d DSK) DisplayGeometry() {
 	fmt.Println(d.Info)
 
 	for _, track := range d.Tracks {
+		sectorSize, _ := sectorSizeMap[track.SectorSize]
+
 		str := fmt.Sprintf("SIDE %d, TRACK %02d: ", track.Side, track.Track)
 		if track.SectorsCount == 0 {
 			str += "[Track is blank]"
 		}
 		str += fmt.Sprintf("%02d sectors", track.SectorsCount)
-		if len(track.Sectors) > 0 {
-			str += fmt.Sprintf(" (%d bytes)", track.Sectors[0].SectorByteSize())
-		}
+		str += fmt.Sprintf(" (%d bytes)", sectorSize)
 		if int(track.SectorsCount) != len(track.Sectors) {
 			str += fmt.Sprintf(" WARNING only %d sectors read", len(track.Sectors))
 		}
 		fmt.Println(str)
 	}
+}
+
+// CommandDir displays the disk directory to the terminal.
+func (d DSK) CommandDir() {
+	commandCat, err := cat.CommandCat(d.AmsDos.DPB.BlockCount, d.AmsDos.Directories)
+	if err != nil {
+		fmt.Printf("CAT command error: %s", err)
+		return
+	}
+
+	fmt.Printf("Drive %c: user %d\n", commandCat.Drive, commandCat.User)
+	fmt.Println()
+
+	// Print listing in two columns
+	maxRowsLeft, maxRowsRight := recordRowCounts(len(commandCat.Records))
+	for i := 0; i < maxRowsLeft; i++ {
+		row := commandCat.Records[i].String()
+		if i < maxRowsRight {
+			row += fmt.Sprintf("   %s", commandCat.Records[maxRowsLeft+i].String())
+		}
+		fmt.Println(row)
+	}
+
+	fmt.Println()
+	fmt.Printf("%3dK free\n", commandCat.FreeSpace)
+
+	if commandCat.HiddenFiles > 0 {
+		fmt.Println()
+		pluralized := ""
+		if commandCat.HiddenFiles > 1 {
+			pluralized = "s"
+
+		}
+		fmt.Printf("* %d hidden file%s\n", commandCat.HiddenFiles, pluralized)
+	}
+}
+
+func recordRowCounts(records int) (int, int) {
+	left := records / 2
+	if records%2 > 0 {
+		left += 1
+	}
+	right := records / 2
+
+	return left, right
 }
 
 func reformatIdentifier(identifier []byte) string {
