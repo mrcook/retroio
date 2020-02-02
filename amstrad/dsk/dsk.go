@@ -1,60 +1,6 @@
-// Package dsk implements reading of Amstrad DSK image files as specified at:
-// http://cpctech.cpc-live.com/docs/dsk.html
+// Package dsk implements reading Amstrad DSK image files.
 //
-// * Track 0 (or Track 0 side 0 for double sided disks), if track data exists,
-//   will immediately follow the Disc Information Block and will start at
-//   offset &100 in the disc image file.
-// * All tracks must have a "Track Information Block"
-// * Track lengths are stored in the same order as the tracks in the image e.g.
-//   In the case of a double sided disk: Track 0 side 0, Track 0 side 1, Track 1 side 0, etc.
-// * The track blocks are stored in increasing order 0..number of tracks, with
-//   alternating sides interleaved if the disc image describes a double sided
-//   disk. e.g. if the disk image represents a double sided disk, the order of tracks is:
-//   - track 0 side 0,
-//   - track 0 side 1,
-//   - track 1 side 0,
-//   - track 1 side 1....
-//   - track (number of tracks-1) side 0, track (number of tracks-1) side 1
-//
-// The tracks are always ordered in this way regardless of the disc-format described by the disc image.
-//
-// A standard disk image can be used to describe a copy-protected disk, but will often result
-// in a file which is larger than the same disk described by a extended disk image.
-// For a standard disk image to represent a copy-protected disk:
-//   - All track sizes in the standard disk image must be the same. This value therefore would
-//     be the size of the largest track, and other tracks would have unused space in them.
-//   - All sector sizes within each track must be the same size, but not necessarily the same
-//     size as the sectors for another track. If a track contained different sized sectors,
-//     the size of the largest sector should be used. This would result in some wasted space.
-//
-// General format:
-//
-// Single sided DSK images:
-// * Disc Information Block
-// * Track 0 data
-//   - Track Information Block
-//   - Sector data
-// * Track 1 data
-//   - Track Information Block
-//   - Sector data
-// * . . . .
-// * Track (number_of_tracks-1) data
-//   - Track Information Block
-//   - Sector data
-//
-// Double sided DSK images:
-// * Disc Information Block
-// * Track 0 side 0 data
-//   - Track Information Block
-//   - Sector data
-// * Track 0 side 1 data
-//   - Track Information Block
-//   - Sector data
-// * . . . .
-// * Track (number_of_tracks-1) side 1 data
-//   - Track Information Block
-//   - Sector data
-//
+// Additional DSK geometry documentation can be found in the `docs.md` file.
 // Note: all WORD and DWORD values are stored in low/high byte order.
 package dsk
 
@@ -67,6 +13,19 @@ import (
 	"retroio/storage"
 )
 
+// DSK image format
+//
+// Track data (if it exists) will immediately follow the Disc Information
+// Block, with track #0 starting at offset 0x0100 in the image file.
+// Single sided disk tracks are stored sequentially.
+// Double sided disk track order is:
+//   track 0 side 0
+//   track 0 side 1
+//   track 1 side 0
+//   track 1 side 1
+//   etc.
+// NOTE: tracks are always ordered in this way regardless of the disc format
+// described by the disc image.
 type DSK struct {
 	reader *storage.Reader
 

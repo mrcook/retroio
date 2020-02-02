@@ -7,14 +7,17 @@ import (
 	"retroio/storage"
 )
 
-// The "Disc Information block" is always at offset 0 in the disk image file.
+// Disc Information Block
 //
-// * "MV - CPC" must be present, because it is used to identify the file as a disk image.
+// Always at offset 0 in the disk image file.
+// All tracks must be the same size.
+//
+// "MV - CPC" must be present, because it is used to identify the file as a disk image.
 //   - "\r" is the C programming language equivalent of ASCII character 13.
 //   - "\n" is the C programming language equivalent of ASCII character 10.
-// * All tracks must be the same size.
-// * "size of track" is used to calculate the location of the data for a chosen track.
-// * "size of track" includes the &100 byte Track Information Block.
+//
+// "size of track" is used to calculate the location of the data for a chosen track.
+// "size of track" includes the &100 byte Track Information Block.
 type DiskInformation struct {
 	Identifier [34]byte  // "MV - CPCEMU Disk-File\r\nDisk-Info\r\n"
 	Creator    [14]byte  // name of creator

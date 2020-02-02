@@ -1,3 +1,5 @@
+// The sector information header follows closely the NEC µPD765 specification.
+// https://web.archive.org/web/20170320235834/http://dec8.info/Apple/uPD72070.pdf
 package dsk
 
 import (
@@ -11,15 +13,14 @@ const sectorInformationBlockSize = 8 // bytes
 
 // Sector information block
 //
-// Based on the NEC765 specification
 // * For 8k Sectors (N="6"), only 1800h bytes is stored.
 type SectorInformation struct {
 	Track  uint8  // C   Cylinder Number is the current/selected track number: 0 through 76.
 	Side   uint8  // H   Head Address is the head number: 0 or 1
 	ID     uint8  // R   Record / sector number
 	Size   uint8  // N   Number of data bytes written to sector
-	ST1    uint8  // ST1 Status Register 1
-	ST2    uint8  // ST2 Status Register 2
+	ST1    uint8  // ST1 Error Status Register 1
+	ST2    uint8  // ST2 Error Status Register 2
 	Unused uint16 // not used (0)
 }
 

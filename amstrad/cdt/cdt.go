@@ -11,6 +11,10 @@ import (
 	"retroio/storage"
 )
 
-func New(reader *storage.Reader) *tzx.TZX {
-	return tzx.New(reader)
+type CDT struct {
+	*tzx.TZX
+}
+
+func New(reader *storage.Reader) *CDT {
+	return &CDT{tzx.New(reader)}
 }

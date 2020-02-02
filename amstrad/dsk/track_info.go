@@ -27,21 +27,23 @@ const (
 
 // Track information block
 //
-// * "sector size" parameter is used to calculate the location of each sector's data.
-//    Therefore, the data allocated for each sector must be the same.
-// * "number of sectors" is used to identify the number of valid entries in the sector information list.
+// * "sector size" parameter is used to calculate the location of each sector's
+//    data. Therefore, the data allocated for each sector must be the same.
+// * "number of sectors" is used to identify the number of valid entries in the
+//   sector information list.
 type TrackInformation struct {
-	Identifier   [13]byte            // Identifier: "Track-Info\r\n"
-	Unused1      [3]byte             // unused
-	Track        uint8               // track number
-	Side         uint8               // side number
-	Unused2      [2]byte             // unused
-	SectorSize   uint8               // sector size
-	SectorsCount uint8               // number of sectors
-	GapLength    uint8               // GAP#3 length
-	FillerByte   uint8               // filler byte
-	Sectors      []SectorInformation // Sector Information List
-	Data         [][]byte            // Sector data, starting at 0x0100 from start of Track
+	Identifier   [13]byte // Identifier: "Track-Info\r\n"
+	Unused1      [3]byte  // unused
+	Track        uint8    // track number
+	Side         uint8    // side number
+	Unused2      [2]byte  // unused
+	SectorSize   uint8    // sector size
+	SectorsCount uint8    // number of sectors
+	GapLength    uint8    // GAP#3 length
+	FillerByte   uint8    // filler byte
+
+	Sectors []SectorInformation // Sector Information List
+	Data    [][]byte            // Sector data, starting at 0x0100 from start of Track
 }
 
 // Read the track information header.
