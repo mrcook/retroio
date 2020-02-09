@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"retroio/commodore/disk"
 
 	"github.com/spf13/cobra"
 
@@ -30,12 +31,33 @@ or T64 tape file.`,
 			return
 		}
 		defer f.Close()
+		fileInfo, err := f.Stat()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		diskSize := uint32(fileInfo.Size())
 		reader := storage.NewReader(f)
 
 		var dsk commodore.Image
 		dskType := mediaType(commodoreMediaType, filename)
 
 		switch dskType {
+		case "d64":
+			if dsk, err = disk.New(diskSize, disk.D64, reader); err != nil {
+				fmt.Println(err)
+				return
+			}
+		case "d71":
+			if dsk, err = disk.New(diskSize, disk.D71, reader); err != nil {
+				fmt.Println(err)
+				return
+			}
+		case "d81":
+			if dsk, err = disk.New(diskSize, disk.D81, reader); err != nil {
+				fmt.Println(err)
+				return
+			}
 		case "t64":
 			dsk = t64.New(reader)
 		case "tap":
