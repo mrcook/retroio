@@ -1,47 +1,53 @@
+// Each type of Commodore disk media has a different geometry layout; numbers
+// of tracks, sectors, etc. That data is initialized here, along with some
+// helper functions for accessing that data while reading a disk image.
 package disk
 
-import "fmt"
+import (
+	"fmt"
 
-// Emulated disk storage type
-type storageID uint8
-
-const (
-	D64 storageID = iota // all variations: 35, 40, and 42 tracks
-	D71
-	D81
+	"retroio/commodore"
 )
 
 // layout is a custom type for describing the attributes of an emulated disk
 type layout struct {
-	format           storageID
-	trackCount       uint8
-	totalSectorCount uint16
-	fileSize         uint32
-	errorBytes       uint16
-	description      string
+	mediaType    commodore.MediaType
+	diskSize     uint32
+	tracks       uint8
+	totalSectors uint16
+	errorBytes   uint16
+	description  string
 }
 
-// Commodore disk layouts for all emulated formats
+// Disk layouts for all supported commodore disk media
 var diskLayouts = []layout{
-	{D64, 35, 683, 174848, 0, "Standard D64 (1540/41)"},
-	{D64, 35, 683, 175531, 683, "Standard D64 (1540/41) with Error Bytes"},
-	{D64, 40, 768, 196608, 0, "Standard D64 (1541)"},
-	{D64, 40, 768, 197376, 768, "Standard D64 (1541) with Error Bytes"},
-	{D64, 42, 802, 205312, 0, "Extended 42 Track D64"},
-	{D64, 42, 802, 206114, 802, "Extended 42 Track D64 with Error Bytes"},
-	{D71, 70, 1366, 349696, 0, "Standard D71 (1571)"},
-	{D71, 70, 1366, 351062, 1366, "Standard D71 (1571) with Error Bytes"},
-	{D81, 80, 3200, 819200, 0, "Standard D81 (1581)"},
-	{D81, 80, 3200, 822400, 3200, "Standard D81 (1581) with Error Bytes"},
+	{commodore.D64, 174848, 35, 683, 0, "Standard D64 (1540/41)"},
+	{commodore.D64, 175531, 35, 683, 683, "Standard D64 (1540/41) with error bytes"},
+	{commodore.D64, 196608, 40, 768, 0, "Standard D64 (1541)"},
+	{commodore.D64, 197376, 40, 768, 768, "Standard D64 (1541) with error bytes"},
+	{commodore.D64, 205312, 42, 802, 0, "Extended 42 Track D64"},
+	{commodore.D64, 206114, 42, 802, 802, "Extended 42 Track D64 with error bytes"},
+	{commodore.D71, 349696, 70, 1366, 0, "Standard D71 (1571)"},
+	{commodore.D71, 351062, 70, 1366, 1366, "Standard D71 (1571) with error bytes"},
+	{commodore.D81, 819200, 80, 3200, 0, "Standard D81 (1581)"},
+	{commodore.D81, 822400, 80, 3200, 3200, "Standard D81 (1581) with error bytes"},
 }
 
-func layoutByFileSize(fileSize uint32) (layout, error) {
+func layoutForMedia(mediaType commodore.MediaType, fileSize uint32) (layout, error) {
 	for _, v := range diskLayouts {
-		if v.fileSize == fileSize {
-			return v, nil
+		if v.diskSize != fileSize {
+			continue
 		}
+
+		// TODO: return a user friendly media type
+		if v.mediaType != mediaType {
+			return layout{}, fmt.Errorf("invalid media type #%d for file size %d", mediaType, fileSize)
+		}
+
+		return v, nil
 	}
-	return layout{}, nil
+
+	return layout{}, fmt.Errorf("no disk layout found for media type #%d and file size %d", mediaType, fileSize)
 }
 
 // Disk DOS version codes.
@@ -64,19 +70,20 @@ var dosTypes = map[string]string{
 	"4A": "Professional DOS Release",
 }
 
-// Disk geometry for all tracks, for all types of emulated disks
+// Disk track geometry for all types of emulated disks, as a range of track numbers.
 type trackGeometry struct {
-	side            uint8
+	side            uint8 // NOTE: `0` and `1` not `1` and `2`
 	startTrack      uint8
 	endTrack        uint8
 	sectorsPerTrack int
-	totalSectors    int
+	totalSectors    int // total sectors for this range of tracks
 }
 
 // Track layouts for all 6 variations of the single-sided D64, and the
-// double-sided D71 and D81 formats.
-var trackGeometries = map[storageID][]trackGeometry{
-	D64: {
+// double-sided D71 and D81 formats. This data is used to aid in reading the
+// correct number of track sectors for a given media type.
+var trackGeometries = map[commodore.MediaType][]trackGeometry{
+	commodore.D64: {
 		{0, 1, 17, 21, 357},
 		{0, 18, 24, 19, 133},
 		{0, 25, 30, 18, 108},
@@ -84,7 +91,7 @@ var trackGeometries = map[storageID][]trackGeometry{
 		{0, 36, 40, 17, 85},
 		{0, 41, 42, 17, 34},
 	},
-	D71: {
+	commodore.D71: {
 		{0, 1, 17, 21, 357},
 		{0, 18, 24, 19, 133},
 		{0, 25, 30, 18, 108},
@@ -94,13 +101,14 @@ var trackGeometries = map[storageID][]trackGeometry{
 		{1, 60, 65, 18, 108},
 		{1, 66, 70, 17, 85},
 	},
-	D81: {
+	commodore.D81: {
 		{0, 1, 40, 40, 1600},
 		{1, 41, 80, 40, 1600},
 	},
 }
 
-func trackLayout(diskType storageID, trackNumber uint8) (trackGeometry, error) {
+// Returns the layout for the track number of a media type.
+func trackLayout(diskType commodore.MediaType, trackNumber uint8) (trackGeometry, error) {
 	for _, t := range trackGeometries[diskType] {
 		if trackNumber >= t.startTrack && trackNumber <= t.endTrack {
 			return t, nil

@@ -3,23 +3,20 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"retroio/commodore/d64"
 
 	"github.com/spf13/cobra"
 
 	"retroio/commodore"
+	"retroio/commodore/d64"
 	"retroio/commodore/d71"
 	"retroio/commodore/d81"
-	"retroio/commodore/t64"
-	"retroio/commodore/tap"
 	"retroio/storage"
 )
 
-var commodoreGeometryCmd = &cobra.Command{
-	Use:   "geometry FILE",
-	Short: "Read the Commodore tape file geometry",
-	Long: `Read the geometry - headers and data blocks - from a Commodore emulator TAP
-or T64 tape file.`,
+var commodoreCommandDir = &cobra.Command{
+	Use:                   "dir FILE",
+	Short:                 "Displays the directory of a Commodore disk image",
+	Long:                  `Performs a directory listing for Commodore D64, D71, and D81 disk image files.`,
 	Args:                  cobra.ExactArgs(1),
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -61,12 +58,7 @@ or T64 tape file.`,
 				fmt.Println(err)
 				return
 			}
-		case commodore.T64:
-			dsk = t64.New(reader)
-		case commodore.TAP:
-			dsk = tap.New(reader)
 		default:
-			// should never reach here with the geometry command
 			fmt.Print("unsupported media type for this command")
 			return
 		}
@@ -77,11 +69,11 @@ or T64 tape file.`,
 			os.Exit(1)
 		}
 
-		dsk.DisplayGeometry()
+		dsk.CommandDir()
 	},
 }
 
 func init() {
-	commodoreGeometryCmd.Flags().StringVarP(&commodoreMediaTypeFlag, "media", "m", "", `Media type, default: file extension`)
-	commodoreCmd.AddCommand(commodoreGeometryCmd)
+	commodoreCommandDir.Flags().StringVarP(&commodoreMediaTypeFlag, "media", "m", "", `Media type, default: file extension`)
+	commodoreCmd.AddCommand(commodoreCommandDir)
 }

@@ -1,8 +1,14 @@
 package cmd
 
 import (
+	"path"
+	"retroio/commodore"
+	"strings"
+
 	"github.com/spf13/cobra"
 )
+
+var commodoreMediaTypeFlag string
 
 // commodoreCmd represents the spectrum command
 var commodoreCmd = &cobra.Command{
@@ -20,4 +26,26 @@ This is a top-level system command only and requires a sub-command.`,
 
 func init() {
 	rootCmd.AddCommand(commodoreCmd)
+}
+
+func commodoreDetermineMediaType(filename string) commodore.MediaType {
+	if commodoreMediaTypeFlag == "" {
+		ext := strings.ToLower(path.Ext(filename))
+		commodoreMediaTypeFlag = strings.TrimPrefix(ext, ".")
+	}
+
+	switch commodoreMediaTypeFlag {
+	case "d64":
+		return commodore.D64
+	case "d71":
+		return commodore.D71
+	case "d81":
+		return commodore.D81
+	case "t64":
+		return commodore.T64
+	case "tap":
+		return commodore.TAP
+	default:
+		return commodore.Unknown
+	}
 }

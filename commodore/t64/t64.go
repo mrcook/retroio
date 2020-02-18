@@ -73,6 +73,10 @@ func (t T64) DisplayGeometry() {
 	}
 }
 
+func (t T64) CommandDir() {
+	fmt.Println("directory listing unsupported")
+}
+
 // readDataEntries reads the data for each record.
 // TODO: improve this crufty code
 func (t *T64) readDataEntries() error {

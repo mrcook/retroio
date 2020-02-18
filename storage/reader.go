@@ -12,16 +12,34 @@ import (
 	"bufio"
 	"encoding/binary"
 	"io"
+	"os"
 )
 
 // Image reader, using the bufio.Reader to allow for Peeking.
 type Reader struct {
 	reader *bufio.Reader
+
+	Filename string
+	FileSize int
 }
 
 // NewReader first converts the regular reader to a buffered reader.
 func NewReader(r io.Reader) *Reader {
 	return &Reader{reader: bufio.NewReader(r)}
+}
+
+// NewReaderFromFile opens the given filename and creates a new reader.
+func NewReaderFromFile(file *os.File) (*Reader, error) {
+	fileInfo, err := file.Stat()
+	if err != nil {
+		return nil, err
+	}
+
+	reader := NewReader(file)
+	reader.FileSize = int(fileInfo.Size())
+	reader.Filename = file.Name()
+
+	return reader, nil
 }
 
 // Read exactly the requested bytes from the reader, and follows the reader interface.

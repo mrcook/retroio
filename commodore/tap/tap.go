@@ -62,6 +62,10 @@ func (t TAP) DisplayGeometry() {
 	fmt.Println(t)
 }
 
+func (t TAP) CommandDir() {
+	fmt.Println("directory listing unsupported")
+}
+
 func (t TAP) String() string {
 	str := ""
 	str += fmt.Sprintf("Signature  %s\n", t.Signature)

@@ -13,7 +13,7 @@ One example would be `tzx` tapes from the ZX Spectrum 8-bit home computer.
 ### Geometry Command
 
 * Amstrad:      `DSK`, `CDT`
-* Commodore 64: `T64`, `TAP`
+* Commodore 64: `D64`, `D71`, `D81`, `T64`, `TAP`
 * ZX Spectrum:  `TZX`, `TAP`
 
 The `geometry` command will read and display core metadata about the layout
@@ -24,6 +24,7 @@ block information from a cassette tape.
 ### Directory Command
 
 * Amstrad:      `DSK`
+* Commodore 64: `D64`, `D71`, `D81`
 
 The `dir` command reads a disk and prints the directory listing to the terminal.
 Any hidden files will also be displayed.
@@ -62,9 +63,11 @@ The program will select the correct media type for the requested system, based
 on the file extension, however this can be overridden with the `--media` flag.
 
 
-### Example output
+### Examples
 
-```
+```sh
+$ rio spectrum geometry /path/to/tape.tzx
+
 TZX processing complete!
 
 ARCHIVE INFORMATION:
