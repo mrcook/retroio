@@ -1,7 +1,7 @@
 # Commodore D81 Disk Image Notes
 
 Sources:
-    - http://ist.uwaterloo.ca/~schepers/formats/D81.TXT
+  - http://ist.uwaterloo.ca/~schepers/formats/D81.TXT
 
 
 ## D81 (Electronic form of a 1581 double-sided, double-density MFM disk)
@@ -182,14 +182,6 @@ layout:
              Bit   5: Used only during SAVE-@ replacement
              Bit   6: Locked flag (Set produces ">" locked files)
              Bit   7: Closed flag (Not set produces "*", or "splat"  files)
-             Typical values for this location are:
-               $00 - Scratched (deleted file entry)
-               $80 - DEL
-               $81 - SEQ
-               $82 - PRG
-               $83 - USR
-               $84 - REL
-               $85 - CBM
     $03-$04  Track/sector location of first sector of file or partition
     $05-$14  16 character filename (in PETASCII, padded with $A0)
     $15-$16  Track/Sector location of first SUPER SIDE SECTOR block (REL file only)

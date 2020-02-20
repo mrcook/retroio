@@ -70,19 +70,8 @@ func (d *Disk) Read() error {
 	return nil
 }
 
-// DisplayGeometry prints the disk, track and sector metadata to the terminal.
-func (d Disk) DisplayGeometry() {
-	totalSectorCount := 0
-	for _, t := range d.Tracks {
-		totalSectorCount += len(t.Sectors)
-	}
-
-	fmt.Println("DISK INFORMATION:")
-	fmt.Println()
-	fmt.Printf("Type:      %s\n", d.Variation.description)
-	fmt.Printf("Disk Size: %.2fKB\n", d.DiskSizeInKB())
-	fmt.Printf("Tracks:    %d\n", len(d.Tracks))
-	fmt.Printf("Sectors:   %d\n", totalSectorCount)
+func (d Disk) DiskType() string {
+	return d.Variation.description
 }
 
 func (d Disk) DiskSizeInKB() float64 {

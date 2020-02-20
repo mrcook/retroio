@@ -47,7 +47,23 @@ func (d *D71) Read() error {
 }
 
 func (d D71) DisplayGeometry() {
-	d.disk.DisplayGeometry()
+	totalSectorCount := 0
+	for _, t := range d.disk.Tracks {
+		totalSectorCount += len(t.Sectors)
+	}
+
+	fmt.Println("DISK INFORMATION:")
+	fmt.Println()
+	fmt.Printf("Type:        %s\n", d.disk.DiskType())
+	fmt.Printf("DOS Type:    %s\n", d.cbm.bam.DosTypeDescription())
+	fmt.Printf("Size:        %.2fKB\n", d.disk.DiskSizeInKB())
+	fmt.Printf("Tracks:      %d\n", len(d.disk.Tracks))
+	fmt.Printf("Sectors:     %d\n", totalSectorCount)
+	fmt.Println()
+	fmt.Printf("Name:        %s\n", d.cbm.bam.PrintableDiskName())
+	fmt.Printf("Files:       %d\n", len(d.cbm.directories))
+	fmt.Printf("Free Blocks: %d\n", d.freeBlocks())
+	fmt.Println()
 }
 
 func (d D71) CommandDir() {
@@ -60,13 +76,8 @@ func (d D71) CommandDir() {
 	fmt.Printf("0 \"%-16s\" %s %c%c\n", d.cbm.bam.PrintableDiskName(), d.cbm.bam.DiskID, d.cbm.bam.DosVersion, d.cbm.bam.DiskVersion)
 
 	for _, dir := range d.cbm.directories {
-		fileType := dir.FileType.Abbreviation
-		if dir.FileType.Value == 0 {
-			fileType = fmt.Sprintf("%s (%s)", fileType, dir.FileType.Label)
-		}
 		filename := fmt.Sprintf("\"%s\"", dir.Filename)
-
-		fmt.Printf("%-3d  %-18s %s\n", dir.DirEntry.FileSizeInSectors, filename, fileType)
+		fmt.Printf("%-3d  %-18s %s\n", dir.DirEntry.FileSizeInSectors, filename, dir.FileType)
 	}
 
 	fmt.Printf("%d BLOCKS FREE.\n", d.freeBlocks())
@@ -84,7 +95,7 @@ func (d D71) freeBlocks() int {
 
 	// Now count side 2 free sectors - for tracks 36-70
 	for i, b := range d.cbm.bam.FreeSectorCount {
-		if i == bamExtraTrackNumber {
+		if i == d64.DirectoryTrackNumber {
 			continue
 		}
 		freeSectors += int(b)

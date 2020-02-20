@@ -38,10 +38,6 @@ type Directory struct {
 	directories []DirectoryFile
 }
 
-func newDirectory(dsk *disk.Disk) *Directory {
-	return &Directory{disk: dsk}
-}
-
 // DirectoryFile contains metadata for each entry, along with the 32-byte
 // directory file entry found on the disk.
 type DirectoryFile struct {
@@ -52,6 +48,10 @@ type DirectoryFile struct {
 	FileType disk.FileType
 
 	DirEntry disk.DirectoryFile
+}
+
+func newDirectory(dsk *disk.Disk) *Directory {
+	return &Directory{disk: dsk}
 }
 
 func (d *Directory) Read() error {
@@ -204,4 +204,9 @@ func (b BlockAvailabilityMap) PrintableDiskName() []byte {
 		}
 	}
 	return name[:]
+}
+
+func (b BlockAvailabilityMap) DosTypeDescription() string {
+	dosType := fmt.Sprintf("%c%c", b.DosVersion, b.DiskVersion)
+	return disk.DosTypes[dosType]
 }

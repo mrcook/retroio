@@ -3,6 +3,7 @@ package disk
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 )
 
 // A BAM Entry for each track on the disk
@@ -128,14 +129,34 @@ func (f *DirectoryFile) Read(reader *bytes.Reader) error {
 }
 
 func (f DirectoryFile) FileTypeFromID() FileType {
-	typ := FileType{}
-	for _, t := range fileTypes {
-		if f.FileType == t.Value {
-			typ = t
-			break
+	// Scratch types have a value of 0x00
+	if f.FileType == 0x00 {
+		return FileType{
+			Value:       0xFF,  // not part of the official spec
+			Type:        "xxx", // not part of the official spec
+			Description: "Scratch File",
 		}
 	}
-	return typ
+
+	for _, t := range fileTypes {
+		if (f.FileType & 0b00000111) == t.Value {
+			t.SaveFlag = f.FileType&0b00100000 > 0
+			t.LockedFlag = f.FileType&0b01000000 > 0
+			t.ClosedFlag = f.FileType&0b10000000 > 0
+			return t
+		}
+	}
+
+	// Should never reach here, but if an unknown type is encountered this will
+	// make it more obvious -- not part of the official spec!
+	return FileType{
+		Value:       0xFF,
+		Type:        "???",
+		SaveFlag:    false,
+		LockedFlag:  false,
+		ClosedFlag:  false,
+		Description: "Unknown Type",
+	}
 }
 
 func (f DirectoryFile) PrintableFilename() string {
@@ -149,24 +170,41 @@ func (f DirectoryFile) PrintableFilename() string {
 }
 
 type FileType struct {
-	Value        uint8
-	Abbreviation string
-	Label        string
+	Value       uint8
+	Type        string
+	SaveFlag    bool
+	LockedFlag  bool
+	ClosedFlag  bool
+	Description string
+}
+
+func (f FileType) String() string {
+	fileType := f.Type
+
+	if !f.ClosedFlag {
+		fileType += "*"
+	} else if f.LockedFlag {
+		fileType += "<"
+	}
+
+	// if a scratch file or unknown type: add the description
+	if f.Value == 0xFF {
+		fileType = fmt.Sprintf("%s (%s)", fileType, f.Description)
+	}
+
+	return fileType
 }
 
 // Directory File Type Labels
 var fileTypes = []FileType{
-	{0x00, "xxx", "Scratch File"},
-	{0x80, "DEL", "Deleted"},
-	{0x81, "SEQ", "Sequential"},
-	{0x82, "PRG", "Program"},
-	{0x83, "USR", "User"},
-	{0x84, "REL", "Relative"},
-	{0x85, "CBM", "Partition/Sub-directory"}, // D81 ONLY
+	{0, "DEL", false, false, true, "Deleted"},
+	{1, "SEQ", false, false, true, "Sequential"},
+	{2, "PRG", false, false, true, "Program"},
+	{3, "USR", false, false, true, "User"},
+	{4, "REL", false, false, true, "Relative"},
 
-	// The following are undocumented. The abbreviation is taken from the Commodore LIST command.
-	{0xC0, "DEL<", "Undocumented DEL type"}, // disk: "UPTIME V2#9"
-	{0xC3, "USR<", "Undocumented USR type"}, // disk: "DOQ 14 geoSide"
+	// D81 ONLY
+	{5, "CBM", false, false, true, "Partition/Sub-directory"},
 }
 
 // UsedSectorBitmap is a helper function to determine if a sector is allocated
