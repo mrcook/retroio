@@ -8,6 +8,7 @@ import (
 
 	"github.com/mrcook/retroio/spectrum"
 	"github.com/mrcook/retroio/spectrum/tap"
+	"github.com/mrcook/retroio/spectrum/trd"
 	"github.com/mrcook/retroio/spectrum/tzx"
 	"github.com/mrcook/retroio/storage"
 )
@@ -38,6 +39,8 @@ ZX Spectrum emulator TZX or TAP file.`,
 			dsk = tap.New(reader)
 		case "tzx":
 			dsk = tzx.New(reader)
+		case "trd":
+			dsk = trd.New(reader)
 		default:
 			fmt.Printf("Unsupported media type: '%s'", dskType)
 			return
