@@ -13,9 +13,9 @@ package d64
 import (
 	"fmt"
 
-	"retroio/commodore"
-	"retroio/commodore/disk"
-	"retroio/storage"
+	"github.com/mrcook/retroio/commodore"
+	"github.com/mrcook/retroio/commodore/disk"
+	"github.com/mrcook/retroio/storage"
 )
 
 type D64 struct {

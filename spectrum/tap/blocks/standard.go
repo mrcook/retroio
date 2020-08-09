@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"retroio/storage"
+	"github.com/mrcook/retroio/storage"
 )
 
 // Standard data block for storing (2+[data length]) bytes.

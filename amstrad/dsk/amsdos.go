@@ -8,7 +8,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"retroio/amstrad/dsk/amsdos"
+	"github.com/mrcook/retroio/amstrad/dsk/amsdos"
 )
 
 type AmsDos struct {

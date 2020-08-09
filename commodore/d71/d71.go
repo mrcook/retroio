@@ -13,10 +13,10 @@ package d71
 import (
 	"fmt"
 
-	"retroio/commodore"
-	"retroio/commodore/d64"
-	"retroio/commodore/disk"
-	"retroio/storage"
+	"github.com/mrcook/retroio/commodore"
+	"github.com/mrcook/retroio/commodore/d64"
+	"github.com/mrcook/retroio/commodore/disk"
+	"github.com/mrcook/retroio/storage"
 )
 
 type D71 struct {

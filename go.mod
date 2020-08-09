@@ -1,4 +1,4 @@
-module retroio
+module github.com/mrcook/retroio
 
 go 1.13
 

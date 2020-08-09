@@ -10,8 +10,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"retroio/amstrad/dsk/amsdos/cat"
-	"retroio/storage"
+	"github.com/mrcook/retroio/amstrad/dsk/amsdos/cat"
+	"github.com/mrcook/retroio/storage"
 )
 
 // DSK image format

@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"io"
 
-	"retroio/storage"
+	"github.com/mrcook/retroio/storage"
 )
 
 // TAP File structure

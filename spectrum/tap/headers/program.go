@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"retroio/storage"
+	"github.com/mrcook/retroio/storage"
 )
 
 // ProgramData header for storing BASIC programs.

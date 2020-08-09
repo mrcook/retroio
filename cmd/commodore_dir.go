@@ -6,11 +6,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"retroio/commodore"
-	"retroio/commodore/d64"
-	"retroio/commodore/d71"
-	"retroio/commodore/d81"
-	"retroio/storage"
+	"github.com/mrcook/retroio/commodore"
+	"github.com/mrcook/retroio/commodore/d64"
+	"github.com/mrcook/retroio/commodore/d71"
+	"github.com/mrcook/retroio/commodore/d81"
+	"github.com/mrcook/retroio/storage"
 )
 
 var commodoreCommandDir = &cobra.Command{

@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"retroio/storage"
+	"github.com/mrcook/retroio/storage"
 )
 
 const sectorInformationBlockSize = 8 // bytes

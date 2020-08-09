@@ -10,9 +10,9 @@ package d81
 import (
 	"fmt"
 
-	"retroio/commodore"
-	"retroio/commodore/disk"
-	"retroio/storage"
+	"github.com/mrcook/retroio/commodore"
+	"github.com/mrcook/retroio/commodore/disk"
+	"github.com/mrcook/retroio/storage"
 )
 
 type D81 struct {

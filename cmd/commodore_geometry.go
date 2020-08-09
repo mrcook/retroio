@@ -3,16 +3,16 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"retroio/commodore/d64"
 
 	"github.com/spf13/cobra"
 
-	"retroio/commodore"
-	"retroio/commodore/d71"
-	"retroio/commodore/d81"
-	"retroio/commodore/t64"
-	"retroio/commodore/tap"
-	"retroio/storage"
+	"github.com/mrcook/retroio/commodore"
+	"github.com/mrcook/retroio/commodore/d64"
+	"github.com/mrcook/retroio/commodore/d71"
+	"github.com/mrcook/retroio/commodore/d81"
+	"github.com/mrcook/retroio/commodore/t64"
+	"github.com/mrcook/retroio/commodore/tap"
+	"github.com/mrcook/retroio/storage"
 )
 
 var commodoreGeometryCmd = &cobra.Command{

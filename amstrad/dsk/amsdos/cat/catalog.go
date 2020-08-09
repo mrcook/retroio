@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sort"
 
-	"retroio/amstrad/dsk/amsdos"
+	"github.com/mrcook/retroio/amstrad/dsk/amsdos"
 )
 
 // COMMAND: CAT

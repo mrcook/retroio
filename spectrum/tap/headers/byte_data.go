@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"retroio/storage"
+	"github.com/mrcook/retroio/storage"
 )
 
 // ByteData header for storing Machine Code or Screens.

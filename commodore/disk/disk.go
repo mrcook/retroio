@@ -10,8 +10,8 @@ import (
 	"errors"
 	"fmt"
 
-	"retroio/commodore"
-	"retroio/storage"
+	"github.com/mrcook/retroio/commodore"
+	"github.com/mrcook/retroio/storage"
 )
 
 // Disk object for working with the Commodore disk storage media.

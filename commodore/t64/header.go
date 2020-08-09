@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"retroio/storage"
+	"github.com/mrcook/retroio/storage"
 )
 
 // Tape Header

@@ -21,7 +21,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"retroio/commodore/disk"
+	"github.com/mrcook/retroio/commodore/disk"
 )
 
 const (

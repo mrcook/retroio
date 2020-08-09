@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"path"
-	"retroio/commodore"
 	"strings"
 
 	"github.com/spf13/cobra"
+
+	"github.com/mrcook/retroio/commodore"
 )
 
 var commodoreMediaTypeFlag string

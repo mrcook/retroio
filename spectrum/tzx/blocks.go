@@ -3,8 +3,8 @@ package tzx
 import (
 	"fmt"
 
-	"retroio/spectrum/tzx/blocks"
-	"retroio/spectrum/tzx/blocks/types"
+	"github.com/mrcook/retroio/spectrum/tzx/blocks"
+	"github.com/mrcook/retroio/spectrum/tzx/blocks/types"
 )
 
 // newFromBlockID returns a TZX block based on the type ID byte.

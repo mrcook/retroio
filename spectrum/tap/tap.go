@@ -19,10 +19,10 @@ import (
 
 	"github.com/pkg/errors"
 
-	"retroio/spectrum/basic"
-	"retroio/spectrum/tap/blocks"
-	"retroio/spectrum/tap/headers"
-	"retroio/storage"
+	"github.com/mrcook/retroio/spectrum/basic"
+	"github.com/mrcook/retroio/spectrum/tap/blocks"
+	"github.com/mrcook/retroio/spectrum/tap/headers"
+	"github.com/mrcook/retroio/storage"
 )
 
 // A TAP file may contain zero or more header/data block pairs.

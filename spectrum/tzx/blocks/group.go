@@ -3,9 +3,9 @@ package blocks
 import (
 	"fmt"
 
-	"retroio/spectrum/tap"
-	"retroio/spectrum/tzx/blocks/types"
-	"retroio/storage"
+	"github.com/mrcook/retroio/spectrum/tap"
+	"github.com/mrcook/retroio/spectrum/tzx/blocks/types"
+	"github.com/mrcook/retroio/storage"
 )
 
 // GroupStart

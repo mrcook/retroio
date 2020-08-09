@@ -3,7 +3,7 @@ package blocks
 import (
 	"fmt"
 
-	"retroio/storage"
+	"github.com/mrcook/retroio/storage"
 )
 
 // Fragment block for storing data without flag or checksum byte.

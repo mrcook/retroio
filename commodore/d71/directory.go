@@ -23,8 +23,8 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"retroio/commodore/d64"
-	"retroio/commodore/disk"
+	"github.com/mrcook/retroio/commodore/d64"
+	"github.com/mrcook/retroio/commodore/disk"
 )
 
 const bamExtraTrackNumber = 53 - 1 // tracks count from 1

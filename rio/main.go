@@ -3,7 +3,7 @@
 // For a copy, see <https://opensource.org/licenses/MIT>.se.
 package main
 
-import "retroio/cmd"
+import "github.com/mrcook/retroio/cmd"
 
 func main() {
 	cmd.Execute()

@@ -6,7 +6,7 @@ package disk
 import (
 	"fmt"
 
-	"retroio/commodore"
+	"github.com/mrcook/retroio/commodore"
 )
 
 // layout is a custom type for describing the attributes of an emulated disk

@@ -9,8 +9,8 @@ package cdt
 import (
 	"fmt"
 
-	"retroio/spectrum/tzx"
-	"retroio/storage"
+	"github.com/mrcook/retroio/spectrum/tzx"
+	"github.com/mrcook/retroio/storage"
 )
 
 type CDT struct {

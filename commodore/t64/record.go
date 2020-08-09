@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"retroio/storage"
+	"github.com/mrcook/retroio/storage"
 )
 
 // File record

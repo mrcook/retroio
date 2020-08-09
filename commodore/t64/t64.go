@@ -14,7 +14,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"retroio/storage"
+	"github.com/mrcook/retroio/storage"
 )
 
 // T64 File structure

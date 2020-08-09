@@ -3,7 +3,7 @@ package disk
 import (
 	"fmt"
 
-	"retroio/storage"
+	"github.com/mrcook/retroio/storage"
 )
 
 type Track struct {

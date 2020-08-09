@@ -6,10 +6,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"retroio/amstrad"
-	"retroio/amstrad/cdt"
-	"retroio/amstrad/dsk"
-	"retroio/storage"
+	"github.com/mrcook/retroio/amstrad"
+	"github.com/mrcook/retroio/amstrad/cdt"
+	"github.com/mrcook/retroio/amstrad/dsk"
+	"github.com/mrcook/retroio/storage"
 )
 
 var amstradMediaType string

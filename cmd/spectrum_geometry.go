@@ -6,10 +6,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"retroio/spectrum"
-	"retroio/spectrum/tap"
-	"retroio/spectrum/tzx"
-	"retroio/storage"
+	"github.com/mrcook/retroio/spectrum"
+	"github.com/mrcook/retroio/spectrum/tap"
+	"github.com/mrcook/retroio/spectrum/tzx"
+	"github.com/mrcook/retroio/storage"
 )
 
 var speccyGeometryCmd = &cobra.Command{

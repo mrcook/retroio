@@ -3,7 +3,7 @@ package disk
 import (
 	"encoding/binary"
 
-	"retroio/storage"
+	"github.com/mrcook/retroio/storage"
 )
 
 // Sector stores the data for each sector of a track.
