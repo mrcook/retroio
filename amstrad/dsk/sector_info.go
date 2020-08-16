@@ -21,15 +21,24 @@ var sectorSizeMap = map[uint8]uint16{
 
 // Sector information block
 //
-// * For 8k Sectors (N="6"), only 1800h bytes is stored.
+// Closely follows the NEC765 specification.
+//
+// * N = 0x06: 8k Sectors, only 1800h bytes are stored.
+// * N = 0x07: 16K will be stored
+// * N = 0x08: is equivalent to N=0x00 as only 3 bits are used (see docs.md)
 type SectorInformation struct {
-	Track  uint8  // C   Cylinder Number is the current/selected track number: 0 through 76.
-	Side   uint8  // H   Head Address is the head number: 0 or 1
-	ID     uint8  // R   Record / sector number
-	Size   uint8  // N   Number of data bytes written to sector (enum 0-3)
-	ST1    uint8  // ST1 Error Status Register 1
-	ST2    uint8  // ST2 Error Status Register 2
-	Unused uint16 // not used (0)
+	Track uint8 // C   Cylinder Number is the current/selected track number: 0 through 76.
+	Side  uint8 // H   Head Address is the head number: 0 or 1
+	ID    uint8 // R   Record / sector number
+	Size  uint8 // N   Number of data bytes written to sector (enum 0-7)
+	ST1   uint8 // ST1 Error Status Register 1
+	ST2   uint8 // ST2 Error Status Register 2
+
+	// Used only with EXTENDED disk images.
+	//
+	// The location of each sectors data is found by adding the size of the
+	// previous sectors, plus the size of the 256 byte header.
+	SectorDataLength uint16 // little endian notation.
 }
 
 // Read the track information header.

@@ -32,18 +32,38 @@ const (
 // * "number of sectors" is used to identify the number of valid entries in the
 //   sector information list.
 type TrackInformation struct {
-	Identifier   [13]byte // Identifier: "Track-Info\r\n"
-	Unused1      [3]byte  // unused
-	Track        uint8    // track number
-	Side         uint8    // side number
-	Unused2      [2]byte  // unused
-	SectorSize   uint8    // sector size (enum 0-3)
-	SectorsCount uint8    // number of sectors
-	GapLength    uint8    // GAP#3 length
-	FillerByte   uint8    // filler byte
+	Identifier [13]byte // Identifier: "Track-Info\r\n"
+	Unused1    [3]byte  // unused
+	Track      uint8    // track number
+	Side       uint8    // side number
+
+	// EXTENDED format extension by John Elliott.
+	//
+	// Defines the rate at which data was written to the track.
+	// This value applies to the entire track.
+	//   0: Unknown
+	//   1: Single or double density
+	//   2: High Density
+	//   3: Extended density
+	DataRate uint8 // unused for STANDARD disk images
+
+	// EXTENDED format extension by John Elliott.
+	//
+	// Defining the encoding used to write the data to the disc and the structure
+	// of the data on the disc, including the layout of the sectors.
+	// This value applies to the entire track.
+	//   0: Unknown (as existing files would have zeroes in these bytes)
+	//   1: FM
+	//   2: MFM
+	RecordingMode uint8 // unused for STANDARD disk images
+
+	SectorSize   uint8 // sector size (enum 0-3)
+	SectorsCount uint8 // number of sectors
+	GapLength    uint8 // GAP#3 length
+	FillerByte   uint8 // filler byte
 
 	Sectors    []SectorInformation // Sector Information List
-	SectorData [][]byte            // Sector data, starting at 0x0100 from start of Track
+	SectorData [][]byte            // Sector data, starting at 0x0100 from start of track
 }
 
 // Read the track information header.
@@ -52,7 +72,8 @@ func (t *TrackInformation) Read(reader *storage.Reader) error {
 	copy(t.Unused1[:], reader.ReadBytes(3))
 	t.Track = reader.ReadByte()
 	t.Side = reader.ReadByte()
-	copy(t.Unused2[:], reader.ReadBytes(2))
+	t.DataRate = reader.ReadByte()
+	t.RecordingMode = reader.ReadByte()
 	t.SectorSize = reader.ReadByte()
 	t.SectorsCount = reader.ReadByte()
 	t.GapLength = reader.ReadByte()

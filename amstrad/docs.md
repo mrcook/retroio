@@ -1,6 +1,7 @@
 # Amstrad Disk Notes
 
 Sources:
+
   - https://www.cpcwiki.eu/imgs/b/bc/S968se09.pdf
   - http://www.seasip.info/Cpm/formats.html -> http://www.seasip.info/Cpm/format22.html
   - http://www.moria.de/~michael/cpmtools/
@@ -13,31 +14,31 @@ Access to the file system itself references the AMSDOS and CP/M specifications, 
 
 Geometry for DSK files follows the specification at http://cpctech.cpc-live.com/docs/dsk.html
 
-* Track 0 (or Track 0 side 0 for double sided disks), if track data exists,
-  will immediately follow the Disc Information Block and will start at
-  offset &100 in the disc image file.
-* All tracks must have a "Track Information Block"
-* Track lengths are stored in the same order as the tracks in the image. In
-  the case of a double sided disk:
-    Track 0 side 0, Track 0 side 1, Track 1 side 0, etc.
-* The track blocks are stored in increasing order 0..number of tracks, with
-  alternating sides interleaved if the disc image describes a double sided
-  disk.
-  E.g. if the disk image represents a double sided disk, the track order is:
-  - track 0 side 0,
-  - track 0 side 1,
-  - track 1 side 0,
-  - track 1 side 1....
-  - track (number of tracks-1) side 0, track (number of tracks-1) side 1
+  * Track 0 (or Track 0 side 0 for double-sided disks), if track data exists,
+    will immediately follow the Disc Information Block and will start at
+    offset `&100` in the disc image file.
+  * All tracks must have a "Track Information Block"
+  * Track lengths are stored in the same order as the tracks in the image. In
+    the case of a double-sided disk:
+      Track 0 side 0, Track 0 side 1, Track 1 side 0, etc.
+  * The track blocks are stored in increasing order `0..number of tracks`, with
+    alternating sides interleaved if the disc image describes a double-sided
+    disk. E.g. if the disk image represents a double-sided disk, the track order is:
+    - track 0 side 0,
+    - track 0 side 1,
+    - track 1 side 0,
+    - track 1 side 1....
+    - track (number of tracks-1) side 0, track (number of tracks-1) side 1
 
 The tracks are always ordered in this way regardless of the disc-format
 described by the disc image.
 
 A standard disk image can be used to describe a copy-protected disk, but will
-often result in a file which is larger than the same disk described by a
+often result in a file which is larger than the same disk described by an
 extended disk image.
 
 For a standard disk image to represent a copy-protected disk:
+
   - All track sizes in the standard disk image must be the same. This value
     therefore would be the size of the largest track, and other tracks would
     have unused space in them.
@@ -47,7 +48,7 @@ For a standard disk image to represent a copy-protected disk:
     be used. This would result in some wasted space.
 
 
-### Disc media type (sidedness)
+### Disc media type (sided-ness)
 
      Bit |  Description
     -----|------------------------------------------------
@@ -76,30 +77,32 @@ For a standard disk image to represent a copy-protected disk:
 ### General DSK Format Geometry
 
 **Single sided DSK images:**
-* Disc Information Block
-* Track 0 data
-  - Track Information Block
-  - Sector data
-* Track 1 data
-  - Track Information Block
-  - Sector data
-* . . . .
-* Track (number_of_tracks-1) data
-  - Track Information Block
-  - Sector data
+
+  * Disc Information Block
+  * Track 0 data
+    - Track Information Block
+    - Sector data
+  * Track 1 data
+    - Track Information Block
+    - Sector data
+  * . . . .
+  * Track (number_of_tracks-1) data
+    - Track Information Block
+    - Sector data
 
 **Double sided DSK images:**
-* Disc Information Block
-* Track 0 side 0 data
-  - Track Information Block
-  - Sector data
-* Track 0 side 1 data
-  - Track Information Block
-  - Sector data
-* . . . .
-* Track (number_of_tracks-1) side 1 data
-  - Track Information Block
-  - Sector data
+
+  * Disc Information Block
+  * Track 0 side 0 data
+    - Track Information Block
+    - Sector data
+  * Track 0 side 1 data
+    - Track Information Block
+    - Sector data
+  * . . . .
+  * Track (number_of_tracks-1) side 1 data
+    - Track Information Block
+    - Sector data
 
 
 ## Amstrad Disc Formats
@@ -108,7 +111,7 @@ Amstrad computers use standard CP/M 2 or CP/M 3 formats. The disc formats used
 also include automatic format detection systems.
 
 AMSDOS and the CP/M 2.2 BIOS support three different disc formats: `SYSTEM`,
-`DATA ONLY`, and `IBM` formats.b
+`DATA ONLY`, and `IBM` formats.
 
 The CP/M Plus BIOS supports only the `SYSTEM` and `DATA` formats.
 
@@ -118,47 +121,48 @@ Under AMSDOS this occurs each time a disc with no open files is accessed. To
 permit this automatic detection each format has unique sector numbers as
 detailed below.
 
-3-inch discs are double sided, but only one side may be accessed at a time
-depending on which way round the user inserts the disc. There my be different
-formats on the two sides.
+3-inch discs are double-sided, but only one side may be accessed at a time
+depending on which way round the user inserts the disc. There might be
+different formats on the two sides.
 
 ### Common To All Formats
 
-* Single sided (the two sides of a 3 inch disc are treated separately).
-* 512 byte physical sector size.
-* 40 track numbered 0 to 39.
-* 1024 byte CP/M block size.
-* 64 directory entries.
+  * Single sided (the two sides of a 3-inch disc are treated separately).
+  * 512 byte physical sector size.
+  * 40 track numbered 0 to 39.
+  * 1024 byte CP/M block size.
+  * 64 directory entries.
 
 ### SYSTEM Format
 
-* 9 sectors per track numbered #41 to #49.
-* 2 reserved tracks.
-* 2 reserved tracks.
-* 2 to 1 sector interleave.
+  * 9 sectors per track numbered #41 to #49.
+  * 2 reserved tracks.
+  * 2 reserved tracks.
+  * 2 to 1 sector interleave.
 
 The system format is the main format supported, CP/M can only be loaded (Cold Boot)
 from a system format disc. CP/M 2.2 also requires a system format disc to warm boot.
 
 The reserved tracks are used as follows:
-* Track 0 sector   #41:       boot sector.
-* Track 0 sectors  #42:       configuration sector
-* Track 0 sectors  #43..#47:  unused
-* Track 0 sectors  #41..#49:  and
-* Track 1 sectors  #48..#49:  CCP and BIOS
 
-* CP/M Plus only uses Track 0 sector #41 as a boot sector
-* Track 0 sector #42...#49 and Track 1 are unused.
+    Track 0 sector   #41:       boot sector.
+    Track 0 sector   #42:       configuration sector
+    Track 0 sectors  #43..#47:  unused
+    Track 0 sectors  #41..#49:  and
+    Track 1 sectors  #48..#49:  CCP and BIOS
 
-NOTE: another format called 'VENDOR' format is a special version of system
+    CP/M Plus only uses Track 0 sector #41 as a boot sector.
+    Track 0 sectors #42..#49, and Track 1 are unused.
+
+NOTE: another format called `VENDOR` format is a special version of system
 format which does not contain any software on the two reserved tracks. It
 is intended for use in software distribution.
 
 ### DATA ONLY Format
 
-* 9 sectors per track numbered #C1 to #C9.
-* 0 reserved tracks.
-* 2 to 1 sector interleave.
+  * 9 sectors per track numbered #C1 to #C9.
+  * 0 reserved tracks.
+  * 2 to 1 sector interleave.
 
 This format is not recommended for use with CP/M 2.2 since it is not possible
 to ‘warm boot’ from it. However, because there is a little more disc space
@@ -166,22 +170,23 @@ available it is useful for AMSDOS or CP/M Plus.
 
 ### IBM Format
 
-* 8 sectors per track numbered 1 to 8
-* 1 reserved track
-* no sector interleave
+  * 8 sectors per track numbered 1 to 8
+  * 1 reserved track
+  * no sector interleave
 
 This format is logically the same as the single-sided format used by CP/M on
 the IBM PC. It is intended for specialist use and is not otherwise recommended
 as it is not possible to 'warm boot' from it.
+
 
 ## AMSDOS and non-CP/M disc formats
 
 Amstrad and Locomotive Software have made a number of non-CP/M systems which
 are based on the CP/M 2 disc format. These are:
 
-* LocoScript - word processor with built-in operating system.
-* AMSDOS     - disc operating system for the CPC computers.
-* +3DOS      - disc operating system for the Spectrum +3.
+  * `LocoScript` - word processor with built-in operating system.
+  * `AMSDOS`     - disc operating system for the CPC computers.
+  * `+3DOS`      - disc operating system for the Spectrum +3.
 
 Some common Amstrad Extended Disk Parameter Block headers for the different
 disk formats (all numbers are in Hex):
@@ -220,44 +225,49 @@ The DPB is not stored on disc.
 
 This simple system is used by CPC computers if the first physical sector is:
 
-- 41h: A System formatted disc:
-         single sided, single track, 40 tracks, 9 sectors/track, 512-byte sectors,
-         2 reserved tracks, 1k blocks,
-         2 directory blocks,
-         gap lengths 2Ah and 52h,
-         bootable
-- C1h: A Data formatted disc:
-         single sided, single track, 40 tracks, 9 sectors/track, 512-byte sectors,
-         no reserved tracks, 1k blocks,
-         2 directory blocks,
-         gap lengths 2Ah and 52h,
-         not bootable
+    41h - A System formatted disc:
 
+          single sided, single track,
+          40 tracks, 9 sectors/track, 512-byte sectors,
+          2 reserved tracks, 1k blocks,
+          2 directory blocks,
+          gap lengths 2Ah and 52h,
+          bootable
+
+    C1h - A Data formatted disc:
+
+          single sided, single track,
+          40 tracks, 9 sectors/track, 512-byte sectors,
+          no reserved tracks, 1k blocks,
+          2 directory blocks,
+          gap lengths 2Ah and 52h,
+          not bootable
 
 In addition to the XDPB system, the PCW and Spectrum +3 can determine the format
 of a disc from a 16-byte record on track 0, head 0, physical sector 1.
 
-If all bytes of the spec are 0E5h, it should be assumed that the disc is a
+If all bytes of the spec are `0E5h`, it should be assumed that the disc is a
 173k PCW/Spectrum +3 disc, ie:
 
-  single sided, single track, 40 tracks, 9 sectors/track, 512-byte sectors,
-  1 reserved track, 1k blocks,
-  2 directory blocks,
-  gap lengths 2Ah and 52h,
-  not bootable
+    single sided, single track
+    40 tracks, 9 sectors/track, 512-byte sectors
+    1 reserved track, 1k blocks
+    2 directory blocks
+    gap lengths 2Ah and 52h
+    not bootable
 
-PCW16 extended boot record
+#### PCW16 extended boot record
 
 The "boot record" system has been extended in PCW16 CP/M (BIOS 0.09 and later).
-The extension is intended to allow a CP/M "partition" on a DOS-formatted floppy disc.
+The extension is intended to allow a CP/M _partition_ on a DOS-formatted floppy disc.
 
 An extended boot sector (cylinder 0, head 0, sector 1) has the following characteristics:
 
-- First byte is 0E9h or 0EBh
-- Where DOS expects the disc label to be (at sector + 2Bh) there are 11 ASCII bytes
-  of the form `CP/M????DSK`, where "?" can be any character.
-- At sector + 7Ch are the four ASCII bytes "CP/M"
-- At sector + 80h is the disc specification as described above.
+  - First byte is `0E9h` or `0EBh`
+  - Where DOS expects the disc label to be (at `sector + 2Bh`) there are 11 ASCII bytes
+    of the form `CP/M????DSK`, where `?` can be any character.
+  - At `sector + 7Ch` are the four ASCII bytes `CP/M`
+  - At `sector + 80h` is the disc specification as described above.
 
 
 ### Boot Sector
@@ -316,9 +326,11 @@ Source: https://www.cpcwiki.eu/imgs/b/bc/Knife_Plus_Manual.pdf
     9 sectors per track numbered #09 to #09
     2 reserved tracks*
 
-NOTE: reserved tracks in the PDF may be wrong, it might only be 1 reserved track.
+NOTE: 'reserved tracks' in the PDF may be wrong, it might only be 1 reserved track.
 
-### Amstrad CF2-DD Format (PCW8256/8512 drive B format, PCW9512 drive A format)
+### Amstrad CF2-DD Format
+
+PCW8256/8512 drive B format, PCW9512 drive A format.
 
     Double-sided
     512-byte physical sector size
@@ -327,3 +339,226 @@ NOTE: reserved tracks in the PDF may be wrong, it might only be 1 reserved track
     256 directory entries
     9 sectors per track numbered #09 to #09
     1 reserved track
+
+
+## Extended DSK image definition
+
+Source: http://cpctech.cpc-live.com/docs/extdsk.html
+
+The extended DSK image is a file designed to describe copy-protected floppy disk
+software. It's definition was defined by Marco Vieth, Ulrich Doewich and Kevin
+Thacker.
+
+This format has been widely adopted and is one of the major file formats used
+(the other major format is the standard disk image with the `MV - CPC`
+identifier).
+
+The extended disk image format should be used for copy-protected disc software,
+or in place of a standard disk image if the resulting image is smaller than in
+the standard disk image form.
+
+
+### Extended DiSK Format (Rev.5)
+
+The disc image has the following format:
+
+    DISK INFORMATION BLOCK (256 bytes)
+    TRACK INFORMATION BLOCK * number of tracks * number of sides
+
+The track blocks are stored in increasing order 0..number of tracks, with
+alternating sides interleaved if the disc image describes a double-sided disk.
+e.g. if the disk image represents a double-sided disk, the order of tracks is:
+
+    track 0 side 0
+    track 0 side 1
+    track 1 side 0
+    track 1 side 1....
+    track (number of tracks-1) side 0
+    track (number of tracks-1) side 1
+
+The tracks are **always** ordered in this way regardless of the disc-format
+described by the disc image.
+
+The location of the track information block is found by using the track size
+table.
+
+
+### DISK INFORMATION BLOCK
+
+The "DISK INFORMATION BLOCK" is always located at offset 0 in the disk image
+file, and has the following structure:
+
+    offset    description                               bytes
+    --------+------------------------------------------+-----
+    00 - 21   "EXTENDED CPC DSK File\r\nDisk-Info\r\n"   34
+    22 - 2f   name of creator (utility/emulator)         14
+    30        number of tracks                           1
+    31        number of sides                            1
+    32 - 33   unused                                     2
+    34 - xx   track size table                           number of tracks*number of sides
+
+NOTES:
+
+  * An extended DSK image is identified by the `EXTENDED` tag.
+  * The track size at offset `32h` and `33h`, used by the STANDARD disk image is
+    ignored for extended format DSK images.
+  * If track data exists, then it starts at offset `100h`.
+  * The `EXTENDED` tag is present to prevent existing emulators which support the
+    standard DSK image from interpreting the data wrong and possibly crashing.
+  * `\r` is the C programming language equivalent of ASCII character `13`.
+  * `\n` is the C programming language equivalent of ASCII character `10`.
+
+
+### TRACK OFFSET TABLE
+
+    offset   description                       bytes
+    -------+----------------------------------+-----
+    01       high byte of track 0 length        1
+             (equivalent to track length/256)
+    ...      ...                                ...
+
+NOTES:
+
+  * Depending on the information in the disk information block, the table contains
+    - track lengths for a single sided floppy disc
+    - track lengths for a double-sided floppy disc
+  * track lengths are stored in the same order as the tracks in the image e.g. In
+    the case of a double-sided disk:
+      Track 0 side 0, Track 0 side 1, Track 1 side 0 etc...
+  * A size of "0" indicates an unformatted track. In this case there is no data,
+    and no track information block for this track in the image file!
+  * Actual length of track data = (high byte of track length) * 256
+  * Track length includes the size of the TRACK INFORMATION BLOCK (256 bytes)
+  * The location of a Track Information Block for a chosen track is found by
+    summing the sizes of all tracks up to the chosen track plus the size of
+    the Disc Information Block (`&100` bytes). The first track is at offset &100
+    in the disc image.
+
+
+### TRACK INFORMATION BLOCK
+
+    offset    description              bytes
+    --------+-------------------------+-----
+    00 - 0c   "Track-Info\r\n"          13
+    0d - 0f   unused                    3
+    10        track number              1
+    11        side number               1
+    12 - 13   unused                    2
+    14        sector size               1
+    15        number of sectors         1
+    16        GAP#3 length              1
+    17        filler byte                1
+    18 - xx   Sector Information List   xx
+
+NOTES:
+
+  * Identical to the original DSK format definition.
+
+
+### SECTOR INFORMATION LIST
+
+    offset    description                                                      bytes
+    --------+-----------------------------------------------------------------+-----
+    00        track (equivalent to C parameter in NEC765 commands)              1
+    01        side (equivalent to H parameter in NEC765 commands)               1
+    02        sector ID (equivalent to R parameter in NEC765 commands)          1
+    03        sector size (equivalent to N parameter in NEC765 commands)        1
+    04        FDC status register 1 (equivalent to NEC765 ST1 status register)  1
+    05        FDC status register 2 (equivalent to NEC765 ST2 status register)  1
+    06 - 07   actual data length in bytes                                       2
+
+NOTES:
+
+  * Identical to the original definition except for the addition of the sector
+    data length. This value is in bytes and stored in little endian notation.
+    (low byte followed by high byte)
+  * The location of each sectors data is found by adding the size of the previous
+    sectors, plus the size of the 256 byte header.
+  * For 8k Sectors (`N="6"`), only `1800h` bytes are stored. Please see extensions below!!!
+
+
+### Extensions to the above specification
+
+**This extension was proposed by John Elliott:**
+
+    Extension to TRACK INFORMATION BLOCK:
+
+    offset  description                             bytes
+    ------+----------------------------------------+-----
+    12      Data rate. (See note 1 and note 3)       1
+    13      Recording mode. (See note 2 and note 3)  1
+
+Notes:
+
+1 - Data rate defines the rate at which data was written to the track. This
+   value applies to the entire track.
+
+    Date rate   description
+    ----------+------------
+        0       Unknown
+        1       Single or double density
+        2       High Density
+        3       Extended density
+
+Existing files should have zeroes in these bytes; hence the use of 0 for unknown.
+
+
+2 - Recording mode is used to define how the data was written. It defines the
+   encoding used to write the data to the disc and the structure of the data
+   on the disc including the layout of the sectors. This value applies to the
+   entire track.
+
+    Date rate   description
+    ----------+------------
+        0       Unknown
+        1       FM
+        2       MFM
+
+Existing files should have zeroes in these bytes; hence the use of 0 for unknown.
+
+
+3 - How to determine the actual rate.
+
+The NEC765 floppy disc controller is supplied with a single clock. When reading
+from and writing to a disc using the NEC765 you can choose FM or MFM recording
+modes. Use of these modes and the clock into the NEC765 define the final rate
+at which the data is written to the disc.
+
+When FM recording mode is used, data is read from or written to at a rate which
+is double that of when MFM is used. The time for each bit will be twice the
+time for MFM.
+
+Examples:
+
+    NEC765 Clock  FM/MFM  Actual rate
+    4Mhz  FM  4us per bit
+    4Mhz  MFM 2us per bit
+
+
+**This extension was proposed by Simon Owen:**
+
+1. It has been found that many protections using 8K Sectors (`N="6"`) do store
+   more than `&1800` bytes of usable data. It was thought that `&1800` was the
+   maximum usable limit, but this has proved wrong. So you should support 8K
+   of data to ensure this data is read correctly. The size of the sector will
+   be reported in the SECTOR INFORMATION LIST as described above.
+
+   For sector size `N="7"` the full 16K will be stored. It is assumed that
+   sector sizes are defined as 3 bits only, so that a sector size of `N="8"`
+   is equivalent to `N="0"`.
+
+2. Storing Multiple Versions of Weak/Random Sectors.
+
+   Some copy protections have what is described as 'weak/random' data. Each
+   time the sector is read one or more bytes will change, the value may be
+   random between consecutive reads of the same sector.
+
+   To support these formats the following extension has been proposed.
+
+   Where a sector has weak/random data, there are multiple copies stored. The
+   actual sector size field in the SECTOR INFORMATION LIST describes the size
+   of all the copies. To determine if a sector has multiple copies then compare
+   the actual sector size field to the size defined by the N parameter. For
+   multiple copies the actual sector size field will have a value which is a
+   multiple of the size defined by the N parameter. The emulator should then
+   choose which copy of the sector it should return on each read.

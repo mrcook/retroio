@@ -322,3 +322,13 @@ type Directory struct {
 	// disc) or 16-bit (stored low byte first).
 	Allocation [16]uint8
 }
+
+// IsAllocated checks AL to see if any disk blocks have been allocated.
+func (d Directory) IsAllocated() bool {
+	for _, a := range d.Allocation {
+		if a > 0 {
+			return true
+		}
+	}
+	return false
+}

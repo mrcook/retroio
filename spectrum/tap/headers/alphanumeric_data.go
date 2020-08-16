@@ -55,7 +55,7 @@ func (b AlphanumericData) BlockData() []byte {
 // String returns a formatted string for the header
 func (b AlphanumericData) String() string {
 	str := fmt.Sprintf("%s\n", b.Name())
-	str += fmt.Sprintf("    - Filename     : %s\n", b.Filename)
+	str += fmt.Sprintf("    - Filename     : %s\n", b.Filename())
 	str += fmt.Sprintf("    - Variable Name: %c", b.VariableName-192)
 	return str
 }

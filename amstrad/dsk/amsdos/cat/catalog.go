@@ -13,7 +13,7 @@ import (
 // of all files found, together with each file's length (to the nearest higher Kbyte).
 // The free space left on the disc is also displayed, together with Drive and
 // User identification.
-func CommandCat(diskMaxBlocks uint16, directories []amsdos.Directory) (*catalog, error) {
+func CommandCat(diskMaxBlocks uint16, directories []amsdos.Directory, standardDisk bool) (*catalog, error) {
 	if len(directories) == 0 {
 		return nil, errors.New("no directories found")
 	}
@@ -40,7 +40,7 @@ func CommandCat(diskMaxBlocks uint16, directories []amsdos.Directory) (*catalog,
 
 		cat.FreeSpace -= record.RecordCount
 
-		if lastFilename == d.Filename && lastFileType == d.FileType {
+		if lastFilename == d.Filename && lastFileType == d.FileType && d.RecordCount > 0 {
 			// add this record count to the the last record
 			cat.Records[len(cat.Records)-1].RecordCount += record.RecordCount
 			wasExtent = true
@@ -76,11 +76,17 @@ type catalog struct {
 // TODO: is there a better way of checking for valid directory entries?
 // Check if a directory entry is actually a directory entry
 func (c catalog) validDirRecord(dir *amsdos.Directory) bool {
+	// TODO: perhaps only happens on EXTENDED disks
+	if !dir.IsAllocated() {
+		return false
+	}
+
 	// Nemesis (1986) is an example game where the first three checks are required.
 	// Roland in the Caves (1984) is an example game where all four checks are required.
 	if dir.UserNumber <= 32 && dir.RecordCount <= 0x80 && dir.S1 == 0 && dir.ExtentHigh == 0 {
 		return true
 	}
+
 	return false
 }
 

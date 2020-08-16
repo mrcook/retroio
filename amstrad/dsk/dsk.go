@@ -30,7 +30,7 @@ import (
 type DSK struct {
 	reader *storage.Reader
 
-	Info   DiskInformation
+	Info   DiskInformation // 256 bytes long
 	Tracks []TrackInformation
 
 	AmsDos AmsDos
@@ -42,15 +42,20 @@ func New(reader *storage.Reader) *DSK {
 
 func (d *DSK) Read() error {
 	d.Info = DiskInformation{}
+
 	if err := d.Info.Read(d.reader); err != nil {
 		return errors.Wrap(err, "error reading the disk information block")
 	}
 
 	for i := 0; i < int(d.Info.Tracks); i++ {
 		track := TrackInformation{}
-		if err := track.Read(d.reader); err != nil {
-			return errors.Wrapf(err, "error reading track #%d", i+1)
+
+		if d.Info.isStandardDisk() || (d.Info.isExtendedDisk() && d.Info.TrackSizeTable[i] != 0) {
+			if err := track.Read(d.reader); err != nil {
+				return errors.Wrapf(err, "error reading track #%d", i+1)
+			}
 		}
+
 		d.Tracks = append(d.Tracks, track)
 	}
 
@@ -73,10 +78,11 @@ func (d DSK) DisplayGeometry() {
 
 		str := fmt.Sprintf("SIDE %d, TRACK %02d: ", track.Side, track.Track)
 		if track.SectorsCount == 0 {
-			str += "[Track is blank]"
+			str += "Blank Track"
+		} else {
+			str += fmt.Sprintf("%02d sectors", track.SectorsCount)
+			str += fmt.Sprintf(" (%d bytes)", sectorSize)
 		}
-		str += fmt.Sprintf("%02d sectors", track.SectorsCount)
-		str += fmt.Sprintf(" (%d bytes)", sectorSize)
 		if int(track.SectorsCount) != len(track.Sectors) {
 			str += fmt.Sprintf(" WARNING only %d sectors read", len(track.Sectors))
 		}
@@ -86,7 +92,7 @@ func (d DSK) DisplayGeometry() {
 
 // CommandDir displays the disk directory to the terminal.
 func (d DSK) CommandDir() {
-	commandCat, err := cat.CommandCat(d.AmsDos.DPB.BlockCount, d.AmsDos.Directories)
+	commandCat, err := cat.CommandCat(d.AmsDos.DPB.BlockCount, d.AmsDos.Directories, d.Info.isStandardDisk())
 	if err != nil {
 		fmt.Printf("CAT command error: %s", err)
 		return
