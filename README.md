@@ -56,7 +56,7 @@ LIST
 
 * Amstrad:      `DSK`, `CDT`
 * Commodore 64: `D64`, `D71`, `D81`, `T64`, `TAP`
-* ZX Spectrum:  `TZX`, `TAP`
+* ZX Spectrum:  `TZX`, `TAP`, `TRD`
 
 The `geometry` command will read and display core metadata about the layout
 of the media. This can be disk track and sector details, or the header and
