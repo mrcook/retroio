@@ -2,11 +2,16 @@ package blocks
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
 
 	"github.com/mrcook/retroio/spectrum/tap"
 	"github.com/mrcook/retroio/spectrum/tzx/blocks/types"
 	"github.com/mrcook/retroio/storage"
 )
+
+// lineBreak is a regular expression pattern that matches Windows style and old Mac line breaks.
+var lineBreak = regexp.MustCompile(`\r\n?`)
 
 // CustomInfo
 // ID: 35h (53d)
@@ -15,9 +20,9 @@ import (
 // poke data.
 type CustomInfo struct {
 	BlockID        types.BlockType
-	Identification [10]byte // Identification string (in ASCII)
+	Identification [16]byte // Identification string (in ASCII)
 	Length         uint32   // Length of the custom info
-	Info           []uint8  // Custom info
+	Info           []byte   // Custom info
 }
 
 // Read the tape and extract the data.
@@ -28,7 +33,7 @@ func (c *CustomInfo) Read(reader *storage.Reader) error {
 		return fmt.Errorf("expected block ID 0x%02x, got 0x%02x", c.Id(), c.BlockID)
 	}
 
-	for i, b := range reader.ReadBytes(10) {
+	for i, b := range reader.ReadBytes(16) {
 		c.Identification[i] = b
 	}
 
@@ -57,5 +62,7 @@ func (c CustomInfo) BlockData() tap.Block {
 
 // String returns a human readable string of the block data
 func (c CustomInfo) String() string {
-	return fmt.Sprintf("%-19s : %s - %s", c.Name(), c.Identification, c.Info)
+	identification := strings.TrimSpace(string(c.Identification[:]))
+	info := lineBreak.ReplaceAllString(string(c.Info), "\n")
+	return fmt.Sprintf("%s: %s\n%s", c.Name(), identification, info)
 }
